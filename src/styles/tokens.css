@@ -1,0 +1,68 @@
+/* ============================================================
+   The Nile Explorer — design tokens
+   Brand identity is fixed: navy, gold, Spectral over Libre Franklin.
+   Spacing was tightened after client feedback that the first pass
+   read too sparse; see --space-* below.
+   ============================================================ */
+
+:root {
+  /* Brand */
+  --navy: #06183A;
+  --navy-deep: #04102A;
+  --gold: #C4881C;
+  --gold-text: #96690F;   /* AA as text: 4.86:1 on paper */
+  --gold-light: #E3B25A;  /* navy grounds only: 8.99:1 */
+
+  /* Surfaces */
+  --paper: #FFFFFF;
+  --surface: #FBFAF7;
+  --surface-2: #F4F2EC;
+
+  /* Ink */
+  --ink: #111111;
+  --ink-article: #232019;
+  --ink-deck: #4A463D;
+  --ink-blurb: #5A564C;
+  --muted: #6E6A5F;
+
+  /* Lines */
+  --rule: #E6E3DC;          /* decorative hairlines only (1.28:1) */
+  --rule-strong: #CFCABC;
+  --border-strong: #8A8377; /* control boundaries, 3.75:1 */
+
+  /* Layout */
+  --shell: 1320px;
+  --measure: 700px;
+  --rail: 300px;
+  --gutter: clamp(14px, 2.6vw, 32px);
+
+  /* Spacing — deliberately tight. A news page earns density; the
+     previous clamp maxes (72px section padding, 80px gutters) made
+     the page read like a portfolio rather than a publication. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 22px;
+  --space-6: 30px;
+  --section-y: clamp(26px, 3vw, 44px);
+  --col-gap: clamp(24px, 3.4vw, 52px);
+
+  /* Type scale — 1.28 ratio, capped well below the old 4.6rem hero */
+  --fs-hero: clamp(2rem, 3.6vw, 3.1rem);
+  --fs-h2: clamp(1.5rem, 2.4vw, 2.1rem);
+  --fs-h3: clamp(1.15rem, 1.7vw, 1.45rem);
+  --fs-lead: clamp(1.05rem, 1.35vw, 1.2rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.6875rem; /* 11px floor for uppercase tracked labels */
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 150ms;
+
+  /* Stacking */
+  --z-sticky: 100;
+  --z-menu: 150;
+  --z-skip: 200;
+}

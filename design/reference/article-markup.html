@@ -1,0 +1,146 @@
+<div id="top">
+
+  <a class="skip" href="#story">Skip to the story</a>
+
+  <header class="masthead">
+    <div class="masthead__inner shell">
+      <a class="logo" href="The Nile Explorer.html" aria-label="The Nile Explorer, home">
+        <img class="logo__mark" src="c3ae16fc-2613-4b4a-8f42-a312f4a35a88" alt="">
+        <img class="logo__word" src="ee1c605f-bb62-4bae-a278-68585f4b16fc" alt="The Nile Explorer">
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+          <a class="nav__link" href="{{ n.href }}">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+      <a class="btn" href="The Nile Explorer.html#newsletter">Subscribe</a>
+    </div>
+  </header>
+
+  <main>
+  <article class="article shell">
+    <div class="article__grid">
+
+      <div class="article__head">
+        <div class="kicker">
+          <a class="kicker__cat" href="The Nile Explorer.html#news">Governance</a>
+          <span class="kicker__rule"></span>
+          <span class="kicker__place">Juba</span>
+        </div>
+
+        <h1 class="headline" id="story">The first vote in over a decade</h1>
+
+        <p class="deck">December 2026 will test whether a young nation's peace architecture can hold under democratic contestation.</p>
+
+        <div class="byline">
+          <span class="byline__author">By the newsroom</span>
+          <span>5 September 2026</span>
+          <span>8 min read</span>
+          <span class="share">
+            <sc-for list="{{ share }}" as="s" hint-placeholder-count="3">
+              <a class="share__btn" href="{{ s.href }}" target="_blank" rel="noopener noreferrer" aria-label="{{ s.label }}" title="{{ s.label }}">
+                <svg width="19" height="19" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="{{ s.path }}"></path>
+                </svg>
+              </a>
+            </sc-for>
+          </span>
+        </div>
+      </div>
+
+      <figure class="article__figure">
+        <span class="frame frame--lede"><img src="942b75a1-92d6-42bf-b7b4-e6c8887a0e32" alt="Voters queue outside a registration centre in Juba as the electoral commission opens the roll."></span>
+        <figcaption>Registration opens in the states before the capital, a sequencing the commission calls practical. Photograph by the newsroom.</figcaption>
+      </figure>
+
+      <div class="article__body">
+        <div class="prose">
+          <p>The election commission has published a calendar, and for the first time since independence the country has a date to organise itself around. Registration opens in the states before it opens in the capital, a sequencing choice the commission describes as practical and its critics read as political.</p>
+          <p>What follows is less a campaign than a stress test. The 2018 agreement that ended the last round of fighting distributed positions rather than settling questions: how the army is unified, how revenue is shared, who holds the courts. A vote asks each of those questions again, on a deadline.</p>
+
+          <h2>The registration problem</h2>
+          <p>Officials estimate that a majority of eligible voters have never cast a ballot. Registration drives depend on roads that close with the rains and on identity documents that many families have lost twice over, first to displacement and then to the camps. Where the paperwork is missing, the commission has said it will accept community attestation, a workable answer that will also be contested.</p>
+          <p>Party agents are already arguing about the areas where turnout will decide the outcome, and about which of those areas can realistically be reached before the calendar closes.</p>
+
+          <blockquote class="pullquote">
+            <p>A vote settles who governs. It does not, on its own, settle whether the institutions holding the result are trusted.</p>
+          </blockquote>
+
+          <h2>What the region is watching</h2>
+          <p>Neighbouring capitals have their own reasons to care. Oil moves north, trade moves east, and the displaced move in every direction at once. A contested result would be felt first in the border markets, where a three-week closure earlier this year cut incomes on both sides.</p>
+
+          <figure>
+            <span class="frame frame--inline"><img src="0a7fc13a-8430-432d-96e7-9804aa4b89ee" alt="Traders unload sacks at a border market that closed for three weeks earlier in the year."></span>
+            <figcaption>The border markets absorbed the last closure first. Traders expect to do so again.</figcaption>
+          </figure>
+
+          <p>The commission's own budget is the quietest constraint. Ballot printing, transport and the training of poll staff are all costed in foreign currency, and the transfers that would cover them have not arrived on the schedule the calendar assumes.</p>
+          <p>None of this makes the date impossible. It makes the date a choice about what the country is willing to accept from a first attempt, and about who will be asked to live with the result.</p>
+
+          <div class="colophon">
+            Reporting from Juba. Additional reporting from Nairobi. Corrections and rights of reply: <a href="mailto:newsroom@nileexplorer.org">newsroom@nileexplorer.org</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="article__aside" aria-label="Related coverage">
+        <div>
+          <h2 class="aside__title">Also in this story</h2>
+          <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+            <a class="related" href="The Nile Explorer - Article.html">
+              <span class="related__cat">{{ r.cat }}</span>
+              <span class="related__title">{{ r.title }}</span>
+            </a>
+          </sc-for>
+        </div>
+        <div class="podcard">
+          <h2 class="podcard__eyebrow">Listen</h2>
+          <img class="podcard__art" src="e2a5717a-d121-44f7-835d-63c3ad95cccc" alt="The Nile Explorer Podcast">
+          <p class="podcard__title">Episode 05 — A young nation's first vote in over a decade</p>
+          <a class="podcard__cta" href="The Nile Explorer.html#podcasts">Play episode →</a>
+        </div>
+      </aside>
+    </div>
+  </article>
+  </main>
+
+  <section class="more" aria-labelledby="more-heading">
+    <div class="more__inner shell">
+      <div class="more__head">
+        <h2 id="more-heading">More from The Nile Explorer</h2>
+      </div>
+      <div class="more__grid">
+        <sc-for list="{{ more }}" as="m" hint-placeholder-count="3">
+          <a class="card" href="The Nile Explorer - Article.html">
+            <span class="frame frame--card"><img src="{{ m.photo }}" alt="{{ m.alt }}"></span>
+            <span class="card__cat">{{ m.cat }}</span>
+            <span class="card__title">{{ m.title }}</span>
+            <span class="card__meta">{{ m.meta }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__inner shell">
+      <div class="footer__top">
+        <a class="logo" href="The Nile Explorer.html" aria-label="The Nile Explorer, home">
+          <img src="c3ae16fc-2613-4b4a-8f42-a312f4a35a88" alt="" style="height: 62px; width: auto">
+          <img src="ee1c605f-bb62-4bae-a278-68585f4b16fc" alt="The Nile Explorer" style="height: 34px; width: auto">
+        </a>
+        <nav class="footer__nav" aria-label="Sections">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+            <a href="{{ n.href }}">{{ n.label }}</a>
+          </sc-for>
+        </nav>
+        <div class="footer__social">
+          <a href="https://x.com/" target="_blank" rel="noopener noreferrer">X</a><a href="https://youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>© 2026 The Nile Explorer Media Network</span><span>The Mirror of Africa</span>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,300 @@
+<div id="top">
+
+  <a class="skip" href="#lead">Skip to the main story</a>
+
+  <header class="masthead">
+    <div class="masthead__inner shell">
+      <a class="logo" href="#top" aria-label="The Nile Explorer, home">
+        <img class="logo__mark" src="98466864-32ac-47d8-ab0f-83cab9d0e662" alt="">
+        <img class="logo__word" src="a1ebfea7-d702-4fc9-a2e4-48a041b9e8f5" alt="The Nile Explorer">
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+          <a class="nav__link" href="{{ n.href }}">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+      <a class="btn" href="#newsletter">Subscribe</a>
+    </div>
+  </header>
+
+  <main>
+
+  <section class="hero shell" aria-labelledby="lead">
+    <div class="hero__kicker">
+      <span class="hero__cat">Governance</span>
+      <span class="hero__rule"></span>
+      <span class="hero__place">Juba · 5 September</span>
+    </div>
+    <span class="frame frame--lede"><img src="ffd56868-3613-4e67-a115-f295e1e35542" alt="The national flag flies over Juba on the morning the electoral calendar was published."></span>
+    <div class="hero__grid">
+      <h1 class="hero__title" id="lead"><a href="The Nile Explorer - Article.html">The first vote in over a decade</a></h1>
+      <div class="hero__side">
+        <p class="hero__deck">December 2026 will test whether a young nation's peace architecture can hold under democratic contestation.</p>
+        <span class="hero__meta">By the newsroom · 8 min read</span>
+        <div class="brief">
+          <sc-for list="{{ inBrief }}" as="b" hint-placeholder-count="3">
+            <a class="brief__item" href="The Nile Explorer - Article.html">
+              <span class="brief__title">{{ b.title }}</span>
+              <span class="brief__cat">{{ b.cat }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="latest shell" aria-label="Latest stories">
+    <div class="latest__grid">
+      <sc-for list="{{ latest }}" as="l" hint-placeholder-count="4">
+        <a class="card" href="The Nile Explorer - Article.html">
+          <span class="frame frame--card"><img src="{{ l.photo }}" alt="{{ l.alt }}"></span>
+          <span class="card__cat">{{ l.cat }}</span>
+          <span class="card__title">{{ l.title }}</span>
+          <span class="card__blurb">{{ l.blurb }}</span>
+          <span class="card__meta">{{ l.meta }}</span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <section class="band" id="podcasts" aria-labelledby="podcasts-heading">
+    <div class="band__inner shell">
+      <div class="section-head">
+        <div class="pods__brandhead">
+          <img class="pods__logo" src="ac5cbf5c-e50d-4600-99de-1ccca7566e07" alt="">
+          <h2 id="podcasts-heading">Podcasts</h2>
+        </div>
+        <a class="section-link" href="#podcasts">All episodes →</a>
+      </div>
+
+      <div class="pods__grid">
+        <article>
+          <div class="frame" style="aspect-ratio: 16 / 10">
+            <img src="31c07de7-a728-49f7-b441-6ecff8a648d5" alt="The presenter and a guest recording episode five in the Juba studio.">
+            <span class="pods__badge">Episode 05 · Latest</span>
+          </div>
+          <h3 class="pods__title"><a href="#podcasts">A young nation's first vote in over a decade</a></h3>
+
+          <div class="player">
+            <button class="player__btn" type="button" sc-camel-on-click="{{ togglePlay }}" aria-label="{{ playLabel }}" aria-pressed="{{ playing }}">{{ playIcon }}</button>
+            <span class="player__body">
+              <span class="player__meta"><span>{{ elapsed }}</span><span>52:10</span></span>
+              <span class="player__track" role="progressbar" aria-valuenow="{{ progressNow }}" aria-valuemin="0" aria-valuemax="100" aria-label="Episode progress">
+                <span class="player__fill" style="width: {{ progress }}"></span>
+              </span>
+            </span>
+          </div>
+
+          <div class="platforms">
+            <span class="platforms__label" id="listen-on">Listen on</span>
+            <a class="platform" href="#podcasts" aria-label="Listen on Apple Podcasts" title="Apple Podcasts">
+              <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <rect x="10" y="3" width="4" height="9" rx="2"></rect>
+                <path d="M7 10.5a5 5 0 0 0 10 0"></path>
+                <path d="M12 15.5V18"></path>
+                <path d="M8.6 20.5c.6-2 1.4-3 3.4-3s2.8 1 3.4 3"></path>
+              </svg>
+            </a>
+            <a class="platform" href="#podcasts" aria-label="Listen on Spotify" title="Spotify">
+              <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9.2"></circle>
+                <path d="M7 9.6c3.2-.9 6.6-.6 9.4.9"></path>
+                <path d="M7.6 12.8c2.6-.7 5.3-.4 7.6.8"></path>
+                <path d="M8.4 15.8c2-.5 4-.3 5.8.6"></path>
+              </svg>
+            </a>
+            <a class="platform" href="#podcasts" aria-label="Listen on YouTube" title="YouTube">
+              <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <rect x="2.4" y="5.6" width="19.2" height="12.8" rx="3.4"></rect>
+                <path d="M10.4 9.4l4.8 2.6-4.8 2.6z" fill="currentColor" stroke="none"></path>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <div>
+          <h3 class="podlist__label">More episodes</h3>
+          <sc-for list="{{ pods }}" as="p" hint-placeholder-count="4">
+            <article class="podlist__item">
+              <span class="frame frame--square"><img src="{{ p.photo }}" alt="{{ p.alt }}"></span>
+              <span class="podlist__body">
+                <span class="podlist__status" style="color: {{ p.tagColor }}">{{ p.status }}<span class="podlist__date">{{ p.date }}</span></span>
+                <a class="podlist__title" href="#podcasts">{{ p.title }}</a>
+                <span class="podlist__dur">
+                  <span class="podlist__glyph" aria-hidden="true">▶</span>
+                  <span class="podlist__time">{{ p.dur }}</span>
+                </span>
+              </span>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tv" id="tv" aria-labelledby="tv-heading">
+    <div class="tv__inner shell">
+      <div class="section-head">
+        <h2 id="tv-heading">Television</h2>
+        <a class="section-link" href="#tv">All programmes →</a>
+      </div>
+
+      <div class="tv__grid">
+        <article>
+          <div class="frame frame--video">
+            <sc-if value="{{ featured.playing }}" hint-placeholder-val="{{ false }}">
+              <iframe src="{{ featured.embed }}" title="Water, borders and bargaining: the Nile basin after the dam" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0"></iframe>
+            </sc-if>
+            <sc-if value="{{ featured.idle }}" hint-placeholder-val="{{ true }}">
+              <img src="d2aa9fe8-11c5-4ca9-a26c-47d782394c4a" alt="A dam wall on the Nile seen from the eastern bank at first light.">
+              <button class="tv__play" type="button" sc-camel-on-click="{{ featured.onPlay }}" aria-label="Play the documentary: Water, borders and bargaining">
+                <span class="tv__playglyph" aria-hidden="true">▶</span>
+              </button>
+              <span class="tv__badge">42:18</span>
+            </sc-if>
+          </div>
+          <span class="tv__meta"><span class="tv__cat">Documentary</span><span style="color: var(--muted)">42 min</span></span>
+          <h3 class="tv__heading">Water, borders and bargaining: the Nile basin after the dam</h3>
+        </article>
+
+        <div class="tv__list">
+          <a class="tv__item" href="https://www.youtube.com/watch?v=WOAEoVKb2UM" target="_blank" rel="noopener noreferrer">
+            <span class="frame frame--video">
+              <img src="6aaa58ab-774d-46f1-a866-4119cc6388da" alt="An interview subject speaking to camera in a studio.">
+              <span class="tv__thumbglyph" aria-hidden="true"><span>▶</span></span>
+              <span class="tv__dur">18:04</span>
+            </span>
+            <span class="tv__body">
+              <span class="tv__cat">Interview</span>
+              <span class="tv__title">“Africa has everything it needs”</span>
+              <span class="tv__views">24k views · 2 weeks ago</span>
+            </span>
+          </a>
+          <a class="tv__item" href="https://www.youtube.com/watch?v=24ZC1MthVo8" target="_blank" rel="noopener noreferrer">
+            <span class="frame frame--video">
+              <img src="822ae35a-c8b8-44e0-b980-23f8e1345eca" alt="A presenter at the desk of the weekly programme.">
+              <span class="tv__thumbglyph" aria-hidden="true"><span>▶</span></span>
+              <span class="tv__dur">26:31</span>
+            </span>
+            <span class="tv__body">
+              <span class="tv__cat">Programme</span>
+              <span class="tv__title">The Week in the Basin</span>
+              <span class="tv__views">11k views · 5 days ago</span>
+            </span>
+          </a>
+          <a class="tv__item" href="https://www.youtube.com/watch?v=AIogFe419-8" target="_blank" rel="noopener noreferrer">
+            <span class="frame frame--video">
+              <img src="1695f7cc-f7d8-4359-9ebb-5a8d821c92b1" alt="Crowds on the riverbank during the second edition of the festival.">
+              <span class="tv__thumbglyph" aria-hidden="true"><span>▶</span></span>
+              <span class="tv__dur">1:05:12</span>
+            </span>
+            <span class="tv__body">
+              <span class="tv__cat">Festival</span>
+              <span class="tv__title">The second edition, in full</span>
+              <span class="tv__views">63k views · 8 months ago</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="news" aria-labelledby="news-heading">
+    <div class="band__inner shell news__grid">
+      <div>
+        <div class="news__head">
+          <h2 id="news-heading">News &amp; Opinions</h2>
+          <div class="tabs" role="group" aria-label="Filter stories by section">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+              <button class="tab" type="button" sc-camel-on-click="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="background: {{ t.bg }}; color: {{ t.fg }}; border-color: {{ t.bc }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-for list="{{ shownStories }}" as="s" hint-placeholder-count="4">
+          <article class="story">
+            <div class="story__body">
+              <span class="story__cat">{{ s.cat }}</span>
+              <h3 class="story__title"><a href="The Nile Explorer - Article.html">{{ s.title }}</a></h3>
+              <p class="story__blurb">{{ s.blurb }}</p>
+              <span class="story__meta">{{ s.meta }}</span>
+            </div>
+            <span class="frame frame--square story__thumb"><img src="{{ s.photo }}" alt="{{ s.alt }}"></span>
+          </article>
+        </sc-for>
+      </div>
+      <aside class="aside" aria-label="Most read and comment">
+        <div>
+          <h2 class="aside__title">Most read</h2>
+          <sc-for list="{{ mostRead }}" as="m" hint-placeholder-count="4">
+            <a class="mostread" href="The Nile Explorer - Article.html">
+              <span class="mostread__n" aria-hidden="true">{{ m.n }}</span>
+              <span class="mostread__title">{{ m.title }}</span>
+            </a>
+          </sc-for>
+        </div>
+        <blockquote class="quote">
+          <p>“We must shift from blame to responsibility, from suspicion to trust, from division to unity.”</p>
+          <footer>Dr. Aldo Ajou Deng-Akuey · Patron</footer>
+        </blockquote>
+      </aside>
+    </div>
+  </section>
+
+  <section class="fest on-navy" id="festival" aria-labelledby="fest-heading">
+    <div class="fest__bg"><img src="5d0b7535-a565-4c3e-892f-46e5129f22c5" alt=""></div>
+    <div class="fest__scrim"></div>
+    <div class="fest__inner shell">
+      <span class="fest__kicker">The Nile Festival · 4–11 December 2026</span>
+      <h2 class="fest__title" id="fest-heading">A week of culture, sport and music on the river</h2>
+      <div class="fest__actions">
+        <a class="btn btn--gold" href="#festival">Programme &amp; tickets</a>
+        <a class="btn btn--ghost" href="#tv">Last year's edition</a>
+      </div>
+      <div class="fest__days">
+        <sc-for list="{{ festDays }}" as="d" hint-placeholder-count="4">
+          <div class="fest__day">
+            <span class="fest__date">{{ d.date }}</span>
+            <span class="fest__event">{{ d.title }}</span>
+            <span class="fest__venue">{{ d.venue }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup" id="newsletter" aria-labelledby="signup-heading">
+    <div class="signup__grid shell">
+      <h2 id="signup-heading">The morning brief from Juba, Nairobi and London</h2>
+      <form class="signup__form" sc-camel-on-submit="{{ onSubscribe }}">
+        <label class="vh" for="signup-email">Your email address</label>
+        <input class="signup__input" id="signup-email" name="email" type="email" required="required" autocomplete="email" placeholder="you@example.org">
+        <button class="btn" type="submit">{{ subLabel }}</button>
+        <p class="signup__note" aria-live="polite">{{ subNote }}</p>
+      </form>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner shell">
+      <div class="footer__top">
+        <a class="logo" href="#top" aria-label="The Nile Explorer, home">
+          <img src="98466864-32ac-47d8-ab0f-83cab9d0e662" alt="" style="height: 62px; width: auto">
+          <img src="a1ebfea7-d702-4fc9-a2e4-48a041b9e8f5" alt="The Nile Explorer" style="height: 34px; width: auto">
+        </a>
+        <nav class="footer__nav" aria-label="Sections">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+            <a href="{{ n.href }}">{{ n.label }}</a>
+          </sc-for>
+        </nav>
+        <div class="footer__social">
+          <a href="https://x.com/" target="_blank" rel="noopener noreferrer">X</a><a href="https://youtube.com/" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </div>
+      <div class="footer__legal">
+        <span>© 2026 The Nile Explorer Media Network</span><span>The Mirror of Africa</span>
+      </div>
+    </div>
+  </footer>
+</div>

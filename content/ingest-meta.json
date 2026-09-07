@@ -1,0 +1,17 @@
+{
+  "ingestedAt": "2026-09-07T12:14:58.751Z",
+  "sources": {
+    "wordpress": {
+      "endpoint": "https://nilexplorer.net/wp-json/wp/v2",
+      "articles": 11
+    },
+    "youtube": {
+      "channel": "UCcfZzC9x7rKBpp2b96885cw",
+      "episodes": 6
+    },
+    "instagram": {
+      "status": "manual-embed",
+      "note": "No open feed API; editors paste post URLs."
+    }
+  }
+}
