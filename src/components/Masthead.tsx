@@ -8,6 +8,8 @@ const NAV = [
   { label: 'Peace', href: '/articles?category=peace' },
   { label: 'Geopolitics', href: '/articles?category=geo-politics' },
   { label: 'Podcast', href: '/podcasts' },
+  { label: 'TV', href: '/television' },
+  { label: 'Festival', href: '/festival' },
   { label: 'About', href: '/about' }
 ];
 

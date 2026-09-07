@@ -175,7 +175,9 @@ export default function Home() {
               >
                 {episode.title}
               </h3>
-              {episode.summary && <p className="episode__desc">{episode.summary}</p>}
+              {(episode.blurb ?? episode.summary) && (
+                <p className="episode__desc">{episode.blurb ?? episode.summary}</p>
+              )}
               <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
                 Watch or listen on
               </p>
@@ -212,25 +214,23 @@ export default function Home() {
         <div className="fest__scrim" />
         <div className="fest__inner shell">
           <span className="fest__kicker">
-            {festival.name} · {festival.dates}
+            {festival.name}
+            {festival.datesAnnounced && festival.dates ? ` · ${festival.dates}` : ' · Inaugural edition'}
           </span>
           <h2 className="fest__title" id="fest-heading">
-            {festival.blurb}
+            {festival.standfirst}
           </h2>
+          <p className="fest__blurb">{festival.blurb}</p>
           <div className="fest__actions">
-            <a className="btn btn--gold" href={SITE.instagram} target="_blank" rel="noopener noreferrer">
-              Programme &amp; tickets
-            </a>
-            <Link className="btn btn--ghost" href="/television">
-              Watch the channel
+            <Link className="btn btn--gold" href="/festival">
+              About the festival
             </Link>
           </div>
           <div className="fest__days">
-            {festival.days.map((d) => (
-              <div className="fest__day" key={d.date}>
-                <span className="fest__date">{d.date}</span>
-                <span className="fest__event">{d.title}</span>
-                <span className="fest__venue">{d.venue}</span>
+            {festival.strands.map((st) => (
+              <div className="fest__day" key={st.name}>
+                <span className="fest__date">{st.name}</span>
+                <span className="fest__venue">{st.detail}</span>
               </div>
             ))}
           </div>

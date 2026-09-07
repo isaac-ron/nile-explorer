@@ -1,13 +1,37 @@
 {
-  "placeholder": true,
-  "_note": "The Nile Festival is real: the communications strategy describes it as an annual celebration of South Sudanese culture and identity and the platform's long-term sustainability engine. What is NOT confirmed is the programme below — these dates, venues and events came from the original design comp and have not been verified against the inaugural edition. Replace them with the real programme. The strategy also names cultural activities, sports, fashion, food and entertainment as festival strands, plus the Nile Festival Awards, so this section will need more than a four-day list.",
+  "_note": "Hand-edited. Dates for the inaugural edition are not confirmed, so there is deliberately no programme table here: `dates` and `strands[].detail` render only when filled in. Set `datesAnnounced` to true and fill `dates` once the edition is scheduled, and the section will show them.",
+
   "name": "The Nile Festival",
-  "dates": "4–11 December 2026",
-  "blurb": "A week of culture, sport and music on the river.",
-  "days": [
-    { "date": "4 Dec", "title": "Opening parade and river procession", "venue": "Juba waterfront" },
-    { "date": "6 Dec", "title": "Fashion and textile showcase", "venue": "Nyakuron Cultural Centre" },
-    { "date": "8 Dec", "title": "Inter-state football final", "venue": "Juba Stadium" },
-    { "date": "10 Dec", "title": "River Sessions closing concert", "venue": "Festival main stage" }
-  ]
+  "datesAnnounced": false,
+  "dates": "",
+  "standfirst": "An annual celebration of South Sudanese culture and identity.",
+  "blurb": "The Nile Festival brings the platform off the page and into the open: a week of culture, sport, fashion, food and music, and the long-term engine that keeps the newsroom independent.",
+
+  "strands": [
+    {
+      "name": "Culture",
+      "detail": "Music, performance and the traditions carried between the states and the diaspora."
+    },
+    {
+      "name": "Sport",
+      "detail": "Competition across the states, and the athletes who carry the country's name abroad."
+    },
+    {
+      "name": "Fashion & textiles",
+      "detail": "Designers and makers working with South Sudanese cloth, pattern and form."
+    },
+    {
+      "name": "Food",
+      "detail": "The cooking of the river and the regions, and the people who keep it."
+    },
+    {
+      "name": "Entertainment",
+      "detail": "Screenings, live sessions and the closing concert."
+    }
+  ],
+
+  "awards": {
+    "name": "The Nile Festival Awards",
+    "detail": "Recognising work across the festival's strands, run through the foundation alongside the Nile Explorer Scholarships and the Nile Explorer Academy."
+  }
 }

@@ -3,6 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   getPodcast,
+  getEpisodes,
+  getUpcoming,
+  getPodcastMeta,
   getTelevision,
   getArchive,
   formatDate,
@@ -20,7 +23,9 @@ export const metadata: Metadata = {
 
 export default function PodcastsPage() {
   const podcast = getPodcast();
-  const [latest, ...older] = podcast.episodes;
+  const meta = getPodcastMeta();
+  const [latest, ...older] = getEpisodes();
+  const upcoming = getUpcoming();
   const programmes = getTelevision().slice(0, 3);
   const archive = getArchive(4);
 
@@ -39,6 +44,10 @@ export default function PodcastsPage() {
             </span>
           </div>
 
+          <p className="episode__desc" style={{ marginBottom: 'var(--space-5)' }}>
+            {meta.show.blurb} <em>{meta.show.tagline}</em>
+          </p>
+
           {latest && (
             <>
               <p className="card__cat">Episode {latest.number}</p>
@@ -55,14 +64,68 @@ export default function PodcastsPage() {
 
               <PodcastPlayer episode={latest} podcast={podcast} />
 
-              {latest.summary && (
+              {(latest.blurb ?? latest.summary) && (
                 <p className="episode__desc" style={{ marginTop: 'var(--space-4)' }}>
-                  {latest.summary}
+                  {latest.blurb ?? latest.summary}
                 </p>
               )}
-              <p className="card__meta" style={{ marginTop: 'var(--space-2)' }}>
+
+              {latest.guests && latest.guests.length > 0 && (
+                <div className="guests">
+                  <p className="label label--muted">Featuring</p>
+                  <ul className="guests__list">
+                    {latest.guests.map((g) => (
+                      <li key={g.name}>
+                        <span className="guests__name">{g.name}</span>
+                        <span className="guests__role">{g.role}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {latest.topics && latest.topics.length > 0 && (
+                <div style={{ marginTop: 'var(--space-4)' }}>
+                  <p className="label label--muted">In this episode</p>
+                  <div className="chips" style={{ marginTop: 'var(--space-2)' }}>
+                    {latest.topics.map((t) => (
+                      <span className="chip chip--static" key={t}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <p className="card__meta" style={{ marginTop: 'var(--space-4)' }}>
                 Published {formatDate(latest.published)}
               </p>
+            </>
+          )}
+
+          {upcoming.length > 0 && (
+            <>
+              <div className="section__head" style={{ marginTop: 'var(--space-6)' }}>
+                <h2>Coming up</h2>
+              </div>
+              <div>
+                {upcoming.map((u) => (
+                  <article className="upcoming" key={u.title}>
+                    <span className="upcoming__when">
+                      {u.releaseDate ? u.releaseDate : 'Date to be announced'}
+                    </span>
+                    <div className="episode__body">
+                      <h3 className="episode__title">{u.title}</h3>
+                      {u.blurb && <p className="episode__desc">{u.blurb}</p>}
+                      {u.guests && u.guests.length > 0 && (
+                        <p className="card__meta">
+                          With {u.guests.map((g) => g.name).join(', ')}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
             </>
           )}
 

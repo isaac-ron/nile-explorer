@@ -63,6 +63,9 @@ export default function Footer() {
                 <Link href="/television">Television</Link>
               </li>
               <li>
+                <Link href="/festival">The Nile Festival</Link>
+              </li>
+              <li>
                 <Link href="/about">About &amp; contact</Link>
               </li>
             </ul>

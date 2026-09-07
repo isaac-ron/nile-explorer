@@ -11,6 +11,7 @@ import categoriesJson from '../../content/categories.json';
 import podcastJson from '../../content/podcast.json';
 import televisionJson from '../../content/television.json';
 import festivalJson from '../../content/festival.json';
+import podcastMetaJson from '../../content/podcast-meta.json';
 
 export type Block =
   | { type: 'para'; text: string }
@@ -63,12 +64,39 @@ export type Podcast = {
   episodes: Video[];
 };
 
+export type Guest = { name: string; role: string };
+
+export type EpisodeMeta = {
+  blurb?: string;
+  topics?: string[];
+  guests?: Guest[];
+};
+
+export type UpcomingEpisode = {
+  title: string;
+  blurb?: string;
+  topics?: string[];
+  guests?: Guest[];
+  releaseDate?: string;
+};
+
+export type PodcastMeta = {
+  show: { tagline: string; blurb: string };
+  episodes: Record<string, EpisodeMeta>;
+  upcoming: UpcomingEpisode[];
+};
+
+/** An episode with its hand-edited metadata folded in. */
+export type EpisodeWithMeta = Video & EpisodeMeta;
+
 export type Festival = {
-  placeholder: boolean;
   name: string;
+  datesAnnounced: boolean;
   dates: string;
+  standfirst: string;
   blurb: string;
-  days: { date: string; title: string; venue: string }[];
+  strands: { name: string; detail: string }[];
+  awards: { name: string; detail: string };
 };
 
 const articles = articlesJson as Article[];
@@ -76,6 +104,7 @@ const categories = categoriesJson as Category[];
 const podcast = podcastJson as Podcast;
 const television = televisionJson as Video[];
 const festival = festivalJson as Festival;
+const podcastMeta = podcastMetaJson as unknown as PodcastMeta;
 
 export const getArticles = (): Article[] => articles;
 
@@ -89,9 +118,16 @@ export const getArticlesByCategory = (slug: string): Article[] =>
 
 export const getPodcast = (): Podcast => podcast;
 
-export const getEpisodes = (): Video[] => podcast.episodes;
+export const getPodcastMeta = (): PodcastMeta => podcastMeta;
 
-export const getLatestEpisode = (): Video | undefined => podcast.episodes[0];
+/** Episodes with guests, topics and a hand-written blurb folded in where present. */
+export const getEpisodes = (): EpisodeWithMeta[] =>
+  podcast.episodes.map((e) => ({ ...e, ...(podcastMeta.episodes[e.videoId] ?? {}) }));
+
+export const getLatestEpisode = (): EpisodeWithMeta | undefined => getEpisodes()[0];
+
+/** Scheduled but unreleased. Empty until someone fills in podcast-meta.json. */
+export const getUpcoming = (): UpcomingEpisode[] => podcastMeta.upcoming;
 
 export const getTelevision = (): Video[] => television;
 
