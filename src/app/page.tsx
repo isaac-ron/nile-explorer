@@ -18,9 +18,9 @@ export default function Home() {
 
   const [lead, ...rest] = articles;
   const side = rest.slice(0, 3);
-  const grid = rest.slice(3, 7);
-  const river = rest.slice(7);
-  const mostRead = [...articles].slice(2, 7);
+  const grid = rest.slice(3, 6);
+  const river = rest.slice(6);
+  const mostRead = [...articles].slice(2, 6);
   const latestEpisode = episodes[0];
 
   return (
