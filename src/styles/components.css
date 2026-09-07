@@ -848,14 +848,14 @@
 
 .about__grid {
   display: grid;
-  grid-template-columns: minmax(0, 240px) minmax(0, 1fr) minmax(0, 260px);
+  grid-template-columns: minmax(0, 290px) minmax(0, 1fr) minmax(0, 250px);
   gap: var(--col-gap);
   align-items: start;
 }
 
 @media (max-width: 1180px) {
   .about__grid {
-    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
   }
   .about__grid > .about__aside {
     grid-column: 1 / -1;

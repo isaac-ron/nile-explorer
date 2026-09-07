@@ -33,3 +33,7 @@ yarn-error.log*
 # the multi-megabyte Claude Design bundles are regenerable and are not.
 /design/preview/
 /design/.original/
+
+# Original camera files: multi-megabyte, and the shipped derivatives in
+# public/brand are generated from them.
+/design/photos/

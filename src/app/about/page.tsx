@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { getArticles, getCategories, formatShortDate, SITE } from '@/lib/content';
 
@@ -44,27 +45,15 @@ export default function AboutPage() {
 
         <div className="about__grid">
           <div className="about__portrait">
-            {/* No photograph supplied yet; a monogram stands in rather than a stock face. */}
-            <div
-              className="frame frame--portrait"
-              aria-hidden="true"
-              style={{ background: 'var(--navy)' }}
-            >
-              <span
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: '3.4rem',
-                  color: 'var(--gold-light)',
-                  letterSpacing: '0.04em'
-                }}
-              >
-                AAD
-              </span>
+            <div className="frame frame--portrait">
+              <Image
+                src="/brand/patron.jpg"
+                alt="Dr. Aldo Ajou Deng-Akuey, patron of The Nile Explorer, seated at a podcast microphone."
+                width={1200}
+                height={1500}
+                sizes="(max-width: 1000px) 60vw, 290px"
+                priority
+              />
             </div>
             <ul className="factlist">
               <li>
@@ -122,8 +111,8 @@ export default function AboutPage() {
             </div>
 
             <div className="callout" style={{ marginTop: 'var(--space-5)' }}>
-              <strong>Still needed:</strong> a portrait photograph, and confirmation of the formal
-              titles and honorifics to use alongside the name. The monogram is standing in.
+              <strong>Still needed:</strong> confirmation of the formal titles and honorifics to
+              use alongside the name, and a photographer credit for the portrait.
             </div>
           </div>
 
