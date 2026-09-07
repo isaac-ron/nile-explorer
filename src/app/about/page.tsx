@@ -69,7 +69,7 @@ export default function AboutPage() {
             <ul className="factlist">
               <li>
                 <span className="k">Role</span>
-                <span>Patron, The Nile Explorer</span>
+                <span>Patron &amp; contributing author</span>
               </li>
               <li>
                 <span className="k">Published</span>
@@ -85,34 +85,45 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <p className="about__role">Patron &amp; contributing author</p>
+            <p className="about__role">Patron of The Nile Explorer</p>
             <h1 className="about__name" id="patron-heading">
               {SITE.patron}
             </h1>
 
             <div className="prose" style={{ marginTop: 'var(--space-4)', maxWidth: '64ch' }}>
               <p>
-                Dr. Aldo Ajou Deng-Akuey is the patron of The Nile Explorer and the author of the
-                essays published here. His writing addresses South Sudan’s transition from
-                liberation movement to functioning state, the mediation efforts that shape the
-                region, and Africa’s standing as competition between global powers sharpens again.
+                Dr. Aldo Ajou Deng-Akuey has spent more than five decades at the centre of this
+                story, not as an observer but as a participant. From Sudan&rsquo;s parliament to
+                South Sudan&rsquo;s Council of States, he has been present in the rooms where peace
+                was negotiated, where constitutions were debated, and where the architecture of a
+                new nation was drawn in real time.
               </p>
               <p>
-                The argument running through the work is consistent: that a vote settles who
-                governs but not whether the institutions holding the result are trusted, and that
-                the harder task is the one that begins after a settlement is signed.
+                He is a believer in the independence and self-determination of African states: in
+                Africa&rsquo;s right to govern itself, to own its resources, to trade on its own
+                terms, and to build institutions that answer to African citizens rather than
+                external creditors. He stands with the government of South Sudan in its commitment
+                to the peace process and the constitutional path forward, out of the conviction
+                that stability and legitimate governance are the preconditions for everything else:
+                economic justice, youth opportunity, and national unity.
               </p>
               <blockquote>
-                We must shift from blame to responsibility, from suspicion to trust, from division
-                to unity.
+                The path forward cannot be the burden of the government alone, nor of political
+                parties alone. It is a collective responsibility of all South Sudanese; leaders,
+                opposition, communities, religious groups, women, youth, and civil society. We must
+                shift from blame to responsibility, from suspicion to trust, from division to unity.
               </blockquote>
+              <p>
+                He is the patron of The Nile Explorer, bringing to it his credibility, his
+                relationships and his institutional memory. The platform, though, is not about one
+                man. It is about a continent: built for the people, owned by the people, speaking to
+                and for the people.
+              </p>
             </div>
 
             <div className="callout" style={{ marginTop: 'var(--space-5)' }}>
-              <strong>Editorial note:</strong> the biography above is drawn only from the published
-              articles and the existing site. The current nilexplorer.net About page contains
-              placeholder text, so there is no full biography to import. Send the authorised
-              biography, titles and a portrait photograph and this section will carry them.
+              <strong>Still needed:</strong> a portrait photograph, and confirmation of the formal
+              titles and honorifics to use alongside the name. The monogram is standing in.
             </div>
           </div>
 
