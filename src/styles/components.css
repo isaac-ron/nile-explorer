@@ -42,8 +42,7 @@
 }
 
 .section__more:hover {
-  border-bottom-color: var(--gold);
-  color: var(--gold-text);
+  border-bottom-color: var(--navy);
 }
 
 /* ---------- Kicker ---------- */
@@ -106,7 +105,7 @@
 
 .hero__lead a:hover .hero__title {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 3px;
   text-underline-offset: 5px;
 }
@@ -153,7 +152,7 @@
 
 .sidestory:hover .sidestory__title {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -195,7 +194,7 @@
 
 .card:hover .card__title {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -252,7 +251,7 @@
 
 .story__title a:hover {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -293,7 +292,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--navy);
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 1px solid var(--navy);
   padding-bottom: var(--space-3);
 }
 
@@ -310,7 +309,7 @@
   font-family: var(--font-serif), Georgia, serif;
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--gold-text);
+  color: var(--muted);
 }
 
 .ranked__title {
@@ -321,7 +320,7 @@
 
 .ranked:hover .ranked__title {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -446,7 +445,7 @@
 
 .prose > p > a {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -499,15 +498,166 @@
 
 .colophon a {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-underline-offset: 3px;
 }
 
-/* ---------- Podcast ---------- */
+/* ---------- Podcast player ---------- */
+
+.player {
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+}
+
+.player__stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--navy);
+  overflow: hidden;
+}
+
+/* Spotify's compact embed is a fixed-height bar, not a 16:9 frame. */
+.player__stage--audio {
+  aspect-ratio: auto;
+  height: 172px;
+  background: var(--surface);
+}
+
+.player__stage > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player__stage > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.player__stage--audio > iframe {
+  position: relative;
+  height: 172px;
+}
+
+.player__play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: rgba(6, 24, 58, 0.3);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.player__play:hover {
+  background: rgba(6, 24, 58, 0.14);
+}
+
+.player__playglyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--navy);
+  padding-left: 4px;
+  transition: transform var(--dur) var(--ease);
+}
+
+.player__play:hover .player__playglyph {
+  transform: scale(1.06);
+}
+
+.player__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+
+.player__modes {
+  display: flex;
+}
+
+.player__mode {
+  min-height: 40px;
+  padding: 8px 18px;
+  border: 1px solid var(--border-strong);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.player__mode + .player__mode {
+  border-left: 0;
+}
+
+.player__mode:hover {
+  background: var(--surface-2);
+}
+
+.player__mode[aria-pressed='true'] {
+  background: var(--navy);
+  color: var(--paper);
+  border-color: var(--navy);
+}
+
+.player__on {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.platforms {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Brand marks keep their own colours, so the frame stays neutral. */
+.platform {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.platform:hover {
+  border-color: var(--navy);
+  background: var(--surface);
+}
+
+/* ---------- Episode / programme rows ---------- */
 
 .episode {
   display: grid;
-  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 210px) minmax(0, 1fr);
   gap: var(--space-5);
   align-items: start;
   padding: var(--space-5) 0;
@@ -532,7 +682,7 @@
 
 .episode:hover .episode__title {
   text-decoration: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
@@ -556,38 +706,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
   color: var(--navy);
-  font-size: 13px;
 }
 
-.platforms {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.platform {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--border-strong);
-  background: var(--paper);
-  color: var(--navy);
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
-    border-color var(--dur) var(--ease);
-}
-
-.platform:hover {
-  background: var(--navy);
+.duration {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(17, 17, 17, 0.85);
   color: var(--paper);
-  border-color: var(--navy);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  padding: 3px 7px;
 }
 
 .embed {
@@ -602,6 +736,109 @@
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+/* ---------- Festival ---------- */
+
+.fest {
+  position: relative;
+  border-top: 1px solid var(--navy);
+  background: var(--navy);
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(400px, 52vh, 560px);
+}
+
+.fest__bg,
+.fest__bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fest__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 24, 58, 0.5) 0%,
+    rgba(6, 24, 58, 0.25) 34%,
+    rgba(6, 24, 58, 0.92) 100%
+  );
+}
+
+.fest__inner {
+  position: relative;
+  width: 100%;
+  padding-top: clamp(40px, 5vw, 72px);
+  padding-bottom: var(--section-y);
+}
+
+.fest__kicker {
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: var(--space-3);
+}
+
+.fest__title {
+  color: var(--paper);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  max-width: 22ch;
+}
+
+.fest__blurb {
+  margin-top: var(--space-3);
+  color: #d6dae2;
+  font-size: var(--fs-lead);
+  max-width: 46ch;
+}
+
+.fest__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.fest__days {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+  border-top: 1px solid rgba(227, 178, 90, 0.5);
+  padding-top: var(--space-5);
+}
+
+.fest__day {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fest__date {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.fest__event {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 1.22;
+  color: var(--paper);
+}
+
+.fest__venue {
+  font-size: var(--fs-small);
+  color: #c6ccd8;
 }
 
 /* ---------- About ---------- */

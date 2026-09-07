@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getArticles, SITE } from '@/lib/content';
+import { SITE } from '@/lib/content';
 
 const NAV = [
   { label: 'Latest', href: '/articles' },
@@ -34,24 +34,6 @@ export function EditionBar() {
           </a>
           <Link href="/about">Contact</Link>
         </span>
-      </div>
-    </div>
-  );
-}
-
-export function Ticker() {
-  const items = getArticles().slice(0, 6);
-  return (
-    <div className="ticker">
-      <div className="ticker__inner shell">
-        <span className="ticker__tag">In brief</span>
-        <ul className="ticker__list">
-          {items.map((a) => (
-            <li className="ticker__item" key={a.slug}>
-              <Link href={`/articles/${a.slug}`}>{a.title}</Link>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
@@ -93,7 +75,6 @@ export default function Masthead() {
           </Link>
         </div>
       </header>
-      <Ticker />
     </>
   );
 }

@@ -3,25 +3,30 @@ import Link from 'next/link';
 import {
   getArticles,
   getCategories,
-  getEpisodes,
+  getTelevision,
+  getLatestEpisode,
+  getArchive,
+  getFestival,
   formatDate,
-  formatShortDate,
   SITE
 } from '@/lib/content';
 import { ArticleCard, StoryRow, SideStory, RankedItem } from '@/components/Story';
+import { ProgrammeCard } from '@/components/Television';
+import { PlatformLink } from '@/components/Icons';
 import Newsletter from '@/components/Newsletter';
 
 export default function Home() {
   const articles = getArticles();
   const categories = getCategories();
-  const episodes = getEpisodes();
+  const television = getTelevision();
+  const episode = getLatestEpisode();
+  const festival = getFestival();
 
   const [lead, ...rest] = articles;
   const side = rest.slice(0, 3);
   const grid = rest.slice(3, 6);
   const river = rest.slice(6);
-  const mostRead = [...articles].slice(2, 6);
-  const latestEpisode = episodes[0];
+  const archive = getArchive(4);
 
   return (
     <>
@@ -59,8 +64,10 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Simply the next most recent pieces. Labelled as such rather than
+              implying an editorial selection that does not exist. */}
           <div className="hero__side">
-            <h2 className="rail__title">Also this week</h2>
+            <h2 className="rail__title">Top stories</h2>
             {side.map((a) => (
               <SideStory article={a} key={a.slug} />
             ))}
@@ -68,7 +75,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- Latest grid ---------- */}
+      {/* ---------- Latest ---------- */}
       <section className="section shell" aria-labelledby="latest-heading">
         <div className="section__head">
           <h2 id="latest-heading">Latest</h2>
@@ -109,10 +116,12 @@ export default function Home() {
             </div>
           </div>
 
-          <aside className="rail" aria-label="Most read and comment">
+          <aside className="rail" aria-label="Archive and comment">
+            {/* Not "most read": there is no analytics source behind this site,
+                so a popularity ranking would be invented. */}
             <div>
-              <h2 className="rail__title">Most read</h2>
-              {mostRead.map((a, i) => (
+              <h2 className="rail__title">From the archive</h2>
+              {archive.map((a, i) => (
                 <RankedItem article={a} n={i + 1} key={a.slug} />
               ))}
             </div>
@@ -124,67 +133,107 @@ export default function Home() {
               </p>
               <footer>{SITE.patron} · Patron</footer>
             </blockquote>
-
-            {latestEpisode && (
-              <div className="railcard">
-                <p className="label label--muted">Listen</p>
-                <Image
-                  src="/brand/podcast-logo.png"
-                  alt="The Nile Explorer Podcast"
-                  width={1729}
-                  height={1660}
-                  style={{ width: '100%', maxWidth: 170, height: 'auto', margin: '10px 0 12px' }}
-                />
-                <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', lineHeight: 1.25, color: 'var(--navy)' }}>
-                  {latestEpisode.title}
-                </p>
-                <Link
-                  className="section__more"
-                  href="/podcasts"
-                  style={{ marginTop: 10, borderBottomColor: 'var(--gold)' }}
-                >
-                  Play episode →
-                </Link>
-              </div>
-            )}
           </aside>
         </div>
       </section>
 
       {/* ---------- Podcast ---------- */}
-      <section className="section shell" id="podcasts" aria-labelledby="pod-heading">
-        <div className="section__head">
-          <h2 id="pod-heading">The Nile Explorer Podcast</h2>
-          <Link className="section__more" href="/podcasts">
-            All episodes →
-          </Link>
-        </div>
-        <div className="cardgrid">
-          {episodes.slice(0, 4).map((e) => (
-            <a
-              className="card"
-              href={e.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={e.videoId}
-            >
-              <span className="frame frame--wide">
-                <Image
-                  src={e.thumbnail}
-                  alt={`Thumbnail for “${e.title}”`}
-                  width={1280}
-                  height={720}
-                  sizes="(max-width: 700px) 100vw, 300px"
-                />
-                <span className="playbadge" aria-hidden="true">
-                  <span>▶</span>
+      {episode && (
+        <section className="section shell" id="podcasts" aria-labelledby="pod-heading">
+          <div className="section__head">
+            <h2 id="pod-heading">The Nile Explorer Podcast</h2>
+            <Link className="section__more" href="/podcasts">
+              Watch or listen →
+            </Link>
+          </div>
+          <div className="withrail">
+            <Link className="frame frame--wide" href="/podcasts" aria-label={`Play: ${episode.title}`}>
+              <Image
+                src={episode.thumbnail}
+                alt={`Artwork for “${episode.title}”`}
+                width={1280}
+                height={720}
+                sizes="(max-width: 1000px) 100vw, 700px"
+              />
+              <span className="playbadge" aria-hidden="true">
+                <span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5.2v13.6L19 12z" />
+                  </svg>
                 </span>
               </span>
-              <span className="card__cat">Episode {e.number}</span>
-              <span className="card__title">{e.title}</span>
-              <span className="card__meta">{formatShortDate(e.published)}</span>
+            </Link>
+            <div>
+              <p className="card__cat">Episode {episode.number}</p>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 'var(--fs-h3)',
+                  color: 'var(--navy)',
+                  margin: '6px 0 var(--space-3)'
+                }}
+              >
+                {episode.title}
+              </h3>
+              {episode.summary && <p className="episode__desc">{episode.summary}</p>}
+              <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
+                Watch or listen on
+              </p>
+              <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
+                <PlatformLink name="spotify" href={SITE.spotify} label="Listen on Spotify" />
+                <PlatformLink name="youtube" href={episode.url} label="Watch on YouTube" />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ---------- Television ---------- */}
+      {television.length > 0 && (
+        <section className="section section--band" id="tv" aria-labelledby="tv-heading">
+          <div className="shell">
+            <div className="section__head">
+              <h2 id="tv-heading">Television</h2>
+              <Link className="section__more" href="/television">
+                All programmes →
+              </Link>
+            </div>
+            <div className="cardgrid">
+              {television.slice(0, 3).map((v) => (
+                <ProgrammeCard video={v} key={v.videoId} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ---------- Festival ---------- */}
+      <section className="fest on-navy" id="festival" aria-labelledby="fest-heading">
+        <div className="fest__scrim" />
+        <div className="fest__inner shell">
+          <span className="fest__kicker">
+            {festival.name} · {festival.dates}
+          </span>
+          <h2 className="fest__title" id="fest-heading">
+            {festival.blurb}
+          </h2>
+          <div className="fest__actions">
+            <a className="btn btn--gold" href={SITE.instagram} target="_blank" rel="noopener noreferrer">
+              Programme &amp; tickets
             </a>
-          ))}
+            <Link className="btn btn--ghost" href="/television">
+              Watch the channel
+            </Link>
+          </div>
+          <div className="fest__days">
+            {festival.days.map((d) => (
+              <div className="fest__day" key={d.date}>
+                <span className="fest__date">{d.date}</span>
+                <span className="fest__event">{d.title}</span>
+                <span className="fest__venue">{d.venue}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

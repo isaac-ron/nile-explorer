@@ -1,17 +1,6 @@
 [
   {
-    "videoId": "p3lHlWR-O3g",
-    "slug": "peace-war-and-the-search-for-a-political-solution-episode-1",
-    "title": "Peace, War and the Search for a Political Solution. Episode 1",
-    "published": "2026-09-01T16:07:41+00:00",
-    "description": "THE NILE EXPLORER PODCAST — EPISODE 01 South Sudan: Peace, War & the Search for a Political Solution In our opening episode, Dr. Aldo Ajou Deng-Akuey reflects on South Sudan’s journey from liberation to independence, the conflicts that followed, and the continuing search for lasting peace. We explore the difficult questions surrounding leadership, governance, accountability, political disagreement, ethnicity, tribalism and the role of dialogue in resolving conflict. The Nile Explorer Podcast is a space for thoughtful conversation, historical reflection and honest debate about South Sudan and the wider world. Let us talk before we fight. This episode of Nile Explorer Podcast contains historical, archival and documentary photographs sourced from various online archives and publications for educational, historical and documentary purposes. We acknowledge and respect the photographers, news organizations, archives, institutions and copyright holders of the visual materials featured in this production. Nile Explorer Podcast does not claim ownership of third-party photographs or archival materials. All rights remain with their respective owners and copyright holders. Where identifiable, credit is given to the original source, photographer, agency or publication. Nile Explorer Podcast — Exploring South Sudan’s history, politics, society and the search for a better future. #NileExplorerPodcast #SouthSudan #Peace #SouthSudanPolitics",
-    "summary": "THE NILE EXPLORER PODCAST — EPISODE 01 South Sudan: Peace, War & the Search for a Political Solution In our opening episode, Dr. Aldo Ajou Deng-Akuey reflects on South Sudan’s journey from liberation ",
-    "thumbnail": "https://i.ytimg.com/vi/p3lHlWR-O3g/maxresdefault.jpg",
-    "url": "https://www.youtube.com/watch?v=p3lHlWR-O3g",
-    "embed": "https://www.youtube-nocookie.com/embed/p3lHlWR-O3g?rel=0",
-    "number": 6
-  },
-  {
+    "kind": "television",
     "videoId": "HeFRq7hSU5M",
     "slug": "testing-live-video",
     "title": "Testing Live Video",
@@ -24,6 +13,7 @@
     "number": 5
   },
   {
+    "kind": "television",
     "videoId": "eIFaaK0Gx50",
     "slug": "the-nile-explorer-podcast-special-episode",
     "title": "The Nile Explorer Podcast Special Episode",
@@ -36,6 +26,7 @@
     "number": 4
   },
   {
+    "kind": "television",
     "videoId": "Xqefdjq7x7A",
     "slug": "the-nile-explorer-podcast-nep-live-stream",
     "title": "The Nile Explorer Podcast (NEP) Live Stream",
@@ -48,6 +39,7 @@
     "number": 3
   },
   {
+    "kind": "television",
     "videoId": "l8WUEPVXUz8",
     "slug": "prof-plo-lumumba-greatest-speech-the-tragedy-of-africa",
     "title": "PROF PLO LUMUMBA GREATEST SPEECH THE TRAGEDY OF AFRICA",
@@ -60,6 +52,7 @@
     "number": 2
   },
   {
+    "kind": "television",
     "videoId": "7gvlJ5J1IAs",
     "slug": "plo-lumumba-africa-not-be-cheated-youtube",
     "title": "PLO Lumumba, Africa not be cheated, YouTube",

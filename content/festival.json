@@ -1,0 +1,13 @@
+{
+  "placeholder": true,
+  "_note": "PLACEHOLDER. These dates, venues and programme entries came from the original design comp, not from any real source. Nothing about a Nile Festival appears on nilexplorer.net, in any published article, or on the YouTube channel. Replace with the real programme or delete this file and the Festival section will not render.",
+  "name": "The Nile Festival",
+  "dates": "4–11 December 2026",
+  "blurb": "A week of culture, sport and music on the river.",
+  "days": [
+    { "date": "4 Dec", "title": "Opening parade and river procession", "venue": "Juba waterfront" },
+    { "date": "6 Dec", "title": "Fashion and textile showcase", "venue": "Nyakuron Cultural Centre" },
+    { "date": "8 Dec", "title": "Inter-state football final", "venue": "Juba Stadium" },
+    { "date": "10 Dec", "title": "River Sessions closing concert", "venue": "Festival main stage" }
+  ]
+}

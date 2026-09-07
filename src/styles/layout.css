@@ -1,4 +1,6 @@
-/* Masthead, ticker, footer. */
+/* Masthead and footer.
+   Gold is deliberately rationed here: it marks section boundaries and the
+   footer rule, and nothing else. Hover states use navy. */
 
 /* ---------- Edition bar ---------- */
 
@@ -12,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  min-height: 32px;
+  min-height: 30px;
   font-size: var(--fs-label);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -27,7 +29,7 @@
 .editionbar a {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 30px;
   border-bottom: 1px solid transparent;
 }
 
@@ -50,8 +52,8 @@
   display: flex;
   align-items: center;
   gap: clamp(12px, 2.4vw, 28px);
-  padding-top: var(--space-2);
-  padding-bottom: var(--space-2);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
 }
 
 .logo {
@@ -63,12 +65,12 @@
 }
 
 .logo__mark {
-  height: 38px;
+  height: 54px;
   width: auto;
 }
 
 .logo__word {
-  height: 21px;
+  height: 30px;
   width: auto;
 }
 
@@ -94,14 +96,10 @@
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
-.nav__link:hover {
-  color: var(--navy);
-  border-bottom-color: var(--gold);
-}
-
+.nav__link:hover,
 .nav__link[aria-current='page'] {
   color: var(--navy);
-  border-bottom-color: var(--gold);
+  border-bottom-color: var(--navy);
 }
 
 /* ---------- Buttons ---------- */
@@ -126,8 +124,7 @@
 }
 
 .btn:hover {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--navy-deep);
 }
 
 .btn--gold {
@@ -151,77 +148,6 @@
   color: var(--navy);
 }
 
-/* ---------- Ticker ---------- */
-
-.ticker {
-  background: var(--surface);
-  border-bottom: 1px solid var(--rule);
-}
-
-.ticker__inner {
-  display: flex;
-  align-items: stretch;
-  gap: var(--space-4);
-  min-height: 40px;
-}
-
-.ticker__tag {
-  display: inline-flex;
-  align-items: center;
-  flex: none;
-  padding-right: var(--space-4);
-  border-right: 1px solid var(--rule-strong);
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold-text);
-}
-
-.ticker__list {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-  list-style: none;
-  overflow-x: auto;
-  scrollbar-width: none;
-  min-width: 0;
-}
-
-.ticker__list::-webkit-scrollbar {
-  display: none;
-}
-
-.ticker__item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  white-space: nowrap;
-  font-size: var(--fs-small);
-}
-
-.ticker__item::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  background: var(--gold);
-  flex: none;
-}
-
-.ticker__item a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  color: var(--ink-blurb);
-}
-
-.ticker__item a:hover {
-  color: var(--navy);
-  text-decoration: underline;
-  text-decoration-color: var(--gold);
-  text-underline-offset: 3px;
-}
-
 /* ---------- Footer ---------- */
 
 .footer {
@@ -238,7 +164,7 @@
 
 .footer__cols {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--space-6);
 }
 
@@ -249,6 +175,12 @@
   max-width: 42ch;
 }
 
+.footer__social {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
 .footer__coltitle {
   font-size: var(--fs-label);
   font-weight: 700;
@@ -256,7 +188,7 @@
   text-transform: uppercase;
   color: var(--navy);
   padding-bottom: var(--space-2);
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 1px solid var(--rule-strong);
   margin-bottom: var(--space-2);
 }
 
@@ -276,7 +208,6 @@
 .footer__list a:hover {
   color: var(--navy);
   text-decoration: underline;
-  text-decoration-color: var(--gold);
   text-underline-offset: 3px;
 }
 
@@ -311,13 +242,13 @@
     display: none;
   }
   .logo__mark {
-    height: 32px;
+    height: 42px;
   }
   .logo__word {
-    height: 18px;
+    height: 23px;
   }
   html {
-    scroll-padding-top: 150px;
+    scroll-padding-top: 140px;
   }
   .editionbar__inner {
     justify-content: center;

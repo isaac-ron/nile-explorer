@@ -20,6 +20,33 @@ const WP = 'https://nilexplorer.net/wp-json/wp/v2';
 const YT_CHANNEL = 'UCcfZzC9x7rKBpp2b96885cw';
 const OUT = join(process.cwd(), 'content');
 
+/**
+ * Which YouTube uploads are actually podcast episodes.
+ *
+ * The channel carries more than the podcast: live-stream tests, a special,
+ * and two re-uploaded PLO Lumumba speeches. Only listed videos are treated as
+ * episodes; everything else becomes Television. This is an editorial call, not
+ * something derivable from the feed, so it is an explicit list. Add the video
+ * id here when a new episode is published.
+ */
+const PODCAST_VIDEO_IDS = new Set([
+  'p3lHlWR-O3g' // Episode 1 — Peace, War and the Search for a Political Solution
+]);
+
+/**
+ * Audio distribution. Spotify is the only provider so far; the show is not yet
+ * on Apple Podcasts (checked against the iTunes search API, no match).
+ *
+ * `rssFeed` is intentionally null. Once the show has an origin RSS feed, put it
+ * here and ingestAudio() below will drive episode audio from the feed instead
+ * of the hardcoded show id, which is what makes the provider swappable. See
+ * README for where to find that URL.
+ */
+const AUDIO = {
+  rssFeed: null,
+  spotifyShowId: '1viond2HBFAncP9IYGOSd3'
+};
+
 const get = async (url) => {
   const res = await fetch(url, { headers: { 'user-agent': 'nile-explorer-ingest' } });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
@@ -189,6 +216,7 @@ async function ingestEpisodes() {
     const id = pick(e, 'yt:videoId');
     const description = pick(e, 'media:description');
     return {
+      kind: PODCAST_VIDEO_IDS.has(id) ? 'podcast' : 'television',
       videoId: id,
       slug: pick(e, 'title')
         .toLowerCase()
@@ -211,31 +239,70 @@ async function ingestEpisodes() {
 async function main() {
   await mkdir(OUT, { recursive: true });
 
-  const [{ articles, categories }, episodes] = await Promise.all([
+  const [{ articles, categories }, videos] = await Promise.all([
     ingestArticles(),
     ingestEpisodes()
   ]);
 
+  // The channel mixes the podcast with everything else. Split them, and number
+  // each strand from 1 within itself rather than across the whole upload feed.
+  const number = (list) =>
+    list
+      .sort((a, b) => new Date(a.published) - new Date(b.published))
+      .map((v, i) => ({ ...v, number: i + 1 }))
+      .sort((a, b) => new Date(b.published) - new Date(a.published));
+
+  const episodes = number(videos.filter((v) => v.kind === 'podcast'));
+  const television = number(videos.filter((v) => v.kind === 'television'));
+
+  const podcast = {
+    title: 'The Nile Explorer Podcast',
+    // Audio and video are two renderings of the same episode; the player lets
+    // the reader choose. Spotify has no public API for the origin feed, so the
+    // show embed stands in until an RSS URL is supplied.
+    rssFeed: AUDIO.rssFeed,
+    spotify: {
+      showId: AUDIO.spotifyShowId,
+      url: `https://open.spotify.com/show/${AUDIO.spotifyShowId}`,
+      embed: `https://open.spotify.com/embed/show/${AUDIO.spotifyShowId}?theme=0`
+    },
+    episodes
+  };
+
   const write = (name, data) =>
-    writeFile(join(OUT, name), JSON.stringify(data, null, 2) + '\n', 'utf8');
+    writeFile(join(OUT, name), JSON.stringify(data, null, 2) + String.fromCharCode(10), 'utf8');
 
   await Promise.all([
     write('articles.json', articles),
     write('categories.json', categories),
-    write('episodes.json', episodes),
+    write('podcast.json', podcast),
+    write('television.json', television),
     write('ingest-meta.json', {
       ingestedAt: new Date().toISOString(),
       sources: {
         wordpress: { endpoint: WP, articles: articles.length },
-        youtube: { channel: YT_CHANNEL, episodes: episodes.length },
+        youtube: {
+          channel: YT_CHANNEL,
+          podcastEpisodes: episodes.length,
+          televisionVideos: television.length
+        },
+        audio: {
+          provider: AUDIO.rssFeed ? 'rss' : 'spotify-embed',
+          rssFeed: AUDIO.rssFeed,
+          note: AUDIO.rssFeed
+            ? 'Episode audio driven by the origin RSS feed.'
+            : 'No RSS feed supplied; falling back to the Spotify show embed.'
+        },
         instagram: { status: 'manual-embed', note: 'No open feed API; editors paste post URLs.' }
       }
     })
   ]);
 
-  console.log(`articles   ${articles.length}`);
-  console.log(`categories ${categories.map((c) => `${c.name}(${c.count})`).join(' ')}`);
-  console.log(`episodes   ${episodes.length}`);
+  console.log(`articles     ${articles.length}`);
+  console.log(`categories   ${categories.map((c) => `${c.name}(${c.count})`).join(' ')}`);
+  console.log(`episodes     ${episodes.length}  ${episodes.map((e) => '#' + e.number).join(' ')}`);
+  console.log(`television   ${television.length}`);
+  console.log(`audio        ${AUDIO.rssFeed ? 'RSS: ' + AUDIO.rssFeed : 'Spotify embed (no RSS feed supplied)'}`);
   const missing = articles.filter((a) => !a.image).length;
   if (missing) console.log(`note: ${missing} article(s) without a featured image`);
 }

@@ -8,7 +8,9 @@
 
 import articlesJson from '../../content/articles.json';
 import categoriesJson from '../../content/categories.json';
-import episodesJson from '../../content/episodes.json';
+import podcastJson from '../../content/podcast.json';
+import televisionJson from '../../content/television.json';
+import festivalJson from '../../content/festival.json';
 
 export type Block =
   | { type: 'para'; text: string }
@@ -40,7 +42,8 @@ export type Article = {
 
 export type Category = { name: string; slug: string; count: number };
 
-export type Episode = {
+export type Video = {
+  kind: 'podcast' | 'television';
   videoId: string;
   slug: string;
   title: string;
@@ -53,9 +56,26 @@ export type Episode = {
   number: number;
 };
 
+export type Podcast = {
+  title: string;
+  rssFeed: string | null;
+  spotify: { showId: string; url: string; embed: string };
+  episodes: Video[];
+};
+
+export type Festival = {
+  placeholder: boolean;
+  name: string;
+  dates: string;
+  blurb: string;
+  days: { date: string; title: string; venue: string }[];
+};
+
 const articles = articlesJson as Article[];
 const categories = categoriesJson as Category[];
-const episodes = episodesJson as Episode[];
+const podcast = podcastJson as Podcast;
+const television = televisionJson as Video[];
+const festival = festivalJson as Festival;
 
 export const getArticles = (): Article[] => articles;
 
@@ -67,18 +87,52 @@ export const getCategories = (): Category[] => categories;
 export const getArticlesByCategory = (slug: string): Article[] =>
   articles.filter((a) => a.category.slug === slug);
 
-export const getEpisodes = (): Episode[] =>
-  [...episodes].sort((a, b) => +new Date(b.published) - +new Date(a.published));
+export const getPodcast = (): Podcast => podcast;
 
-export const getLatestEpisode = (): Episode | undefined => getEpisodes()[0];
+export const getEpisodes = (): Video[] => podcast.episodes;
 
-/** Same category first, then most recent, excluding the article itself. */
-export function getRelated(article: Article, limit = 4): Article[] {
-  const others = articles.filter((a) => a.slug !== article.slug);
-  const sameCat = others.filter((a) => a.category.slug === article.category.slug);
-  const rest = others.filter((a) => a.category.slug !== article.category.slug);
-  return [...sameCat, ...rest].slice(0, limit);
+export const getLatestEpisode = (): Video | undefined => podcast.episodes[0];
+
+export const getTelevision = (): Video[] => television;
+
+export const getFestival = (): Festival => festival;
+
+/**
+ * Sidebar recommendations.
+ *
+ * The previous version mixed same-category and merely-recent pieces under one
+ * heading, so "Also in this story" routinely listed things that had nothing to
+ * do with the story. This returns the heading alongside the articles so the
+ * label always describes what is actually in the list.
+ */
+export function getRelated(
+  article: Article,
+  limit = 4
+): { heading: string; articles: Article[] } {
+  const sameCategory = articles.filter(
+    (a) => a.slug !== article.slug && a.category.slug === article.category.slug
+  );
+
+  if (sameCategory.length >= 2) {
+    return {
+      heading: `More in ${article.category.name}`,
+      articles: sameCategory.slice(0, limit)
+    };
+  }
+
+  return {
+    heading: 'More from the newsroom',
+    articles: articles.filter((a) => a.slug !== article.slug).slice(0, limit)
+  };
 }
+
+/**
+ * Oldest pieces, for a sidebar that does not simply repeat the front page.
+ * Deliberately not "Most read": there is no analytics source behind this site
+ * yet, so a popularity ranking would be invented.
+ */
+export const getArchive = (limit = 4): Article[] =>
+  [...articles].sort((a, b) => +new Date(a.date) - +new Date(b.date)).slice(0, limit);
 
 export const formatDate = (iso: string): string =>
   new Date(iso).toLocaleDateString('en-GB', {
@@ -98,6 +152,7 @@ export const SITE = {
   url: 'https://nilexplorer.net',
   youtube: 'https://www.youtube.com/@thenilexplorerpodcast',
   instagram: 'https://www.instagram.com/thenilexplorer_podcast',
+  spotify: podcast.spotify.url,
   email: 'newsroom@nilexplorer.net',
   patron: 'Dr. Aldo Ajou Deng-Akuey'
 } as const;

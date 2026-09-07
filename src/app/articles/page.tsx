@@ -4,6 +4,7 @@ import {
   getArticles,
   getCategories,
   getArticlesByCategory,
+  getArchive,
   SITE
 } from '@/lib/content';
 import { StoryRow, RankedItem } from '@/components/Story';
@@ -22,7 +23,7 @@ export default async function ArticlesPage({
   const categories = getCategories();
   const active = categories.find((c) => c.slug === category);
   const articles = active ? getArticlesByCategory(active.slug) : getArticles();
-  const mostRead = getArticles().slice(0, 5);
+  const archive = getArchive(4);
 
   return (
     <section className="section">
@@ -66,10 +67,10 @@ export default async function ArticlesPage({
           </div>
         </div>
 
-        <aside className="rail" aria-label="Most read">
+        <aside className="rail" aria-label="From the archive">
           <div>
-            <h2 className="rail__title">Most read</h2>
-            {mostRead.map((a, i) => (
+            <h2 className="rail__title">From the archive</h2>
+            {archive.map((a, i) => (
               <RankedItem article={a} n={i + 1} key={a.slug} />
             ))}
           </div>
@@ -80,7 +81,7 @@ export default async function ArticlesPage({
               Reporting and analysis on peace, governance and geopolitics across South Sudan and the
               wider Nile basin.
             </p>
-            <Link className="section__more" href="/about" style={{ marginTop: 10, borderBottomColor: 'var(--gold)' }}>
+            <Link className="section__more" href="/about" style={{ marginTop: 10 }}>
               About us →
             </Link>
           </div>

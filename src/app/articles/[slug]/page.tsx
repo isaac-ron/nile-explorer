@@ -12,6 +12,7 @@ import {
   SITE
 } from '@/lib/content';
 import { RankedItem } from '@/components/Story';
+import { PlatformLink } from '@/components/Icons';
 
 export function generateStaticParams() {
   return getArticles().map((a) => ({ slug: a.slug }));
@@ -41,19 +42,19 @@ export async function generateMetadata({
 
 const SHARE = (url: string, title: string) => [
   {
+    icon: 'x' as const,
     label: 'Share this article on X',
-    href: `https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-    d: 'M4.5 4.5l15 15M19.5 4.5l-15 15'
+    href: `https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
   },
   {
+    icon: 'whatsapp' as const,
     label: 'Share this article on WhatsApp',
-    href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
-    d: 'M20.5 12a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.1-4.4A8.5 8.5 0 1 1 20.5 12z'
+    href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`
   },
   {
-    label: 'Share this article by email',
-    href: `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`,
-    d: 'M3.5 6.5h17v11h-17zM3.5 6.5l8.5 6.5 8.5-6.5'
+    icon: 'facebook' as const,
+    label: 'Share this article on Facebook',
+    href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
   }
 ];
 
@@ -88,6 +89,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   const related = getRelated(article, 4);
+  const relatedItems = related.articles;
   const episode = getLatestEpisode();
   const url = `${SITE.url}/articles/${article.slug}`;
 
@@ -114,30 +116,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <span>{article.readingTime} min read</span>
                 <span className="share">
                   {SHARE(url, article.title).map((s) => (
-                    <a
-                      className="share__btn"
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={s.label}
-                      title={s.label}
-                      key={s.label}
-                    >
-                      <svg
-                        width="19"
-                        height="19"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <path d={s.d} />
-                      </svg>
-                    </a>
+                    <PlatformLink name={s.icon} href={s.href} label={s.label} key={s.icon} />
                   ))}
                 </span>
               </div>
@@ -173,8 +152,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           <aside className="rail" aria-label="Related coverage">
             <div>
-              <h2 className="rail__title">Also in this story</h2>
-              {related.map((a, i) => (
+              <h2 className="rail__title">{related.heading}</h2>
+              {relatedItems.map((a, i) => (
                 <RankedItem article={a} n={i + 1} key={a.slug} />
               ))}
             </div>
@@ -202,7 +181,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <Link
                   className="section__more"
                   href="/podcasts"
-                  style={{ marginTop: 10, borderBottomColor: 'var(--gold)' }}
+                  style={{ marginTop: 10 }}
                 >
                   Play episode →
                 </Link>
@@ -221,7 +200,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </Link>
           </div>
           <div className="cardgrid">
-            {related.map((a) => (
+            {relatedItems.map((a) => (
               <Link className="card" href={`/articles/${a.slug}`} key={a.slug}>
                 {a.image && (
                   <span className="frame frame--card">

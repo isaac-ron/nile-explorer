@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getCategories, getArticles, SITE } from '@/lib/content';
+import { PlatformLink } from '@/components/Icons';
+import { getCategories, SITE } from '@/lib/content';
 
 export default function Footer() {
   const categories = getCategories();
-  const recent = getArticles().slice(0, 4);
 
   return (
     <footer className="footer">
@@ -28,6 +28,15 @@ export default function Footer() {
               />
             </Link>
             <p>{SITE.description}</p>
+            <div className="footer__social">
+              <PlatformLink name="youtube" href={SITE.youtube} label="The Nile Explorer on YouTube" />
+              <PlatformLink name="spotify" href={SITE.spotify} label="The Nile Explorer on Spotify" />
+              <PlatformLink
+                name="instagram"
+                href={SITE.instagram}
+                label="The Nile Explorer on Instagram"
+              />
+            </div>
           </div>
 
           <div>
@@ -42,33 +51,16 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="footer__coltitle">Recent</h2>
-            <ul className="footer__list">
-              {recent.map((a) => (
-                <li key={a.slug}>
-                  <Link href={`/articles/${a.slug}`}>
-                    {a.title.length > 44 ? a.title.slice(0, 44).trimEnd() + '…' : a.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
             <h2 className="footer__coltitle">Network</h2>
             <ul className="footer__list">
               <li>
-                <Link href="/podcasts">The Nile Explorer Podcast</Link>
+                <Link href="/articles">Articles</Link>
               </li>
               <li>
-                <a href={SITE.youtube} target="_blank" rel="noopener noreferrer">
-                  YouTube
-                </a>
+                <Link href="/podcasts">Podcast</Link>
               </li>
               <li>
-                <a href={SITE.instagram} target="_blank" rel="noopener noreferrer">
-                  Instagram
-                </a>
+                <Link href="/television">Television</Link>
               </li>
               <li>
                 <Link href="/about">About &amp; contact</Link>
