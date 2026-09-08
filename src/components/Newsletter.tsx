@@ -6,10 +6,23 @@ export default function Newsletter() {
   const [done, setDone] = useState(false);
 
   return (
-    <section className="section section--band signup" id="newsletter" aria-labelledby="signup-heading">
+    <section
+      className="section section--band signup"
+      id="newsletter"
+      aria-labelledby="signup-heading"
+    >
       <div className="signup__grid shell">
         <div>
-          <h2 id="signup-heading">The morning brief from Juba, Nairobi and London</h2>
+          <h2 id="signup-heading">Newsletter</h2>
+          <p
+            style={{
+              marginTop: 'var(--space-2)',
+              color: 'var(--ink-blurb)',
+              maxWidth: '40ch'
+            }}
+          >
+            New articles and podcast episodes, by email.
+          </p>
         </div>
         <form
           className="signup__form"
@@ -33,12 +46,15 @@ export default function Newsletter() {
             placeholder="you@example.org"
           />
           <button className="btn" type="submit">
-            {done ? 'Subscribed' : 'Sign up'}
+            {done ? 'Subscribed' : 'Subscribe'}
           </button>
+          {/* No frequency claim: publishing is irregular and there is no
+              provider behind this yet, so promising a cadence would be a
+              promise the newsroom cannot keep. */}
           <p className="signup__note" aria-live="polite">
             {done
-              ? 'Thanks. The morning brief arrives on weekdays; unsubscribe from any issue.'
-              : 'One email each weekday. Unsubscribe from any issue.'}
+              ? 'Thanks. You can unsubscribe from any issue.'
+              : 'Unsubscribe from any issue.'}
           </p>
         </form>
       </div>

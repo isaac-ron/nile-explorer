@@ -42,6 +42,33 @@ const PODCAST_VIDEO_IDS = new Set([
  * of the hardcoded show id, which is what makes the provider swappable. See
  * README for where to find that URL.
  */
+/**
+ * Section vs topic.
+ *
+ * Every piece published so far is commentary by the patron, whatever the
+ * WordPress category says, so all of them are Opinion. The WordPress category
+ * survives as a *topic*, which is browsable metadata rather than a claim that
+ * the piece is objective reporting on that subject.
+ *
+ * When sourced reporting arrives, map its categories to 'News' here.
+ */
+const SECTION_BY_CATEGORY = {
+  opinion: 'Opinion',
+  peace: 'Opinion',
+  'geo-politics': 'Opinion',
+  educational: 'Opinion',
+  general: 'Opinion',
+  policy: 'Opinion'
+};
+const DEFAULT_SECTION = 'Opinion';
+
+/**
+ * WordPress categories that describe the section, not the subject. They carry
+ * no information once every piece is Opinion, so they do not become topics and
+ * the article falls back to its section label for display.
+ */
+const NOT_A_TOPIC = new Set(['opinion', 'general']);
+
 const AUDIO = {
   rssFeed: null,
   spotifyShowId: '1viond2HBFAncP9IYGOSd3'
@@ -163,7 +190,8 @@ async function ingestArticles() {
         title,
         date: p.date,
         modified: p.modified,
-        category: cat ? { name: cat.name, slug: cat.slug } : { name: 'General', slug: 'general' },
+        section: cat ? SECTION_BY_CATEGORY[cat.slug] ?? DEFAULT_SECTION : DEFAULT_SECTION,
+        topic: cat && !NOT_A_TOPIC.has(cat.slug) ? { name: cat.name, slug: cat.slug } : null,
         author: 'Dr. Aldo Ajou Deng-Akuey',
         image: media[p.featured_media] ?? null,
         blocks,
@@ -174,16 +202,22 @@ async function ingestArticles() {
     })
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  const categories = cats
+  const topics = cats
     .map((c) => ({
       name: c.name,
       slug: c.slug,
-      count: articles.filter((a) => a.category.slug === c.slug).length
+      count: articles.filter((a) => a.topic?.slug === c.slug).length
     }))
-    .filter((c) => c.count > 0)
+    .filter((t) => t.count > 0)
     .sort((a, b) => b.count - a.count);
 
-  return { articles, categories };
+  const sections = [...new Set(articles.map((a) => a.section))].map((name) => ({
+    name,
+    slug: name.toLowerCase(),
+    count: articles.filter((a) => a.section === name).length
+  }));
+
+  return { articles, topics, sections };
 }
 
 async function ingestEpisodes() {
@@ -239,7 +273,7 @@ async function ingestEpisodes() {
 async function main() {
   await mkdir(OUT, { recursive: true });
 
-  const [{ articles, categories }, videos] = await Promise.all([
+  const [{ articles, topics, sections }, videos] = await Promise.all([
     ingestArticles(),
     ingestEpisodes()
   ]);
@@ -274,7 +308,8 @@ async function main() {
 
   await Promise.all([
     write('articles.json', articles),
-    write('categories.json', categories),
+    write('topics.json', topics),
+    write('sections.json', sections),
     write('podcast.json', podcast),
     write('television.json', television),
     write('ingest-meta.json', {
@@ -299,7 +334,8 @@ async function main() {
   ]);
 
   console.log(`articles     ${articles.length}`);
-  console.log(`categories   ${categories.map((c) => `${c.name}(${c.count})`).join(' ')}`);
+  console.log(`sections     ${sections.map((c) => `${c.name}(${c.count})`).join(' ')}`);
+  console.log(`topics       ${topics.map((c) => `${c.name}(${c.count})`).join(' ')}`);
   console.log(`episodes     ${episodes.length}  ${episodes.map((e) => '#' + e.number).join(' ')}`);
   console.log(`television   ${television.length}`);
   console.log(`audio        ${AUDIO.rssFeed ? 'RSS: ' + AUDIO.rssFeed : 'Spotify embed (no RSS feed supplied)'}`);

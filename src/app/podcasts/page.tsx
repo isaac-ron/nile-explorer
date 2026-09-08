@@ -6,6 +6,7 @@ import {
   getEpisodes,
   getUpcoming,
   getPodcastMeta,
+  toPlayerEpisode,
   getTelevision,
   getArchive,
   formatDate,
@@ -62,7 +63,10 @@ export default function PodcastsPage() {
                 {latest.title}
               </h2>
 
-              <PodcastPlayer episode={latest} podcast={podcast} />
+              <PodcastPlayer
+                episode={toPlayerEpisode(latest)}
+                podcast={{ title: podcast.title, spotify: podcast.spotify }}
+              />
 
               {(latest.blurb ?? latest.summary) && (
                 <p className="episode__desc" style={{ marginTop: 'var(--space-4)' }}>

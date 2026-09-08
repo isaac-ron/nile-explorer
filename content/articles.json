@@ -5,10 +5,6 @@
     "title": "Africa Must Not Be Caught in the New Cold War of Superpowers",
     "date": "2025-09-03T16:26:41",
     "modified": "2025-09-03T16:26:41",
-    "category": {
-      "name": "Geo-politics",
-      "slug": "geo-politics"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/09/3245.webp",
@@ -137,7 +133,12 @@
     ],
     "summary": "The African Continental Unity: The world is definitely changing. The Cold War came in 1945-1991, and went. The USA unipolarity emerged from 1991-2001 (9/11 or so).",
     "readingTime": 4,
-    "source": "https://nilexplorer.net/?p=1134"
+    "source": "https://nilexplorer.net/?p=1134",
+    "section": "Opinion",
+    "topic": {
+      "name": "Geo-politics",
+      "slug": "geo-politics"
+    }
   },
   {
     "id": 1132,
@@ -145,10 +146,6 @@
     "title": "South Sudan at the Crossroads: From Crisis to Collective Renewal",
     "date": "2025-08-30T09:35:48",
     "modified": "2025-09-03T16:27:45",
-    "category": {
-      "name": "Geo-politics",
-      "slug": "geo-politics"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/23.jpg",
@@ -262,7 +259,12 @@
     ],
     "summary": "The Republic of South Sudan: We need, as South Sudanese, to avoid personal blames and counter blames.",
     "readingTime": 3,
-    "source": "https://nilexplorer.net/?p=1132"
+    "source": "https://nilexplorer.net/?p=1132",
+    "section": "Opinion",
+    "topic": {
+      "name": "Geo-politics",
+      "slug": "geo-politics"
+    }
   },
   {
     "id": 1106,
@@ -270,10 +272,6 @@
     "title": "South Sudan at the Threshold of Change: From the SPLM as a movement to Democracy",
     "date": "2025-08-24T15:56:57",
     "modified": "2025-08-30T09:31:38",
-    "category": {
-      "name": "Opinion",
-      "slug": "opinion"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/454.jpg",
@@ -421,7 +419,9 @@
     ],
     "summary": "The Republic of South Sudan: Present generation of the 20th and partly early 21st centuries of South Sudanese, were born, brought up and educated in war zones of Southern Sudan or…",
     "readingTime": 5,
-    "source": "https://nilexplorer.net/?p=1106"
+    "source": "https://nilexplorer.net/?p=1106",
+    "section": "Opinion",
+    "topic": null
   },
   {
     "id": 1095,
@@ -429,10 +429,6 @@
     "title": "Exporting Palestinians to South Sudan is Exporting Terrorism to South Sudan",
     "date": "2025-08-23T12:26:20",
     "modified": "2025-08-23T12:26:20",
-    "category": {
-      "name": "Opinion",
-      "slug": "opinion"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/232.jpg",
@@ -601,7 +597,9 @@
     ],
     "summary": "The Republic of South Sudan: We are told, fake or true news, that a plan is underway to export Palestinians from Gaza to South Sudan; as settlers or refugees.",
     "readingTime": 4,
-    "source": "https://nilexplorer.net/?p=1095"
+    "source": "https://nilexplorer.net/?p=1095",
+    "section": "Opinion",
+    "topic": null
   },
   {
     "id": 1090,
@@ -609,10 +607,6 @@
     "title": "National–Nationalism: The Life of a Nation",
     "date": "2025-08-23T11:49:18",
     "modified": "2025-08-23T11:49:18",
-    "category": {
-      "name": "Educational",
-      "slug": "educational"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/4.jpg",
@@ -730,7 +724,12 @@
     ],
     "summary": "The Republic of South Sudan: Nationalism is not a choice, but a righteous obligation. South Sudanese, a resilient society, fought a National liberation together and got…",
     "readingTime": 3,
-    "source": "https://nilexplorer.net/?p=1090"
+    "source": "https://nilexplorer.net/?p=1090",
+    "section": "Opinion",
+    "topic": {
+      "name": "Educational",
+      "slug": "educational"
+    }
   },
   {
     "id": 1081,
@@ -738,10 +737,6 @@
     "title": "Principles of Freedom and Nationalism in South Sudan: Nationalism as Practical Leverage",
     "date": "2025-08-23T11:27:51",
     "modified": "2025-08-23T11:27:51",
-    "category": {
-      "name": "Opinion",
-      "slug": "opinion"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/4551.jpg",
@@ -894,7 +889,9 @@
     ],
     "summary": "The Republic of South Sudan: We, the people, and the R-TGoNU, led by the President of the Republic, General Salva Kiir Mayardit, are nationally committed to R-ARCSS; no return to…",
     "readingTime": 5,
-    "source": "https://nilexplorer.net/?p=1081"
+    "source": "https://nilexplorer.net/?p=1081",
+    "section": "Opinion",
+    "topic": null
   },
   {
     "id": 1058,
@@ -902,10 +899,6 @@
     "title": "A Nation at the Crossroads: Seizing the Last Opportunity for Lasting Peace in South Sudan",
     "date": "2025-08-01T17:16:03",
     "modified": "2025-08-01T17:16:03",
-    "category": {
-      "name": "Peace",
-      "slug": "peace"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/345.jpg",
@@ -1059,7 +1052,12 @@
     ],
     "summary": "The Republic of South Sudan: No war anymore! Peace is the National Interest and necessary option.",
     "readingTime": 5,
-    "source": "https://nilexplorer.net/?p=1058"
+    "source": "https://nilexplorer.net/?p=1058",
+    "section": "Opinion",
+    "topic": {
+      "name": "Peace",
+      "slug": "peace"
+    }
   },
   {
     "id": 20,
@@ -1067,10 +1065,6 @@
     "title": "Sudan’s Long Road to Peace: A Call for Regional Mediation and Democratic Transition",
     "date": "2025-08-01T14:39:06",
     "modified": "2025-08-01T16:48:33",
-    "category": {
-      "name": "Educational",
-      "slug": "educational"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/7.jpg",
@@ -1227,7 +1221,12 @@
     ],
     "summary": "The Republic of Sudan: The Sudanese are crying for genuine and Just peace. A time to campaign and move forward the Sudanese quest for peaceful settlement of the arms conflict.",
     "readingTime": 4,
-    "source": "https://nilexplorer.net/?p=20"
+    "source": "https://nilexplorer.net/?p=20",
+    "section": "Opinion",
+    "topic": {
+      "name": "Educational",
+      "slug": "educational"
+    }
   },
   {
     "id": 17,
@@ -1235,10 +1234,6 @@
     "title": "What Does the Independence Really Mean?",
     "date": "2025-08-01T14:30:14",
     "modified": "2025-08-01T16:46:33",
-    "category": {
-      "name": "Opinion",
-      "slug": "opinion"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/9.jpg",
@@ -1420,7 +1415,9 @@
     ],
     "summary": "The Republic of South Sudan: Congratulations. We are free again! We are free and independent because we fought hard to achieve it.",
     "readingTime": 5,
-    "source": "https://nilexplorer.net/?p=17"
+    "source": "https://nilexplorer.net/?p=17",
+    "section": "Opinion",
+    "topic": null
   },
   {
     "id": 15,
@@ -1428,10 +1425,6 @@
     "title": "The Republic of South Sudan: A Message of Hope and Remembrance",
     "date": "2025-08-01T14:26:23",
     "modified": "2025-08-01T16:46:06",
-    "category": {
-      "name": "General",
-      "slug": "general"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/8.jpg",
@@ -1556,7 +1549,9 @@
     ],
     "summary": "Today, we mark 14 years since we raised our flag high and declared to the world that we are free.",
     "readingTime": 4,
-    "source": "https://nilexplorer.net/?p=15"
+    "source": "https://nilexplorer.net/?p=15",
+    "section": "Opinion",
+    "topic": null
   },
   {
     "id": 9,
@@ -1564,10 +1559,6 @@
     "title": "We Need Peace",
     "date": "2025-08-01T14:23:03",
     "modified": "2025-08-01T16:48:43",
-    "category": {
-      "name": "Peace",
-      "slug": "peace"
-    },
     "author": "Dr. Aldo Ajou Deng-Akuey",
     "image": {
       "url": "https://nilexplorer.net/wp-content/uploads/2025/08/6.jpg",
@@ -1770,6 +1761,11 @@
     ],
     "summary": "The Republic of South Sudan: Inspite of our unfortunate war (2013-2018), and economic dire circumstances, we are expecting friendly cooperation on peaceful restoration of the 2018…",
     "readingTime": 4,
-    "source": "https://nilexplorer.net/?p=9"
+    "source": "https://nilexplorer.net/?p=9",
+    "section": "Opinion",
+    "topic": {
+      "name": "Peace",
+      "slug": "peace"
+    }
   }
 ]

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Article, formatDate, formatShortDate } from '@/lib/content';
+import { Article, formatDate, formatShortDate, labelFor } from '@/lib/content';
 
 /** Fallback alt when WordPress supplied none. */
 const altFor = (a: Article) => a.image?.alt || `Illustration for “${a.title}”`;
@@ -20,7 +20,7 @@ export function ArticleCard({ article, priority }: { article: Article; priority?
           />
         </span>
       )}
-      <span className="card__cat">{article.category.name}</span>
+      <span className="card__cat">{labelFor(article)}</span>
       <span className="card__title">{article.title}</span>
       <span className="card__blurb">{article.summary}</span>
       <span className="card__meta">
@@ -34,7 +34,7 @@ export function StoryRow({ article }: { article: Article }) {
   return (
     <article className="story">
       <div className="story__body">
-        <span className="card__cat">{article.category.name}</span>
+        <span className="card__cat">{labelFor(article)}</span>
         <h3 className="story__title">
           <Link href={`/articles/${article.slug}`}>{article.title}</Link>
         </h3>
@@ -68,7 +68,7 @@ export function StoryRow({ article }: { article: Article }) {
 export function SideStory({ article }: { article: Article }) {
   return (
     <Link className="sidestory" href={`/articles/${article.slug}`}>
-      <span className="card__cat">{article.category.name}</span>
+      <span className="card__cat">{labelFor(article)}</span>
       <span className="sidestory__title">{article.title}</span>
       <span className="sidestory__blurb">{article.summary}</span>
       <span className="sidestory__meta">

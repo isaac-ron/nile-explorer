@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { PlatformLink } from '@/components/Icons';
-import { getCategories, SITE } from '@/lib/content';
+import { getTopics, SITE } from '@/lib/content';
 
 export default function Footer() {
-  const categories = getCategories();
+  const topics = getTopics();
 
   return (
     <footer className="footer">
@@ -40,11 +40,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="footer__coltitle">Sections</h2>
+            <h2 className="footer__coltitle">Topics</h2>
             <ul className="footer__list">
-              {categories.map((c) => (
-                <li key={c.slug}>
-                  <Link href={`/articles?category=${c.slug}`}>{c.name}</Link>
+              {topics.map((t) => (
+                <li key={t.slug}>
+                  <Link href={`/articles?topic=${t.slug}`}>{t.name}</Link>
                 </li>
               ))}
             </ul>

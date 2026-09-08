@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getArticles, getCategories, formatShortDate, SITE } from '@/lib/content';
+import { getArticles, getTopics, formatShortDate, labelFor, SITE } from '@/lib/content';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -30,7 +30,7 @@ const THEMES = [
 
 export default function AboutPage() {
   const articles = getArticles();
-  const categories = getCategories();
+  const topics = getTopics();
   const byPatron = articles.filter((a) => a.author === SITE.patron);
 
   return (
@@ -68,7 +68,7 @@ export default function AboutPage() {
               </li>
               <li>
                 <span className="k">Subjects</span>
-                <span>{categories.map((c) => c.name).join(', ')}</span>
+                <span>{topics.map((t) => t.name).join(', ')}</span>
               </li>
             </ul>
           </div>
@@ -121,7 +121,7 @@ export default function AboutPage() {
               <h2 className="rail__title">Latest from the patron</h2>
               {byPatron.slice(0, 4).map((a) => (
                 <Link className="sidestory" href={`/articles/${a.slug}`} key={a.slug}>
-                  <span className="card__cat">{a.category.name}</span>
+                  <span className="card__cat">{labelFor(a)}</span>
                   <span className="sidestory__title">{a.title}</span>
                   <span className="sidestory__meta">
                     {formatShortDate(a.date)} · {a.readingTime} min
@@ -197,7 +197,7 @@ export default function AboutPage() {
                 >
                   {a.title}
                 </Link>
-                <span style={{ color: 'var(--muted)' }}> · {a.category.name}</span>
+                <span style={{ color: 'var(--muted)' }}> · {labelFor(a)}</span>
               </span>
             </li>
           ))}

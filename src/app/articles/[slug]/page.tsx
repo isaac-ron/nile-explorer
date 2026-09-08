@@ -12,6 +12,7 @@ import {
   SITE
 } from '@/lib/content';
 import { RankedItem } from '@/components/Story';
+import { labelFor } from '@/lib/content';
 import { PlatformLink } from '@/components/Icons';
 
 export function generateStaticParams() {
@@ -100,9 +101,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div>
             <div className="article__head">
               <div className="kicker">
-                <Link className="kicker__cat" href={`/articles?category=${article.category.slug}`}>
-                  {article.category.name}
-                </Link>
+                {article.topic ? (
+                  <Link className="kicker__cat" href={`/articles?topic=${article.topic.slug}`}>
+                    {article.topic.name}
+                  </Link>
+                ) : (
+                  <span className="kicker__cat">{article.section}</span>
+                )}
                 <span className="kicker__rule" />
                 <span className="kicker__meta">Juba</span>
               </div>
@@ -213,7 +218,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     />
                   </span>
                 )}
-                <span className="card__cat">{a.category.name}</span>
+                <span className="card__cat">{labelFor(a)}</span>
                 <span className="card__title">{a.title}</span>
                 <span className="card__blurb">{a.summary}</span>
               </Link>

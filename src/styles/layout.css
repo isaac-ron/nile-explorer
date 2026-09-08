@@ -251,9 +251,10 @@
 
 /* ---------- Breakpoints ---------- */
 
-/* The horizontal strip needs ~950px once the logo and Subscribe are counted:
-   logo ~215 + nav 543 + button ~130 + gaps. Below that it is the panel. */
-@media (max-width: 1000px) {
+/* Measured: logo 213 + nav 409 + Subscribe 116 + gaps 56 = 794px for the
+   horizontal strip. Below 900 it becomes the panel, which leaves ~54px of
+   slack for the shell gutters. Re-measure if nav items are added. */
+@media (max-width: 900px) {
   .masthead__inner {
     flex-wrap: wrap;
     row-gap: 0;

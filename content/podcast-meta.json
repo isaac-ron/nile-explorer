@@ -8,6 +8,10 @@
 
   "episodes": {
     "p3lHlWR-O3g": {
+      "_note": "videoAvailable is false while the edit is reworked. That hides the Watch option and any link out to the video, everywhere on the site. Audio is unaffected. Set it back to true once the re-cut is uploaded. `stills` renders a gallery in place of the player: add files to public/podcast/ and list them here as { src, alt }.",
+      "videoAvailable": false,
+      "videoNote": "The video edition is being re-edited and will return shortly. The audio edition is available now.",
+      "stills": [],
       "blurb": "Dr. Aldo Ajou Deng-Akuey reflects on South Sudan's journey from liberation to independence, the conflicts that followed, and the continuing search for lasting peace.",
       "topics": [
         "Leadership and governance",

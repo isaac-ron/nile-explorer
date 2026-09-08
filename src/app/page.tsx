@@ -2,12 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   getArticles,
-  getCategories,
+  getTopics,
   getTelevision,
   getLatestEpisode,
   getArchive,
   getFestival,
   formatDate,
+  labelFor,
+  canWatch,
   SITE
 } from '@/lib/content';
 import { ArticleCard, StoryRow, SideStory, RankedItem } from '@/components/Story';
@@ -17,7 +19,7 @@ import Newsletter from '@/components/Newsletter';
 
 export default function Home() {
   const articles = getArticles();
-  const categories = getCategories();
+  const topics = getTopics();
   const television = getTelevision();
   const episode = getLatestEpisode();
   const festival = getFestival();
@@ -35,7 +37,7 @@ export default function Home() {
         <div className="hero__grid">
           <div className="hero__lead">
             <div className="kicker">
-              <span className="kicker__cat">{lead.category.name}</span>
+              <span className="kicker__cat">{labelFor(lead)}</span>
               <span className="kicker__rule" />
               <span className="kicker__meta">{formatDate(lead.date)}</span>
             </div>
@@ -75,6 +77,81 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- Podcast ---------- */}
+      {episode && (
+        <section className="section section--band" id="podcasts" aria-labelledby="pod-heading">
+          <div className="shell">
+          <div className="section__head">
+            <h2 id="pod-heading">The Nile Explorer Podcast</h2>
+            <Link className="section__more" href="/podcasts">
+              {canWatch(episode) ? 'Watch or listen →' : 'Listen →'}
+            </Link>
+          </div>
+          <div className="withrail">
+            <Link
+              className="frame frame--wide"
+              href="/podcasts"
+              aria-label={`Open episode ${episode.number}: ${episode.title}`}
+            >
+              {canWatch(episode) ? (
+                <>
+                  <Image
+                    src={episode.thumbnail}
+                    alt={`Artwork for “${episode.title}”`}
+                    width={1280}
+                    height={720}
+                    sizes="(max-width: 1000px) 100vw, 700px"
+                  />
+                  <span className="playbadge" aria-hidden="true">
+                    <span>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5.2v13.6L19 12z" />
+                      </svg>
+                    </span>
+                  </span>
+                </>
+              ) : (
+                <span className="player__holding">
+                  <Image
+                    src="/brand/podcast-logo.png"
+                    alt="The Nile Explorer Podcast"
+                    width={1729}
+                    height={1660}
+                    sizes="260px"
+                  />
+                </span>
+              )}
+            </Link>
+            <div>
+              <p className="card__cat">Episode {episode.number}</p>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 'var(--fs-h3)',
+                  color: 'var(--navy)',
+                  margin: '6px 0 var(--space-3)'
+                }}
+              >
+                {episode.title}
+              </h3>
+              {(episode.blurb ?? episode.summary) && (
+                <p className="episode__desc">{episode.blurb ?? episode.summary}</p>
+              )}
+              <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
+                {canWatch(episode) ? 'Watch or listen on' : 'Listen on'}
+              </p>
+              <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
+                <PlatformLink name="spotify" href={SITE.spotify} label="Listen on Spotify" />
+                {canWatch(episode) && (
+                  <PlatformLink name="youtube" href={episode.url} label="Watch on YouTube" />
+                )}
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+      )}
+
       {/* ---------- Latest ---------- */}
       <section className="section shell" aria-labelledby="latest-heading">
         <div className="section__head">
@@ -107,10 +184,10 @@ export default function Home() {
             </div>
 
             <div className="chips" style={{ marginTop: 'var(--space-5)' }}>
-              {categories.map((c) => (
-                <Link className="chip" href={`/articles?category=${c.slug}`} key={c.slug}>
-                  {c.name}
-                  <span className="chip__n">{c.count}</span>
+              {topics.map((t) => (
+                <Link className="chip" href={`/articles?topic=${t.slug}`} key={t.slug}>
+                  {t.name}
+                  <span className="chip__n">{t.count}</span>
                 </Link>
               ))}
             </div>
@@ -136,59 +213,6 @@ export default function Home() {
           </aside>
         </div>
       </section>
-
-      {/* ---------- Podcast ---------- */}
-      {episode && (
-        <section className="section shell" id="podcasts" aria-labelledby="pod-heading">
-          <div className="section__head">
-            <h2 id="pod-heading">The Nile Explorer Podcast</h2>
-            <Link className="section__more" href="/podcasts">
-              Watch or listen →
-            </Link>
-          </div>
-          <div className="withrail">
-            <Link className="frame frame--wide" href="/podcasts" aria-label={`Play: ${episode.title}`}>
-              <Image
-                src={episode.thumbnail}
-                alt={`Artwork for “${episode.title}”`}
-                width={1280}
-                height={720}
-                sizes="(max-width: 1000px) 100vw, 700px"
-              />
-              <span className="playbadge" aria-hidden="true">
-                <span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5.2v13.6L19 12z" />
-                  </svg>
-                </span>
-              </span>
-            </Link>
-            <div>
-              <p className="card__cat">Episode {episode.number}</p>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: 'var(--fs-h3)',
-                  color: 'var(--navy)',
-                  margin: '6px 0 var(--space-3)'
-                }}
-              >
-                {episode.title}
-              </h3>
-              {(episode.blurb ?? episode.summary) && (
-                <p className="episode__desc">{episode.blurb ?? episode.summary}</p>
-              )}
-              <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
-                Watch or listen on
-              </p>
-              <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
-                <PlatformLink name="spotify" href={SITE.spotify} label="Listen on Spotify" />
-                <PlatformLink name="youtube" href={episode.url} label="Watch on YouTube" />
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ---------- Television ---------- */}
       {television.length > 0 && (

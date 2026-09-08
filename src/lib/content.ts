@@ -7,7 +7,8 @@
  */
 
 import articlesJson from '../../content/articles.json';
-import categoriesJson from '../../content/categories.json';
+import topicsJson from '../../content/topics.json';
+import sectionsJson from '../../content/sections.json';
 import podcastJson from '../../content/podcast.json';
 import televisionJson from '../../content/television.json';
 import festivalJson from '../../content/festival.json';
@@ -32,7 +33,8 @@ export type Article = {
   title: string;
   date: string;
   modified: string;
-  category: { name: string; slug: string };
+  section: string;
+  topic: { name: string; slug: string } | null;
   author: string;
   image: Image | null;
   blocks: Block[];
@@ -41,7 +43,8 @@ export type Article = {
   source: string;
 };
 
-export type Category = { name: string; slug: string; count: number };
+export type Topic = { name: string; slug: string; count: number };
+export type Section = { name: string; slug: string; count: number };
 
 export type Video = {
   kind: 'podcast' | 'television';
@@ -66,10 +69,16 @@ export type Podcast = {
 
 export type Guest = { name: string; role: string };
 
+export type Still = { src: string; alt: string };
+
 export type EpisodeMeta = {
   blurb?: string;
   topics?: string[];
   guests?: Guest[];
+  /** false while an edit is reworked: hides Watch and any link to the video. */
+  videoAvailable?: boolean;
+  videoNote?: string;
+  stills?: Still[];
 };
 
 export type UpcomingEpisode = {
@@ -100,7 +109,8 @@ export type Festival = {
 };
 
 const articles = articlesJson as Article[];
-const categories = categoriesJson as Category[];
+const topics = topicsJson as Topic[];
+const sections = sectionsJson as Section[];
 const podcast = podcastJson as Podcast;
 const television = televisionJson as Video[];
 const festival = festivalJson as Festival;
@@ -111,10 +121,22 @@ export const getArticles = (): Article[] => articles;
 export const getArticle = (slug: string): Article | undefined =>
   articles.find((a) => a.slug === slug);
 
-export const getCategories = (): Category[] => categories;
+export const getTopics = (): Topic[] => topics;
 
-export const getArticlesByCategory = (slug: string): Article[] =>
-  articles.filter((a) => a.category.slug === slug);
+export const getSections = (): Section[] => sections;
+
+export const getArticlesByTopic = (slug: string): Article[] =>
+  articles.filter((a) => a.topic?.slug === slug);
+
+export const getArticlesBySection = (slug: string): Article[] =>
+  articles.filter((a) => a.section.toLowerCase() === slug);
+
+/**
+ * What to print in a kicker. Most pieces carry a subject topic; those whose
+ * WordPress category was really a section fall back to the section name so the
+ * kicker is never blank.
+ */
+export const labelFor = (a: Article): string => a.topic?.name ?? a.section;
 
 export const getPodcast = (): Podcast => podcast;
 
@@ -125,6 +147,42 @@ export const getEpisodes = (): EpisodeWithMeta[] =>
   podcast.episodes.map((e) => ({ ...e, ...(podcastMeta.episodes[e.videoId] ?? {}) }));
 
 export const getLatestEpisode = (): EpisodeWithMeta | undefined => getEpisodes()[0];
+
+/** Default true: an episode is watchable unless meta says otherwise. */
+export const canWatch = (e: EpisodeWithMeta): boolean => e.videoAvailable !== false;
+
+export type PlayerEpisode = {
+  number: number;
+  title: string;
+  thumbnail: string;
+  videoAvailable: boolean;
+  videoNote?: string;
+  stills: Still[];
+  /** Null while the video is withdrawn, so the URL never reaches the client. */
+  url: string | null;
+  embed: string | null;
+};
+
+/**
+ * Narrow an episode to what the player needs.
+ *
+ * The player is a client component, so whatever it receives is serialized into
+ * the RSC payload and readable in page source. Passing the whole episode leaked
+ * the video URL even with every link to it removed.
+ */
+export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
+  const watchable = canWatch(e);
+  return {
+    number: e.number,
+    title: e.title,
+    thumbnail: e.thumbnail,
+    videoAvailable: watchable,
+    videoNote: e.videoNote,
+    stills: e.stills ?? [],
+    url: watchable ? e.url : null,
+    embed: watchable ? e.embed : null
+  };
+}
 
 /** Scheduled but unreleased. Empty until someone fills in podcast-meta.json. */
 export const getUpcoming = (): UpcomingEpisode[] => podcastMeta.upcoming;
@@ -145,14 +203,14 @@ export function getRelated(
   article: Article,
   limit = 4
 ): { heading: string; articles: Article[] } {
-  const sameCategory = articles.filter(
-    (a) => a.slug !== article.slug && a.category.slug === article.category.slug
-  );
+  const sameTopic = article.topic
+    ? articles.filter((a) => a.slug !== article.slug && a.topic?.slug === article.topic!.slug)
+    : [];
 
-  if (sameCategory.length >= 2) {
+  if (sameTopic.length >= 2) {
     return {
-      heading: `More in ${article.category.name}`,
-      articles: sameCategory.slice(0, limit)
+      heading: `More on ${article.topic!.name}`,
+      articles: sameTopic.slice(0, limit)
     };
   }
 

@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   getArticles,
-  getCategories,
-  getArticlesByCategory,
+  getTopics,
+  getArticlesByTopic,
+  getArticlesBySection,
   getArchive,
   SITE
 } from '@/lib/content';
@@ -17,12 +18,21 @@ export const metadata: Metadata = {
 export default async function ArticlesPage({
   searchParams
 }: {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ topic?: string; section?: string }>;
 }) {
-  const { category } = await searchParams;
-  const categories = getCategories();
-  const active = categories.find((c) => c.slug === category);
-  const articles = active ? getArticlesByCategory(active.slug) : getArticles();
+  const { topic, section } = await searchParams;
+  const topics = getTopics();
+  const active = topics.find((t) => t.slug === topic);
+  const articles = active
+    ? getArticlesByTopic(active.slug)
+    : section
+      ? getArticlesBySection(section)
+      : getArticles();
+  const heading = active
+    ? active.name
+    : section
+      ? section.charAt(0).toUpperCase() + section.slice(1)
+      : 'News & Opinion';
   const archive = getArchive(4);
 
   return (
@@ -31,7 +41,7 @@ export default async function ArticlesPage({
         <div>
           <div className="section__head">
             <h1 style={{ fontSize: 'var(--fs-h2)', color: 'var(--navy)' }}>
-              {active ? active.name : 'All articles'}
+              {heading}
             </h1>
             <span className="label label--muted">
               {articles.length} {articles.length === 1 ? 'piece' : 'pieces'}
@@ -47,15 +57,15 @@ export default async function ArticlesPage({
               All
               <span className="chip__n">{getArticles().length}</span>
             </Link>
-            {categories.map((c) => (
+            {topics.map((t) => (
               <Link
                 className="chip"
-                href={`/articles?category=${c.slug}`}
-                aria-current={active?.slug === c.slug ? 'page' : undefined}
-                key={c.slug}
+                href={`/articles?topic=${t.slug}`}
+                aria-current={active?.slug === t.slug ? 'page' : undefined}
+                key={t.slug}
               >
-                {c.name}
-                <span className="chip__n">{c.count}</span>
+                {t.name}
+                <span className="chip__n">{t.count}</span>
               </Link>
             ))}
           </div>

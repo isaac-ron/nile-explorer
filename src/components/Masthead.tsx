@@ -4,10 +4,10 @@ import SiteNav from '@/components/SiteNav';
 import { SITE } from '@/lib/content';
 
 const NAV = [
-  { label: 'Latest', href: '/articles' },
-  { label: 'Opinion', href: '/articles?category=opinion' },
-  { label: 'Peace', href: '/articles?category=peace' },
-  { label: 'Geopolitics', href: '/articles?category=geo-politics' },
+  // News and Opinion resolve to the same articles today, because every piece
+  // published so far is commentary. They diverge as sourced reporting arrives.
+  { label: 'News', href: '/articles' },
+  { label: 'Opinion', href: '/articles?section=opinion' },
   { label: 'Podcast', href: '/podcasts' },
   { label: 'TV', href: '/television' },
   { label: 'Festival', href: '/festival' },
