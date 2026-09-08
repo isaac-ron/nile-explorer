@@ -1,0 +1,37 @@
+{
+  "_note": "Hand-edited. Dates for the inaugural edition are not confirmed, so there is deliberately no programme table here: `dates` and `strands[].detail` render only when filled in. Set `datesAnnounced` to true and fill `dates` once the edition is scheduled, and the section will show them.",
+
+  "name": "The Nile Festival",
+  "datesAnnounced": false,
+  "dates": "",
+  "standfirst": "An annual celebration of South Sudanese culture and identity.",
+  "blurb": "The Nile Festival brings the platform off the page and into the open: a week of culture, sport, fashion, food and music, and the long-term engine that keeps the newsroom independent.",
+
+  "strands": [
+    {
+      "name": "Culture",
+      "detail": "Music, performance and the traditions carried between the states and the diaspora."
+    },
+    {
+      "name": "Sport",
+      "detail": "Competition across the states, and the athletes who carry the country's name abroad."
+    },
+    {
+      "name": "Fashion & textiles",
+      "detail": "Designers and makers working with South Sudanese cloth, pattern and form."
+    },
+    {
+      "name": "Food",
+      "detail": "The cooking of the river and the regions, and the people who keep it."
+    },
+    {
+      "name": "Entertainment",
+      "detail": "Screenings, live sessions and the closing concert."
+    }
+  ],
+
+  "awards": {
+    "name": "The Nile Festival Awards",
+    "detail": "Recognising work across the festival's strands, run through the foundation alongside the Nile Explorer Scholarships and the Nile Explorer Academy."
+  }
+}

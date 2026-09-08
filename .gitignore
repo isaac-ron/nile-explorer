@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+/build
+
+# env
+.env
+.env*.local
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.pem
+
+# logs
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# screenshots from the verification harness
+/shots/
+
+# Design-phase artefacts. The readable sources in design/reference are tracked;
+# the multi-megabyte Claude Design bundles are regenerable and are not.
+/design/preview/
+/design/.original/
+
+# Original camera files: multi-megabyte, and the shipped derivatives in
+# public/brand are generated from them.
+/design/photos/

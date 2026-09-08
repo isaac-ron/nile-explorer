@@ -1,0 +1,259 @@
+/* Masthead and footer.
+   Gold is deliberately rationed here: it marks section boundaries and the
+   footer rule, and nothing else. Hover states use navy. */
+
+/* ---------- Edition bar ---------- */
+
+.editionbar {
+  background: var(--navy);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.editionbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 30px;
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.editionbar__links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.editionbar a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border-bottom: 1px solid transparent;
+}
+
+.editionbar a:hover {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold-light);
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--paper);
+  border-bottom: 1px solid var(--navy);
+}
+
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.4vw, 28px);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+  min-height: 44px;
+}
+
+.logo__mark {
+  height: 54px;
+  width: auto;
+}
+
+.logo__word {
+  height: 30px;
+  width: auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.8vw, 22px);
+  margin-left: auto;
+}
+
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 44px;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.nav__link:hover,
+.nav__link[aria-current='page'] {
+  color: var(--navy);
+  border-bottom-color: var(--navy);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-height: 44px;
+  padding: 10px 18px;
+  background: var(--navy);
+  color: var(--paper);
+  font-family: inherit;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 0;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.btn:hover {
+  background: var(--navy-deep);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--gold:hover {
+  background: var(--paper);
+  color: var(--navy);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn--ghost:hover {
+  background: var(--paper);
+  color: var(--navy);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  border-top: 2px solid var(--gold);
+  background: var(--surface);
+}
+
+.footer__inner {
+  padding-top: var(--section-y);
+  padding-bottom: var(--space-5);
+  display: grid;
+  gap: var(--space-6);
+}
+
+.footer__cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-6);
+}
+
+.footer__about p {
+  margin-top: var(--space-3);
+  font-size: var(--fs-small);
+  color: var(--ink-blurb);
+  max-width: 42ch;
+}
+
+.footer__social {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.footer__coltitle {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: var(--space-2);
+}
+
+.footer__list {
+  list-style: none;
+  display: grid;
+}
+
+.footer__list a {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  font-size: var(--fs-small);
+  color: var(--ink-blurb);
+}
+
+.footer__list a:hover {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer__legal {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule-strong);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+/* ---------- Breakpoints ---------- */
+
+@media (max-width: 760px) {
+  .masthead__inner {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+  .nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    gap: 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 1px solid var(--rule);
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+  .logo__mark {
+    height: 42px;
+  }
+  .logo__word {
+    height: 23px;
+  }
+  html {
+    scroll-padding-top: 140px;
+  }
+  .editionbar__inner {
+    justify-content: center;
+  }
+  .editionbar__links {
+    display: none;
+  }
+}

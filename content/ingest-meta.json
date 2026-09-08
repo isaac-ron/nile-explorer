@@ -1,0 +1,23 @@
+{
+  "ingestedAt": "2026-09-07T13:11:28.801Z",
+  "sources": {
+    "wordpress": {
+      "endpoint": "https://nilexplorer.net/wp-json/wp/v2",
+      "articles": 11
+    },
+    "youtube": {
+      "channel": "UCcfZzC9x7rKBpp2b96885cw",
+      "podcastEpisodes": 1,
+      "televisionVideos": 5
+    },
+    "audio": {
+      "provider": "spotify-embed",
+      "rssFeed": null,
+      "note": "No RSS feed supplied; falling back to the Spotify show embed."
+    },
+    "instagram": {
+      "status": "manual-embed",
+      "note": "No open feed API; editors paste post URLs."
+    }
+  }
+}

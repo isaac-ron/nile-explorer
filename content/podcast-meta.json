@@ -1,0 +1,28 @@
+{
+  "_note": "Hand-edited. The ingest does not overwrite this file. Episode entries are keyed by YouTube video id; the id is in the URL after ?v=. Anything left blank simply does not render, so partial entries are safe. Add scheduled episodes to `upcoming` and they appear on the podcast page with their release date.",
+
+  "show": {
+    "tagline": "Let us talk before we fight.",
+    "blurb": "A space for thoughtful conversation, historical reflection and honest debate about South Sudan and the wider world."
+  },
+
+  "episodes": {
+    "p3lHlWR-O3g": {
+      "blurb": "Dr. Aldo Ajou Deng-Akuey reflects on South Sudan's journey from liberation to independence, the conflicts that followed, and the continuing search for lasting peace.",
+      "topics": [
+        "Leadership and governance",
+        "Accountability",
+        "Ethnicity and tribalism",
+        "Dialogue in resolving conflict"
+      ],
+      "guests": [
+        {
+          "name": "Dr. Aldo Ajou Deng-Akuey",
+          "role": "Patron, The Nile Explorer"
+        }
+      ]
+    }
+  },
+
+  "upcoming": []
+}
