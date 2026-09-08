@@ -23,6 +23,7 @@ export default function Home() {
   const television = getTelevision();
   const episode = getLatestEpisode();
   const festival = getFestival();
+  const still = episode?.stills?.[0];
 
   const [lead, ...rest] = articles;
   const side = rest.slice(0, 3);
@@ -88,40 +89,55 @@ export default function Home() {
             </Link>
           </div>
           <div className="withrail">
-            <Link
-              className="frame frame--wide"
-              href="/podcasts"
-              aria-label={`Open episode ${episode.number}: ${episode.title}`}
-            >
-              {canWatch(episode) ? (
-                <>
+            <div>
+              {/* While the video is withdrawn the lead still stands in for the
+                  thumbnail. It is a photograph of this episode, not artwork. */}
+              <Link
+                className="frame frame--wide"
+                href="/podcasts"
+                aria-label={`Open episode ${episode.number}: ${episode.title}`}
+              >
+                {canWatch(episode) ? (
+                  <>
+                    <Image
+                      src={episode.thumbnail}
+                      alt={`Artwork for “${episode.title}”`}
+                      width={1280}
+                      height={720}
+                      sizes="(max-width: 1000px) 100vw, 700px"
+                    />
+                    <span className="playbadge" aria-hidden="true">
+                      <span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5.2v13.6L19 12z" />
+                        </svg>
+                      </span>
+                    </span>
+                  </>
+                ) : still ? (
                   <Image
-                    src={episode.thumbnail}
-                    alt={`Artwork for “${episode.title}”`}
-                    width={1280}
-                    height={720}
+                    src={still.src}
+                    alt={still.alt}
+                    width={still.width}
+                    height={still.height}
                     sizes="(max-width: 1000px) 100vw, 700px"
                   />
-                  <span className="playbadge" aria-hidden="true">
-                    <span>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5.2v13.6L19 12z" />
-                      </svg>
-                    </span>
+                ) : (
+                  <span className="player__holding">
+                    <Image
+                      src="/brand/podcast-logo.png"
+                      alt="The Nile Explorer Podcast"
+                      width={1729}
+                      height={1660}
+                      sizes="260px"
+                    />
                   </span>
-                </>
-              ) : (
-                <span className="player__holding">
-                  <Image
-                    src="/brand/podcast-logo.png"
-                    alt="The Nile Explorer Podcast"
-                    width={1729}
-                    height={1660}
-                    sizes="260px"
-                  />
-                </span>
+                )}
+              </Link>
+              {!canWatch(episode) && still && episode.photographer && (
+                <p className="credit">Photograph by {episode.photographer}</p>
               )}
-            </Link>
+            </div>
             <div>
               <p className="card__cat">Episode {episode.number}</p>
               <h3
@@ -137,6 +153,33 @@ export default function Home() {
               {(episode.blurb ?? episode.summary) && (
                 <p className="episode__desc">{episode.blurb ?? episode.summary}</p>
               )}
+              {episode.guests && episode.guests.length > 0 && (
+                <div className="guests">
+                  <p className="label label--muted">Featuring</p>
+                  <ul className="guests__list">
+                    {episode.guests.map((g) => (
+                      <li key={g.name}>
+                        <span className="guests__name">{g.name}</span>
+                        <span className="guests__role">{g.role}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {episode.topics && episode.topics.length > 0 && (
+                <div style={{ marginTop: 'var(--space-4)' }}>
+                  <p className="label label--muted">In this episode</p>
+                  <div className="chips" style={{ marginTop: 'var(--space-2)' }}>
+                    {episode.topics.map((t) => (
+                      <span className="chip chip--static" key={t}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
                 {canWatch(episode) ? 'Watch or listen on' : 'Listen on'}
               </p>

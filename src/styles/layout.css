@@ -64,13 +64,15 @@
   min-height: 44px;
 }
 
+/* The mark is the most distinctive thing the brand owns, so it leads and the
+   wordmark supports it. Sized against the 44px control minimum, not below it. */
 .logo__mark {
-  height: 54px;
+  height: 70px;
   width: auto;
 }
 
 .logo__word {
-  height: 30px;
+  height: 34px;
   width: auto;
 }
 
@@ -303,10 +305,10 @@
 
 @media (max-width: 760px) {
   .logo__mark {
-    height: 42px;
+    height: 52px;
   }
   .logo__word {
-    height: 23px;
+    height: 26px;
   }
   html {
     scroll-padding-top: 90px;

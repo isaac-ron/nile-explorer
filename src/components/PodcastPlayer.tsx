@@ -21,8 +21,10 @@ type Mode = 'idle' | 'video' | 'audio';
  * Neither iframe is mounted until the reader asks for it: an autoplaying
  * embed on page load costs a lot and nobody asked for it.
  *
- * When `videoAvailable` is false the Watch path disappears entirely and the
- * stage carries stills instead, so a re-edit in progress is never linked to.
+ * When `videoAvailable` is false the Watch path disappears entirely. The stage
+ * then carries the lead still from the recording, with the rest beneath it, so
+ * a re-edit in progress is never linked to and the space still says something
+ * about the episode. Falls back to the show artwork when no stills exist.
  */
 export default function PodcastPlayer({
   episode,
@@ -32,7 +34,8 @@ export default function PodcastPlayer({
   podcast: PlayerShow;
 }) {
   const watchable = episode.videoAvailable && !!episode.embed;
-  const stills = episode.stills;
+  // The lead carries the stage; the rest form the contact sheet below it.
+  const [lead, ...rest] = episode.stills;
   const [mode, setMode] = useState<Mode>('idle');
 
   return (
@@ -41,8 +44,10 @@ export default function PodcastPlayer({
         {mode === 'idle' &&
           (watchable ? (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={episode.thumbnail} alt={`Artwork for “${episode.title}”`} />
+              {episode.thumbnail && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={episode.thumbnail} alt={`Artwork for “${episode.title}”`} />
+              )}
               <button
                 className="player__play"
                 type="button"
@@ -56,6 +61,15 @@ export default function PodcastPlayer({
                 </span>
               </button>
             </>
+          ) : lead ? (
+            <Image
+              src={lead.src}
+              alt={lead.alt}
+              width={lead.width}
+              height={lead.height}
+              sizes="(max-width: 1000px) 100vw, 700px"
+              priority
+            />
           ) : (
             <div className="player__holding">
               <Image
@@ -124,13 +138,24 @@ export default function PodcastPlayer({
         </p>
       )}
 
-      {!watchable && stills.length > 0 && (
+      {!watchable && rest.length > 0 && (
         <figure className="stills">
-          <figcaption className="label label--muted">From the recording</figcaption>
+          <figcaption className="stills__head">
+            <span className="label label--muted">From the recording</span>
+            {episode.photographer && (
+              <span className="stills__credit">Photographs by {episode.photographer}</span>
+            )}
+          </figcaption>
           <div className="stills__grid">
-            {stills.map((s) => (
-              <span className="frame frame--wide" key={s.src}>
-                <Image src={s.src} alt={s.alt} width={1600} height={900} sizes="(max-width: 700px) 50vw, 240px" />
+            {rest.map((s) => (
+              <span className="frame frame--square" key={s.src}>
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={s.width}
+                  height={s.height}
+                  sizes="(max-width: 700px) 45vw, 220px"
+                />
               </span>
             ))}
           </div>

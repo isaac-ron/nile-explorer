@@ -55,6 +55,7 @@ export default function AboutPage() {
                 priority
               />
             </div>
+            <p className="credit">Photograph by Daniel Athian</p>
             <ul className="factlist">
               <li>
                 <span className="k">Role</span>
@@ -112,7 +113,7 @@ export default function AboutPage() {
 
             <div className="callout" style={{ marginTop: 'var(--space-5)' }}>
               <strong>Still needed:</strong> confirmation of the formal titles and honorifics to
-              use alongside the name, and a photographer credit for the portrait.
+              use alongside the name.
             </div>
           </div>
 

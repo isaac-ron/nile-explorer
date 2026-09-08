@@ -742,6 +742,9 @@
 
 .fest {
   position: relative;
+  /* The watermark below is deliberately bled off the right edge; without this
+     it would widen the document and scroll the whole page sideways. */
+  overflow: hidden;
   border-top: 1px solid var(--navy);
   background: var(--navy);
   display: flex;
@@ -772,8 +775,27 @@
   );
 }
 
+/* Brand texture, not decoration: the mark itself, masked to a white
+   silhouette and held at 7% so it reads as watermark rather than image.
+   Only on navy grounds — never behind body copy. */
+.fest::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  right: -3%;
+  bottom: -10%;
+  width: min(46%, 480px);
+  aspect-ratio: 889 / 1044;
+  background: var(--paper);
+  -webkit-mask: url('/brand/logo-mark.png') no-repeat center / contain;
+  mask: url('/brand/logo-mark.png') no-repeat center / contain;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
 .fest__inner {
   position: relative;
+  z-index: 1;
   width: 100%;
   padding-top: clamp(40px, 5vw, 72px);
   padding-bottom: var(--section-y);
@@ -1160,9 +1182,49 @@
   border-top: 1px solid var(--rule);
 }
 
+/* Picture credit. Small, muted, sits directly under the image it credits. */
+.credit {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.stills__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Credit sits with the pictures, not in a caption nobody reads. */
+.stills__credit {
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+/* Fixed column counts, not auto-fit: a contact sheet wants even rows, and
+   auto-fit left a ragged remainder at most widths. */
 .stills__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
   margin-top: var(--space-3);
+}
+
+@media (max-width: 700px) {
+  .stills__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .stills__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Faces sit in the upper third; a centred square crop decapitates them. */
+.stills__grid .frame > img {
+  object-position: 50% 32%;
 }

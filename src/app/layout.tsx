@@ -1,13 +1,21 @@
 import type { Metadata } from 'next';
-import { Spectral, Libre_Franklin } from 'next/font/google';
+import { Newsreader, Libre_Franklin } from 'next/font/google';
 import Masthead from '@/components/Masthead';
 import Footer from '@/components/Footer';
 import { SITE } from '@/lib/content';
 import '@/styles/globals.css';
 
-const serif = Spectral({
+/**
+ * Editorial voice.
+ *
+ * Newsreader is drawn for reading news on screen: sturdier stems and more
+ * pronounced, slightly flared serifs than Spectral, which read as a
+ * publication rather than a default web serif. It is variable, so headline
+ * and body weights cost one file. Swap the family name here to try another;
+ * nothing else in the stylesheet names a typeface.
+ */
+const serif = Newsreader({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
   style: ['normal', 'italic'],
   variable: '--font-serif',
   display: 'swap'

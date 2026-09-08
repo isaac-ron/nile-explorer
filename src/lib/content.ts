@@ -69,7 +69,8 @@ export type Podcast = {
 
 export type Guest = { name: string; role: string };
 
-export type Still = { src: string; alt: string };
+/** Intrinsic dimensions are carried so next/image can reserve the box. */
+export type Still = { src: string; alt: string; width: number; height: number };
 
 export type EpisodeMeta = {
   blurb?: string;
@@ -79,6 +80,8 @@ export type EpisodeMeta = {
   videoAvailable?: boolean;
   videoNote?: string;
   stills?: Still[];
+  /** Credited wherever a still from this episode appears. */
+  photographer?: string;
 };
 
 export type UpcomingEpisode = {
@@ -154,10 +157,12 @@ export const canWatch = (e: EpisodeWithMeta): boolean => e.videoAvailable !== fa
 export type PlayerEpisode = {
   number: number;
   title: string;
-  thumbnail: string;
+  /** Null while withdrawn: the YouTube thumbnail URL carries the video id. */
+  thumbnail: string | null;
   videoAvailable: boolean;
   videoNote?: string;
   stills: Still[];
+  photographer?: string;
   /** Null while the video is withdrawn, so the URL never reaches the client. */
   url: string | null;
   embed: string | null;
@@ -175,10 +180,11 @@ export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
   return {
     number: e.number,
     title: e.title,
-    thumbnail: e.thumbnail,
+    thumbnail: watchable ? e.thumbnail : null,
     videoAvailable: watchable,
     videoNote: e.videoNote,
     stills: e.stills ?? [],
+    photographer: e.photographer,
     url: watchable ? e.url : null,
     embed: watchable ? e.embed : null
   };
