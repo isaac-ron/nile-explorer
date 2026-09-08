@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Newsreader, Libre_Franklin } from 'next/font/google';
+import { Newsreader, Schibsted_Grotesk } from 'next/font/google';
 import Masthead from '@/components/Masthead';
 import Footer from '@/components/Footer';
 import { SITE } from '@/lib/content';
@@ -21,9 +21,19 @@ const serif = Newsreader({
   display: 'swap'
 });
 
-const sans = Libre_Franklin({
+/**
+ * Furniture: kickers, nav, bylines, labels, chips — nearly all of it small
+ * and letterspaced uppercase.
+ *
+ * Schibsted Grotesk was drawn for a news publisher, so it is built for
+ * exactly that job: crisp caps that hold their shape at 11px, and a
+ * grotesque discipline that supports the serif instead of competing with
+ * it. Libre Franklin read softer and a touch generic beside Newsreader.
+ * Variable, so the 500 weight the stylesheet asks for is a real cut rather
+ * than a synthesised one.
+ */
+const sans = Schibsted_Grotesk({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
   variable: '--font-sans',
   display: 'swap'
 });
