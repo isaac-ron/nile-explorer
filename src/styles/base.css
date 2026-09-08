@@ -70,6 +70,12 @@ button {
   outline-color: var(--gold-light);
 }
 
+/* The skip link sits outside .on-navy but lands on the edition bar, and it is
+   navy itself, so the default navy ring had nothing to sit against. */
+.skip:focus-visible {
+  outline-color: var(--gold-light);
+}
+
 /* Skip link: visible only on keyboard focus. */
 .skip {
   position: absolute;

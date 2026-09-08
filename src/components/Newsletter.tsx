@@ -7,22 +7,14 @@ export default function Newsletter() {
 
   return (
     <section
-      className="section section--band signup"
+      className="section section--band signup on-navy"
       id="newsletter"
       aria-labelledby="signup-heading"
     >
       <div className="signup__grid shell">
         <div>
           <h2 id="signup-heading">Newsletter</h2>
-          <p
-            style={{
-              marginTop: 'var(--space-2)',
-              color: 'var(--ink-blurb)',
-              maxWidth: '40ch'
-            }}
-          >
-            New articles and podcast episodes, by email.
-          </p>
+          <p className="signup__blurb">New articles and podcast episodes, by email.</p>
         </div>
         <form
           className="signup__form"
@@ -45,7 +37,7 @@ export default function Newsletter() {
             autoComplete="email"
             placeholder="you@example.org"
           />
-          <button className="btn" type="submit">
+          <button className="btn btn--gold" type="submit">
             {done ? 'Subscribed' : 'Subscribe'}
           </button>
           {/* No frequency claim: publishing is irregular and there is no

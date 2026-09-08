@@ -25,10 +25,21 @@
   --ink-blurb: #5A564C;
   --muted: #6E6A5F;
 
+  /* Ink on navy grounds.
+     The chrome (edition bar, masthead, newsletter, footer) is saturated, so
+     the ink ramp needs a second half. Every value below is measured against
+     --navy #06183A. The paper ramp cannot be reused: --muted is 1.4:1 there
+     and --ink is invisible. */
+  --on-navy: #FFFFFF;       /* 17.51:1 — headings, active nav */
+  --on-navy-soft: #D6DAE2;  /* 12.38:1 — blurbs, list links, nav at rest */
+  --on-navy-muted: #9AA4B8; /* 6.92:1 — legal line, notes, metadata */
+
   /* Lines */
   --rule: #E6E3DC;          /* decorative hairlines only (1.28:1) */
   --rule-strong: #CFCABC;
   --border-strong: #8A8377; /* control boundaries, 3.75:1 */
+  --rule-navy: #33425D;         /* decorative hairlines on navy */
+  --rule-navy-strong: #5D697F;  /* control boundaries on navy, 3.08:1 */
 
   /* Layout */
   --shell: 1320px;

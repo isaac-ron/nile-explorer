@@ -1,0 +1,183 @@
+/* ============================================================
+   Texture layer  —  PARKED, NOT IN THE BUILD
+   ------------------------------------------------------------
+   Not imported by globals.css. To try it, add
+   `@import './texture.css';` there, put data-texture="ripple" (or meander,
+   cataract, basin, column, watermark) on <html> in layout.tsx, and add
+   `tex tex--paper` / `tex tex--navy` to the surfaces that should carry it.
+   ------------------------------------------------------------
+   The client asked for navy and gold *in the background*. Flooding the
+   reading surface with either fails: --gold is 3.05:1 on paper and cannot
+   carry text, and a navy ground turns a 1,200-word analysis piece into a
+   contrast problem on the mid-range Android most of this audience reads on.
+
+   Texture raises brand presence without touching reading contrast. Every
+   pattern here is drawn from the mark itself (the Nile ribbon, the cataract
+   teeth, the basin) and rendered as a mask, so the ink stays a token rather
+   than a baked-in colour and one tile serves both paper and navy grounds.
+
+   Deliberately NOT here: paper grain, noise, grunge, ochre-and-dust overlays.
+   PRODUCT.md bans distressed texture by name as the visual shorthand of
+   outsiders reporting on Africa. These are geometric and precise: drawn,
+   not weathered.
+
+   Cost: every tile below is under 400 bytes of inline SVG, no extra requests.
+   ============================================================ */
+
+/* ---------- Pattern definitions ----------
+   Each sets a tile image and its natural tile size. Scale and opacity stay
+   free so one pattern can sit at 2.5% behind copy and 9% on a navy band. */
+
+[data-texture='meander'] {
+  /* The Nile itself: the ribbon that runs through the mark, two banks wide.
+     Long period on purpose. At this scale it reads as a river crossing the
+     page rather than as wallpaper. */
+  --tex-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 120'%3E%3Cg fill='none' stroke='white' stroke-linecap='round'%3E%3Cpath stroke-width='3' d='M0 54C34 4 86 4 120 54S206 104 240 54'/%3E%3Cpath stroke-width='1.25' d='M0 68C34 18 86 18 120 68S206 118 240 68'/%3E%3C/g%3E%3C/svg%3E");
+  --tex-w: 240px;
+  --tex-h: 120px;
+}
+
+[data-texture='ripple'] {
+  /* Three stacked wavelets: the mark's water, and the same three-line figure
+     the Egyptian water sign has carried down this river for four thousand
+     years. The finest grain of the set, and the only one safe at full
+     strength behind body copy. */
+  --tex-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'%3E%3Cg fill='none' stroke='white' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M0 5q4-3 8 0t8 0t8 0t8 0'/%3E%3Cpath d='M0 12q4-3 8 0t8 0t8 0t8 0'/%3E%3Cpath d='M0 19q4-3 8 0t8 0t8 0t8 0'/%3E%3C/g%3E%3C/svg%3E");
+  --tex-w: 32px;
+  --tex-h: 24px;
+}
+
+[data-texture='cataract'] {
+  /* The sawtooth where the river breaks over rock, lifted from the bottom of
+     the mark. The sharpest pattern here and the one to watch: read as
+     decoration rather than as the mark, a zigzag field drifts toward generic
+     "African pattern". It holds when it stays geometric and stays rationed to
+     the festival and culture strands. */
+  --tex-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 14'%3E%3Cpath fill='none' stroke='white' stroke-width='1.5' d='M0 10 7 3 14 10 21 3 28 10'/%3E%3C/svg%3E");
+  --tex-w: 28px;
+  --tex-h: 14px;
+}
+
+[data-texture='basin'] {
+  /* Contour lines: five wavelengths over one tile, so the field never shows
+     its repeat. Cartographic rather than decorative, which suits a newsroom
+     covering a river basin across eleven countries. */
+  --tex-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cg fill='none' stroke='white' stroke-width='1' stroke-linecap='round'%3E%3Cpath d='M0 8q15-6 30 0t30 0t30 0t30 0'/%3E%3Cpath d='M0 24q10 5 20 0t20 0t20 0t20 0t20 0t20 0'/%3E%3Cpath d='M0 42q30-9 60 0t60 0'/%3E%3Cpath d='M0 58q7.5 4 15 0t15 0t15 0t15 0t15 0t15 0t15 0t15 0'/%3E%3Cpath d='M0 72q15-5 30 0t30 0t30 0t30 0'/%3E%3C/g%3E%3C/svg%3E");
+  --tex-w: 120px;
+  --tex-h: 80px;
+}
+
+[data-texture='column'] {
+  /* Not from the mark: from the register. These hairlines are the broadsheet
+     column grid showing faintly through the sheet. It says "newspaper" rather
+     than "Nile", so it carries no cultural risk at all, and it is the one
+     pattern that costs nothing in legibility even at full page width. */
+  --tex-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 116 8'%3E%3Crect width='1' height='8' fill='white'/%3E%3C/svg%3E");
+  --tex-w: 116px;
+  --tex-h: 8px;
+}
+
+[data-texture='watermark'] {
+  /* The treatment already shipping in the festival band, kept as the control.
+     It is a single placed mark, not a field: it cannot carry a whole page,
+     but nothing else states the brand as directly. */
+  --tex-image: url('/brand/logo-mark.png');
+  --tex-w: min(46%, 480px);
+  --tex-h: auto;
+  --tex-repeat: no-repeat;
+  --tex-position: right -3% bottom -10%;
+}
+
+/* ---------- The surface ---------- */
+
+.tex {
+  position: relative;
+}
+
+/* The pattern is painted by a pseudo-element rather than by the element's own
+   background, so the ink stays a token and the mask never touches content. */
+.tex > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tex::before {
+  content: '';
+  /* Renders only once an ancestor names a pattern. Without this guard an
+     unset --tex-image resolves to mask-image: none, which paints the ink as a
+     solid block across the whole section. */
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--tex-ink, var(--navy));
+  opacity: var(--tex-opacity, 0.04);
+  -webkit-mask-image: var(--tex-image);
+  mask-image: var(--tex-image);
+  -webkit-mask-repeat: var(--tex-repeat, repeat);
+  mask-repeat: var(--tex-repeat, repeat);
+  -webkit-mask-position: var(--tex-position, 0 0);
+  mask-position: var(--tex-position, 0 0);
+  -webkit-mask-size: calc(var(--tex-w) * var(--tex-scale, 1)) var(--tex-h);
+  mask-size: calc(var(--tex-w) * var(--tex-scale, 1)) var(--tex-h);
+}
+
+/* Scale the height too, except on the watermark, whose height is auto and
+   would collapse under calc(). */
+[data-texture]:not([data-texture='watermark']) .tex::before {
+  -webkit-mask-size: calc(var(--tex-w) * var(--tex-scale, 1))
+    calc(var(--tex-h) * var(--tex-scale, 1));
+  mask-size: calc(var(--tex-w) * var(--tex-scale, 1))
+    calc(var(--tex-h) * var(--tex-scale, 1));
+}
+
+[data-texture]:not([data-texture='none']) .tex::before {
+  display: block;
+}
+
+/* ---------- Ink, per ground ----------
+   These opacities are ceilings that survived contrast checking, not
+   preferences. On paper the ink is navy: at 4.5% the article ink still reads
+   14.2:1 where it crosses a stroke, against 16.25:1 on bare paper. On navy
+   the ink is paper, and nothing behind it is body copy. */
+
+.tex--paper {
+  --tex-ink: var(--navy);
+  --tex-opacity: 0.045;
+}
+
+/* Behind running prose. Half strength: felt when you look for it, gone when
+   you are reading. */
+.tex--quiet {
+  --tex-ink: var(--navy);
+  --tex-opacity: 0.025;
+}
+
+.tex--navy {
+  --tex-ink: var(--paper);
+  --tex-opacity: 0.07;
+}
+
+/* Gold on paper. Warmer and more obviously "the brand" than navy ink, and
+   safe here precisely because it never becomes a text colour. */
+.tex--gold {
+  --tex-ink: var(--gold);
+  --tex-opacity: 0.1;
+}
+
+/* ---------- Opt-outs ----------
+   Texture is decoration. It goes first when a reader has asked for a plainer
+   page, and it never reaches the printer. */
+
+@media (prefers-contrast: more) {
+  .tex::before {
+    display: none !important;
+  }
+}
+
+@media print {
+  .tex::before {
+    display: none !important;
+  }
+}

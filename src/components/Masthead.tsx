@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 import SiteNav from '@/components/SiteNav';
 import { SITE } from '@/lib/content';
 
@@ -23,7 +23,7 @@ export function EditionBar() {
   });
 
   return (
-    <div className="editionbar">
+    <div className="editionbar on-navy">
       <div className="editionbar__inner shell">
         <span>
           {today} &nbsp;·&nbsp; 
@@ -46,28 +46,13 @@ export default function Masthead() {
   return (
     <>
       <EditionBar />
-      <header className="masthead">
+      <header className="masthead on-navy">
         <div className="masthead__inner shell">
-          <Link className="logo" href="/" aria-label={`${SITE.name}, home`}>
-            <Image
-              className="logo__mark"
-              src="/brand/logo-mark.png"
-              alt=""
-              width={889}
-              height={1044}
-              priority
-            />
-            <Image
-              className="logo__word"
-              src="/brand/logo-wordmark.png"
-              alt={SITE.name}
-              width={1729}
-              height={334}
-              priority
-            />
-          </Link>
+          <Logo reversed priority />
           <SiteNav items={NAV} />
-          <Link className="btn" href="/#newsletter">
+          {/* Gold, not the default navy fill: a navy button on a navy
+              masthead has no edge. */}
+          <Link className="btn btn--gold" href="/#newsletter">
             Subscribe
           </Link>
         </div>

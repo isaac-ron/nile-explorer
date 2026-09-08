@@ -1,32 +1,17 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { PlatformLink } from '@/components/Icons';
+import Logo from '@/components/Logo';
 import { getTopics, SITE } from '@/lib/content';
 
 export default function Footer() {
   const topics = getTopics();
 
   return (
-    <footer className="footer">
+    <footer className="footer on-navy">
       <div className="footer__inner shell">
         <div className="footer__cols">
           <div className="footer__about">
-            <Link className="logo" href="/" aria-label={`${SITE.name}, home`}>
-              <Image
-                className="logo__mark"
-                src="/brand/logo-mark.png"
-                alt=""
-                width={889}
-                height={1044}
-              />
-              <Image
-                className="logo__word"
-                src="/brand/logo-wordmark.png"
-                alt={SITE.name}
-                width={1729}
-                height={334}
-              />
-            </Link>
+            <Logo reversed />
             <p>{SITE.description}</p>
             <div className="footer__social">
               <PlatformLink name="youtube" href={SITE.youtube} label="The Nile Explorer on YouTube" />

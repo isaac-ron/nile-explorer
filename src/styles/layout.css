@@ -1,12 +1,22 @@
 /* Masthead and footer.
-   Gold is deliberately rationed here: it marks section boundaries and the
-   footer rule, and nothing else. Hover states use navy. */
+
+   The chrome is saturated: edition bar, masthead and footer all sit on navy,
+   so every page opens and closes on the brand and the paper is framed rather
+   than tinted. Nothing here carries running prose, which is why this costs no
+   reading contrast. Body copy stays on --paper.
+
+   Consequences, all of them handled below: the ink ramp switches to the
+   --on-navy-* tokens, hover states move from navy to gold (navy-on-navy has
+   no edge), control boundaries move to --rule-navy-strong to hold 3:1, and
+   both marks switch to the reversed lockup. */
 
 /* ---------- Edition bar ---------- */
 
+/* One step darker than the masthead. With both on navy the two would read as
+   a single slab; this separates them without a rule. */
 .editionbar {
-  background: var(--navy);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--navy-deep);
+  color: var(--on-navy-soft);
 }
 
 .editionbar__inner {
@@ -44,8 +54,11 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background: var(--paper);
-  border-bottom: 1px solid var(--navy);
+  background: var(--navy);
+  /* Was a 1px navy hairline separating white chrome from white content. The
+     ground now does that job, so the rule is free to be the brand's: gold,
+     2px, answering the gold rule that opens the footer. */
+  border-bottom: 2px solid var(--gold);
 }
 
 .masthead__inner {
@@ -91,9 +104,9 @@
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid var(--border-strong);
-  background: var(--paper);
-  color: var(--navy);
+  border: 1px solid var(--rule-navy-strong);
+  background: transparent;
+  color: var(--paper);
   cursor: pointer;
 }
 
@@ -121,14 +134,17 @@
   letter-spacing: 0.13em;
   text-transform: uppercase;
   white-space: nowrap;
+  color: var(--on-navy-soft);
   border-bottom: 2px solid transparent;
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
+/* Gold underline, which is what DESIGN.md specified all along; the navy
+   original was a workaround for a navy-on-white masthead. */
 .nav__link:hover,
 .nav__link[aria-current='page'] {
-  color: var(--navy);
-  border-bottom-color: var(--navy);
+  color: var(--on-navy);
+  border-bottom-color: var(--gold);
 }
 
 /* ---------- Buttons ---------- */
@@ -181,7 +197,8 @@
 
 .footer {
   border-top: 2px solid var(--gold);
-  background: var(--surface);
+  background: var(--navy);
+  color: var(--on-navy-soft);
 }
 
 .footer__inner {
@@ -200,7 +217,7 @@
 .footer__about p {
   margin-top: var(--space-3);
   font-size: var(--fs-small);
-  color: var(--ink-blurb);
+  color: var(--on-navy-soft);
   max-width: 42ch;
 }
 
@@ -215,9 +232,12 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--navy);
+  /* --gold-light is the token DESIGN.md already reserves for navy grounds
+     (8.99:1). Column titles are the one place in the footer where gold can
+     carry text, and it gives the foot of every page a gold note. */
+  color: var(--gold-light);
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-navy);
   margin-bottom: var(--space-2);
 }
 
@@ -231,11 +251,11 @@
   align-items: center;
   min-height: 34px;
   font-size: var(--fs-small);
-  color: var(--ink-blurb);
+  color: var(--on-navy-soft);
 }
 
 .footer__list a:hover {
-  color: var(--navy);
+  color: var(--on-navy);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -246,9 +266,9 @@
   gap: var(--space-3);
   flex-wrap: wrap;
   padding-top: var(--space-4);
-  border-top: 1px solid var(--rule-strong);
+  border-top: 1px solid var(--rule-navy);
   font-size: var(--fs-small);
-  color: var(--muted);
+  color: var(--on-navy-muted);
 }
 
 /* ---------- Breakpoints ---------- */
@@ -281,7 +301,7 @@
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    border-top: 1px solid var(--navy);
+    border-top: 1px solid var(--rule-navy);
   }
   .nav--open {
     display: flex;
@@ -290,16 +310,18 @@
     width: 100%;
     justify-content: flex-start;
     min-height: 48px;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule-navy);
   }
   .nav__link:last-child {
     border-bottom: 0;
   }
+  /* In the panel the row is the target, so the state reads as a lift in the
+     ground rather than as an underline on one word. */
   .nav__link:hover,
   .nav__link[aria-current='page'] {
-    border-bottom-color: var(--rule);
-    color: var(--navy);
-    background: var(--surface);
+    border-bottom-color: var(--rule-navy);
+    color: var(--on-navy);
+    background: rgba(255, 255, 255, 0.07);
   }
 }
 

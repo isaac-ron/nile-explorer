@@ -6,6 +6,13 @@ Visual system for The Nile Explorer, captured from the shipping landing page and
 
 Light, paper-white. A newspaper read in daylight. Navy carries authority, gold marks structure, and a single warm off-white separates secondary bands from the reading surface. No dark mode.
 
+**The chrome is saturated; the paper is not.** Edition bar, masthead, newsletter and footer sit on navy, so every page opens and closes on the brand and the reading surface is framed rather than tinted. This is the answer to "the design does not carry the brand": brand presence comes from the furniture, which carries no running prose, so it costs nothing in reading contrast. The five reference newsrooms in PRODUCT.md (CNN, Al Jazeera, Bloomberg, ABC, CNBC) all work this way.
+
+Two rules follow from it, and both are load-bearing:
+
+- **Navy grounds use the `--on-navy-*` ramp.** The paper ramp cannot be reused: `--muted` is 1.4:1 on navy and `--ink` is invisible.
+- **Navy grounds use the reversed lockup.** On `--navy` the positive mark's own navy is 1.33:1 and its river blue 2.62:1, so the continent and the Nile disappear. `<Logo reversed />` is not a styling preference.
+
 ## Color
 
 | Token | Value | Role |
@@ -23,6 +30,20 @@ Light, paper-white. A newspaper read in daylight. Navy carries authority, gold m
 | `--rule` | `#E6E3DC` | Hairline separators (decorative only). |
 | `--border` | `#D9D5CB` | Legacy input/control border. **Fails 3:1; do not use on controls.** |
 | `--border-strong` | `#8C8578` | Control borders, 3.02:1 on paper. Replaces `--border` on inputs and buttons. |
+
+### Ink on navy
+
+The second half of the ramp, for the saturated chrome. Ratios are against `--navy`.
+
+| Token | Value | Ratio | Role |
+|---|---|---|---|
+| `--on-navy` | `#FFFFFF` | 17.51:1 | Headings, active nav, footer link hover. |
+| `--on-navy-soft` | `#D6DAE2` | 12.38:1 | Blurbs, footer lists, nav at rest. |
+| `--on-navy-muted` | `#9AA4B8` | 6.92:1 | Legal line, form notes, metadata. |
+| `--rule-navy` | `#33425D` | — | Decorative hairlines on navy. |
+| `--rule-navy-strong` | `#5D697F` | 3.08:1 | Control boundaries on navy (nav toggle, platform tiles). |
+
+`--gold-light` carries text on navy at 8.99:1 and is used for footer column titles. `--gold` itself is 5.69:1 on navy, so gold buttons take `--ink` labels and clear AA.
 
 ### Verified contrast
 
@@ -48,7 +69,8 @@ Uppercase tracked labels (`0.14em`–`0.2em`) are the masthead's existing sectio
 
 - Max width `1320px`, fluid gutters `clamp(16px, 3vw, 40px)`.
 - Article: `860px` main column beside a `300px` aside, centered as a unit. The lead-image caption must align to the main column's left edge, not to page center.
-- Section bands alternate `--paper` and `--surface`, separated by a `1px` navy rule; footer opens on a `2px` gold rule.
+- Section bands alternate `--paper` and `--surface`, separated by a `1px` navy rule; footer opens on a `2px` gold rule, and the masthead closes on one.
+- Navy comes in two values: `--navy` for identity blocks (masthead, footer, festival) and `--navy-deep` one step below for utility strips (edition bar, newsletter). On the homepage the festival, newsletter and footer stack, and that step is what keeps them from merging into one slab.
 
 ### Breakpoints
 
@@ -62,7 +84,9 @@ The source shipped with none. Three, mobile-first in effect:
 
 ## Components
 
-- **Header** — sticky, navy hairline under. Nav items underline in gold on hover and focus. Subscribe is a filled navy button, gold on hover.
+- **Header** — sticky, on `--navy`, closing on a `2px` gold rule. Reversed lockup. Nav items sit at `--on-navy-soft` and underline in gold on hover, current and focus. Subscribe is a gold button, because a navy fill on a navy ground has no edge. The mobile disclosure panel uses `--rule-navy` dividers and a `rgba(255,255,255,0.07)` row lift rather than an underline.
+- **Footer** — on `--navy`, opening on the `2px` gold rule. Reversed lockup, `--gold-light` column titles, `--on-navy-soft` lists. Platform tiles drop their paper fill on navy and keep only a `--rule-navy-strong` boundary; the marks themselves stay in their own colours.
+- **Newsletter** — on `--navy-deep`. The email field keeps its paper fill, which is the clearest possible control boundary on a dark ground and keeps the placeholder at 5.40:1 against paper rather than restating it.
 - **Buttons** — square, no radius. Uppercase Libre Franklin 700 at `0.16em`. Minimum 44px tall.
 - **Cards** — borderless. Image, uppercase category, Spectral title, muted meta. Separation comes from rules and spacing, never from a box.
 - **Pull quote** — Spectral italic, navy, on a gold rule. The source used a 3px `border-left`, which is a banned side-stripe; replaced with a gold rule above the quote plus a hanging quotation mark.

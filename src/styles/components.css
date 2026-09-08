@@ -653,6 +653,19 @@
   background: var(--surface);
 }
 
+/* On navy the paper tile reads as a bright chip and fights the footer. The
+   platform marks are all drawn to sit on dark, so the tile drops out and only
+   the boundary remains. */
+.on-navy .platform {
+  background: transparent;
+  border-color: var(--rule-navy-strong);
+}
+
+.on-navy .platform:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--gold);
+}
+
 /* ---------- Episode / programme rows ---------- */
 
 .episode {
@@ -942,7 +955,20 @@
   color: var(--navy);
 }
 
-/* ---------- Newsletter ---------- */
+/* ---------- Newsletter ----------
+   The last band before the footer, and part of the chrome rather than the
+   reading surface, so it carries navy too. Newsletter and footer then read as
+   one navy foot to the page, divided by the footer's gold rule. */
+
+.signup {
+  /* --navy-deep, not --navy: on the homepage this band follows the festival,
+     which is already navy, and two identical grounds merged into one slab.
+     The deeper value is also what the edition bar uses, which makes the rule
+     consistent: utility strips sit a step below identity blocks. */
+  background: var(--navy-deep);
+  /* .section--band opens on a navy hairline, which is invisible here. */
+  border-top-color: var(--rule-navy);
+}
 
 .signup__grid {
   display: grid;
@@ -953,8 +979,14 @@
 
 .signup h2 {
   font-size: var(--fs-h2);
-  color: var(--navy);
+  color: var(--on-navy);
   max-width: 24ch;
+}
+
+.signup__blurb {
+  margin-top: var(--space-2);
+  color: var(--on-navy-soft);
+  max-width: 40ch;
 }
 
 .signup__form {
@@ -979,10 +1011,13 @@
   color: var(--muted);
 }
 
+/* The field keeps its paper fill. A white control on navy is the clearest
+   boundary available, and the placeholder keeps its 5.40:1 against paper
+   instead of being restated against a dark ground. */
 .signup__note {
   flex: 1 0 100%;
   font-size: var(--fs-small);
-  color: var(--muted);
+  color: var(--on-navy-muted);
 }
 
 /* ---------- Category chips ---------- */
