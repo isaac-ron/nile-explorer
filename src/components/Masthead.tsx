@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import SiteNav from '@/components/SiteNav';
 import { SITE } from '@/lib/content';
 
 const NAV = [
@@ -65,13 +66,7 @@ export default function Masthead() {
               priority
             />
           </Link>
-          <nav className="nav" aria-label="Sections">
-            {NAV.map((n) => (
-              <Link className="nav__link" href={n.href} key={n.href}>
-                {n.label}
-              </Link>
-            ))}
-          </nav>
+          <SiteNav items={NAV} />
           <Link className="btn" href="/#newsletter">
             Subscribe
           </Link>

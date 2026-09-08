@@ -81,7 +81,34 @@
   margin-left: auto;
 }
 
+.navtoggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.navtoggle__bars {
+  display: grid;
+  gap: 4px;
+  width: 20px;
+}
+
+.navtoggle__bars span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+}
+
 .nav__link {
+  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -224,23 +251,56 @@
 
 /* ---------- Breakpoints ---------- */
 
-@media (max-width: 760px) {
+/* The horizontal strip needs ~950px once the logo and Subscribe are counted:
+   logo ~215 + nav 543 + button ~130 + gaps. Below that it is the panel. */
+@media (max-width: 1000px) {
   .masthead__inner {
     flex-wrap: wrap;
     row-gap: 0;
+    gap: var(--space-3);
   }
-  .nav {
+  .navtoggle {
+    display: inline-flex;
     order: 3;
+  }
+  .btn {
+    order: 2;
+    margin-left: auto;
+    padding: 10px 14px;
+    letter-spacing: 0.12em;
+  }
+
+  .nav {
+    order: 4;
+    display: none;
     width: 100%;
     margin-left: 0;
-    gap: 18px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    border-top: 1px solid var(--rule);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    border-top: 1px solid var(--navy);
   }
-  .nav::-webkit-scrollbar {
-    display: none;
+  .nav--open {
+    display: flex;
   }
+  .nav__link {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav__link:last-child {
+    border-bottom: 0;
+  }
+  .nav__link:hover,
+  .nav__link[aria-current='page'] {
+    border-bottom-color: var(--rule);
+    color: var(--navy);
+    background: var(--surface);
+  }
+}
+
+@media (max-width: 760px) {
   .logo__mark {
     height: 42px;
   }
@@ -248,7 +308,7 @@
     height: 23px;
   }
   html {
-    scroll-padding-top: 140px;
+    scroll-padding-top: 90px;
   }
   .editionbar__inner {
     justify-content: center;
@@ -256,4 +316,21 @@
   .editionbar__links {
     display: none;
   }
+
+  /* auto-fit let the first track collapse to ~55px, wrapping the standfirst
+     one word per line beside a crushed logo. */
+  .footer__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .footer__about {
+    grid-column: 1 / -1;
+  }
 }
+
+@media (max-width: 380px) {
+  .footer__cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
