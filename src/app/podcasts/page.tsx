@@ -179,7 +179,7 @@ export default function PodcastsPage() {
                 lineHeight: 1.55
               }}
             >
-              Conversations on peace, governance and the future of the Nile basin, recorded in Juba.
+              Conversations on peace, governance and the future of the Nile basin, recorded in  Nairobi.
             </p>
             <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
               Subscribe

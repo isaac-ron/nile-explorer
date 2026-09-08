@@ -26,7 +26,7 @@ export function EditionBar() {
     <div className="editionbar">
       <div className="editionbar__inner shell">
         <span>
-          {today} &nbsp;·&nbsp; Juba
+          {today} &nbsp;·&nbsp; 
         </span>
         <span className="editionbar__links">
           <a href={SITE.youtube} target="_blank" rel="noopener noreferrer">

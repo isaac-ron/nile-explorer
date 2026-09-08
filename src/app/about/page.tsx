@@ -40,7 +40,7 @@ export default function AboutPage() {
         <div className="kicker">
           <span className="kicker__cat">The patron</span>
           <span className="kicker__rule" />
-          <span className="kicker__meta">Juba</span>
+          <span className="kicker__meta"> </span>
         </div>
 
         <div className="about__grid">
