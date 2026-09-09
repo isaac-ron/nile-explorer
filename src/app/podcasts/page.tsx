@@ -7,7 +7,7 @@ import {
   getUpcoming,
   getPodcastMeta,
   toPlayerEpisode,
-  getTelevision,
+  getDocumentaries,
   getArchive,
   formatDate,
   SITE
@@ -27,7 +27,7 @@ export default function PodcastsPage() {
   const meta = getPodcastMeta();
   const [latest, ...older] = getEpisodes();
   const upcoming = getUpcoming();
-  const programmes = getTelevision().slice(0, 3);
+  const programmes = getDocumentaries().slice(0, 3);
   const archive = getArchive(4);
 
   return (
@@ -193,7 +193,7 @@ export default function PodcastsPage() {
 
           {programmes.length > 0 && (
             <div>
-              <h2 className="rail__title">Also on Television</h2>
+              <h2 className="rail__title">Also in Documentaries</h2>
               {programmes.map((v) => (
                 <a
                   className="sidestory"
@@ -202,12 +202,12 @@ export default function PodcastsPage() {
                   rel="noopener noreferrer"
                   key={v.videoId}
                 >
-                  <span className="card__cat">Programme</span>
+                  <span className="card__cat">Film</span>
                   <span className="sidestory__title">{v.title}</span>
                 </a>
               ))}
-              <Link className="section__more" href="/television" style={{ marginTop: 10 }}>
-                All programmes →
+              <Link className="section__more" href="/documentaries" style={{ marginTop: 10 }}>
+                All films →
               </Link>
             </div>
           )}

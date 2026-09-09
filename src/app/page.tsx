@@ -3,79 +3,48 @@ import Link from 'next/link';
 import {
   getArticles,
   getTopics,
-  getTelevision,
+  getTopStories,
+  getDocumentaries,
   getLatestEpisode,
   getArchive,
   getFestival,
-  formatDate,
-  labelFor,
+  getFestivalSlides,
+  archiveCapacity,
   canWatch,
   SITE
 } from '@/lib/content';
-import { ArticleCard, StoryRow, SideStory, RankedItem } from '@/components/Story';
+import { ArticleCard, StoryRow, RankedItem } from '@/components/Story';
 import { ProgrammeCard } from '@/components/Television';
 import { PlatformLink } from '@/components/Icons';
+import TopStories from '@/components/TopStories';
+import FestivalCarousel from '@/components/FestivalCarousel';
 import Newsletter from '@/components/Newsletter';
 
 export default function Home() {
   const articles = getArticles();
   const topics = getTopics();
-  const television = getTelevision();
+  const documentaries = getDocumentaries();
   const episode = getLatestEpisode();
   const festival = getFestival();
   const still = episode?.stills?.[0];
 
-  const [lead, ...rest] = articles;
-  const side = rest.slice(0, 3);
-  const grid = rest.slice(3, 6);
-  const river = rest.slice(6);
-  const archive = getArchive(4);
+  // The trio leads; everything after it fills the rest of the page in order,
+  // so no story appears twice above the archive rail.
+  const top = getTopStories(3);
+  const led = new Set(top.map((a) => a.slug));
+  const rest = articles.filter((a) => !led.has(a.slug));
+  const grid = rest.slice(0, 3);
+  const river = rest.slice(3);
+  const archive = getArchive(archiveCapacity);
 
   return (
     <>
-      {/* ---------- Lead ---------- */}
+      {/* ---------- Top stories ----------
+          Three ranked stories carry the whole fold. Order comes from
+          getTopStories, which falls through to recency until something is
+          measuring; see the swap point in lib/content. */}
       <section className="hero shell" aria-labelledby="lead-heading">
-        <div className="hero__grid">
-          <div className="hero__lead">
-            <div className="kicker">
-              <span className="kicker__cat">{labelFor(lead)}</span>
-              <span className="kicker__rule" />
-              <span className="kicker__meta">{formatDate(lead.date)}</span>
-            </div>
-
-            <Link href={`/articles/${lead.slug}`}>
-              {lead.image && (
-                <span className="frame frame--lede">
-                  <Image
-                    src={lead.image.url}
-                    alt={lead.image.alt || `Illustration for “${lead.title}”`}
-                    width={lead.image.width ?? 1200}
-                    height={lead.image.height ?? 768}
-                    sizes="(max-width: 1000px) 100vw, 820px"
-                    priority
-                  />
-                </span>
-              )}
-              <h1 className="hero__title" id="lead-heading" style={{ marginTop: 'var(--space-4)' }}>
-                {lead.title}
-              </h1>
-            </Link>
-
-            <p className="hero__deck">{lead.summary}</p>
-            <p className="hero__byline">
-              By {lead.author} · {lead.readingTime} min read
-            </p>
-          </div>
-
-          {/* Simply the next most recent pieces. Labelled as such rather than
-              implying an editorial selection that does not exist. */}
-          <div className="hero__side">
-            <h2 className="rail__title">Top stories</h2>
-            {side.map((a) => (
-              <SideStory article={a} key={a.slug} />
-            ))}
-          </div>
-        </div>
+        <TopStories stories={top} />
       </section>
 
       {/* ---------- Podcast ---------- */}
@@ -239,10 +208,14 @@ export default function Home() {
           <aside className="rail" aria-label="Archive and comment">
             {/* Not "most read": there is no analytics source behind this site,
                 so a popularity ranking would be invented. */}
+            {/* Sized to reach the foot of the river. The pool is smaller than
+                the rail, so getArchive cycles and headlines repeat until the
+                archive is deep enough to fill it; keys carry the index because
+                slugs are no longer unique here. */}
             <div>
               <h2 className="rail__title">From the archive</h2>
               {archive.map((a, i) => (
-                <RankedItem article={a} n={i + 1} key={a.slug} />
+                <RankedItem article={a} n={i + 1} key={`${a.slug}-${i}`} />
               ))}
             </div>
 
@@ -257,18 +230,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- Television ---------- */}
-      {television.length > 0 && (
-        <section className="section section--band" id="tv" aria-labelledby="tv-heading">
+      {/* ---------- Documentaries ----------
+          Collapses out of the page entirely when the strand is empty, which it
+          will be once the placeholder uploads come down. */}
+      {documentaries.length > 0 && (
+        <section
+          className="section section--band"
+          id="documentaries"
+          aria-labelledby="docs-heading"
+        >
           <div className="shell">
             <div className="section__head">
-              <h2 id="tv-heading">Television</h2>
-              <Link className="section__more" href="/television">
-                All programmes →
+              <h2 id="docs-heading">Documentaries</h2>
+              <Link className="section__more" href="/documentaries">
+                All films →
               </Link>
             </div>
             <div className="cardgrid">
-              {television.slice(0, 3).map((v) => (
+              {documentaries.slice(0, 3).map((v) => (
                 <ProgrammeCard video={v} key={v.videoId} />
               ))}
             </div>
@@ -278,6 +257,7 @@ export default function Home() {
 
       {/* ---------- Festival ---------- */}
       <section className="fest on-navy" id="festival" aria-labelledby="fest-heading">
+        <FestivalCarousel slides={getFestivalSlides()} />
         <div className="fest__scrim" />
         <div className="fest__inner shell">
           <span className="fest__kicker">

@@ -147,6 +147,81 @@
   border-bottom-color: var(--gold);
 }
 
+/* ---------- More menu ---------- */
+
+.nav__group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* A button, not a link, so it announces its expanded state. Reset the UA
+   chrome that a button brings and that .nav__link does not expect. */
+.nav__more {
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nav__chev {
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+
+.nav__more[aria-expanded='true'] .nav__chev {
+  transform: rotate(180deg);
+}
+
+/* An explicit display beats the UA rule behind the hidden attribute, so the
+   closed state has to be restated here or the menu ships permanently open. */
+.nav__menu[hidden] {
+  display: none;
+}
+
+.nav__menu {
+  position: absolute;
+  z-index: var(--z-menu);
+  top: 100%;
+  right: 0;
+  min-width: 232px;
+  display: grid;
+  background: var(--navy-deep);
+  border: 1px solid var(--rule-navy-strong);
+  /* The masthead's gold rule is 2px; the menu answers it so the panel reads as
+     part of the header rather than as a floating card. */
+  border-top: 2px solid var(--gold);
+}
+
+.nav__menulink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--on-navy-soft);
+  border-bottom: 1px solid var(--rule-navy);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.nav__menulink:last-child {
+  border-bottom: 0;
+}
+
+.nav__menulink:hover,
+.nav__menulink[aria-current='page'] {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--on-navy);
+}
+
 /* ---------- Buttons ---------- */
 
 .btn {
@@ -322,6 +397,25 @@
     border-bottom-color: var(--rule-navy);
     color: var(--on-navy);
     background: rgba(255, 255, 255, 0.07);
+  }
+
+  /* More flattens. SiteNav swaps the trigger for a plain link and drops the
+     hidden state entirely at this width, so there is nothing to unhide here:
+     the submenu just stops floating and indents under its heading. */
+  .nav__group {
+    display: block;
+    width: 100%;
+  }
+  .nav__menu {
+    position: static;
+    min-width: 0;
+    border: 0;
+    background: none;
+  }
+  .nav__menulink {
+    min-height: 48px;
+    padding-left: var(--space-5);
+    border-bottom: 1px solid var(--rule-navy);
   }
 }
 

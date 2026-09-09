@@ -45,7 +45,7 @@ export default function Footer() {
                 <Link href="/podcasts">Podcast</Link>
               </li>
               <li>
-                <Link href="/television">Television</Link>
+                <Link href="/documentaries">Documentaries</Link>
               </li>
               <li>
                 <Link href="/festival">The Nile Festival</Link>

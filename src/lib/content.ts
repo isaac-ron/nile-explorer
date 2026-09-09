@@ -124,6 +124,42 @@ export const getArticles = (): Article[] => articles;
 export const getArticle = (slug: string): Article | undefined =>
   articles.find((a) => a.slug === slug);
 
+/* ---------------------------------------------------------------------------
+   Top stories
+   ---------------------------------------------------------------------------
+   The front page leads on a ranked trio rather than a single editor's pick, so
+   the ordering needs to come from somewhere. Today nothing measures anything,
+   so it falls through to recency, which is an arbitrary but honest default.
+
+   THE SWAP POINT IS `popularity` BELOW. Fill it with slug -> score from
+   whatever lands first (page views, click counts, a CMS "featured" weight) and
+   both the lead and the running order re-elect themselves with no change to
+   any component. Scores are relative, not absolute: only their order matters.
+--------------------------------------------------------------------------- */
+
+/** slug -> score. Empty until a metric source exists. Higher wins. */
+const popularity: Record<string, number> = {};
+
+/** Recency in ms, used as the tiebreak and as the whole score while unmeasured. */
+const recencyOf = (a: Article): number => +new Date(a.date);
+
+const scoreOf = (a: Article): number => popularity[a.slug] ?? 0;
+
+/**
+ * The stories that lead the front page, best first.
+ *
+ * `[0]` is the main story: the biggest well in the hero, and the page's `h1`.
+ * Ties (which is every article today, since every score is 0) break on recency,
+ * so the current behaviour is exactly the old "newest first" lead.
+ */
+export const getTopStories = (count = 3): Article[] =>
+  [...articles]
+    .sort((a, b) => scoreOf(b) - scoreOf(a) || recencyOf(b) - recencyOf(a))
+    .slice(0, count);
+
+/** True once anything is actually measuring. Lets the UI stop saying "Latest". */
+export const hasPopularityData = (): boolean => Object.keys(popularity).length > 0;
+
 export const getTopics = (): Topic[] => topics;
 
 export const getSections = (): Section[] => sections;
@@ -193,9 +229,124 @@ export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
 /** Scheduled but unreleased. Empty until someone fills in podcast-meta.json. */
 export const getUpcoming = (): UpcomingEpisode[] => podcastMeta.upcoming;
 
-export const getTelevision = (): Video[] => television;
+/**
+ * Renamed from Television. The underlying feed and the `kind: 'television'`
+ * value on each item still come from the ingest, so the data shape is
+ * untouched; only what the site calls the strand has changed.
+ */
+export const getDocumentaries = (): Video[] => television;
 
 export const getFestival = (): Festival => festival;
+
+/* ---------------------------------------------------------------------------
+   PLACEHOLDER FESTIVAL IMAGERY  —  REPLACE BEFORE THE INAUGURAL EDITION
+   ---------------------------------------------------------------------------
+   The Nile Festival has not happened, so none of these is a photograph of it.
+   They are licensed stock standing in until the first edition is shot.
+
+   Swap: drop the real photographs into public/festival/, point `src` at them,
+   rewrite `alt` to describe the actual scene, and remove the images.unsplash.com
+   entry from next.config.ts. Nothing else references these.
+
+   Alt text describes what is in each frame and does not claim the festival as
+   its subject, so the page never asserts something untrue to a screen reader.
+--------------------------------------------------------------------------- */
+const festivalSlides = [
+  {
+    src: 'https://images.unsplash.com/photo-1784123476511-c8f9da501f5d?auto=format&fit=crop&w=1900&q=70',
+    alt: 'Dancers in blue and gold wax-print dress performing outside a large stone building.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1764670085286-55cd79507a72?auto=format&fit=crop&w=1900&q=70',
+    alt: 'Three drummers playing together at an outdoor gathering.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1758875913518-7869eb5e1e91?auto=format&fit=crop&w=1900&q=70',
+    alt: 'A group in traditional dress dancing together in the open air.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1778848268262-3a9e40cae69c?auto=format&fit=crop&w=1900&q=70',
+    alt: 'Performers in costume on a lit stage at night.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1764145162259-04eaf2b3d86a?auto=format&fit=crop&w=1900&q=70',
+    alt: 'A crowd in white dress gathered outdoors for a celebration.'
+  }
+];
+
+export const getFestivalSlides = () => festivalSlides;
+
+/* ---------------------------------------------------------------------------
+   Editorial strands behind the More menu
+   ---------------------------------------------------------------------------
+   Coverage areas that mirror the Nile Festival's pillars. None of them holds an
+   article yet; the routes exist so the menu is real and so the newsroom has
+   somewhere to publish into. Each page falls back to an empty state that says
+   so plainly rather than showing an empty list.
+
+   `topic` maps a strand to an existing topic slug when one appears in
+   topics.json, so a strand starts filling itself the moment the ingest carries
+   pieces tagged that way.
+--------------------------------------------------------------------------- */
+
+export type Strand = {
+  slug: string;
+  name: string;
+  standfirst: string;
+  /** Topic slug to pull articles from, when the newsroom starts tagging them. */
+  topic?: string;
+};
+
+const strands: Strand[] = [
+  {
+    slug: 'culture',
+    name: 'Cultural commentary',
+    standfirst:
+      'Writing on the traditions, languages and public life carried between South Sudan and its diaspora.',
+    topic: 'culture'
+  },
+  {
+    slug: 'media',
+    name: 'Media',
+    standfirst:
+      'The press, broadcasting and information environment across the region, and who gets to tell the story.',
+    topic: 'media'
+  },
+  {
+    slug: 'entertainment',
+    name: 'Entertainment',
+    standfirst: 'Music, film, performance and the people making them.',
+    topic: 'entertainment'
+  },
+  {
+    slug: 'food',
+    name: 'Food',
+    standfirst: 'The cooking of the river and the regions, and the people who keep it.',
+    topic: 'food'
+  },
+  {
+    slug: 'sport',
+    name: 'Sport',
+    standfirst:
+      'Competition across the states, and the athletes who carry the country’s name abroad.',
+    topic: 'sport'
+  },
+  {
+    slug: 'fashion',
+    name: 'Fashion & textiles',
+    standfirst: 'Designers and makers working with South Sudanese cloth, pattern and form.',
+    topic: 'fashion'
+  }
+];
+
+export const getStrands = (): Strand[] => strands;
+
+export const getStrand = (slug: string): Strand | undefined =>
+  strands.find((s) => s.slug === slug);
+
+/** Articles filed under a strand. Empty for every strand today. */
+export const getStrandArticles = (strand: Strand): Article[] =>
+  strand.topic ? articles.filter((a) => a.topic?.slug === strand.topic) : [];
 
 /**
  * Sidebar recommendations.
@@ -227,12 +378,32 @@ export function getRelated(
 }
 
 /**
- * Oldest pieces, for a sidebar that does not simply repeat the front page.
- * Deliberately not "Most read": there is no analytics source behind this site
- * yet, so a popularity ranking would be invented.
+ * Oldest pieces first, for the rail beside Analysis & opinion.
+ *
+ * The rail is sized to hold `limit` items so the column reaches the foot of the
+ * river instead of leaving a well of white under the patron's quote. There are
+ * currently fewer articles in the archive than slots in the rail, so the list
+ * cycles: once the pool is exhausted it starts again from the oldest.
+ *
+ * That is a stopgap and it is visible as one, because the same headlines appear
+ * twice in one column. It resolves itself with no code change the moment the
+ * archive holds `limit` pieces, which is the point of filling by cycling rather
+ * than by padding with something invented. `archiveCapacity` below is the
+ * number to grow into.
+ *
+ * Callers must key on index, not slug: slugs repeat here.
  */
-export const getArchive = (limit = 4): Article[] =>
-  [...articles].sort((a, b) => +new Date(a.date) - +new Date(b.date)).slice(0, limit);
+export const getArchive = (limit = 4): Article[] => {
+  const pool = [...articles].sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  if (pool.length === 0) return [];
+  return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
+};
+
+/** Slots the front-page rail is built to hold. See getArchive. */
+export const archiveCapacity = 10;
+
+/** How many of those slots can be filled without repeating. */
+export const archiveDepth = (): number => Math.min(articles.length, archiveCapacity);
 
 export const formatDate = (iso: string): string =>
   new Date(iso).toLocaleDateString('en-GB', {

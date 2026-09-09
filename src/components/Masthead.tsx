@@ -1,17 +1,24 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
-import SiteNav from '@/components/SiteNav';
-import { SITE } from '@/lib/content';
+import SiteNav, { type NavItem } from '@/components/SiteNav';
+import { getStrands, SITE } from '@/lib/content';
 
-const NAV = [
+const NAV: NavItem[] = [
   // News and Opinion resolve to the same articles today, because every piece
   // published so far is commentary. They diverge as sourced reporting arrives.
   { label: 'News', href: '/articles' },
   { label: 'Opinion', href: '/articles?section=opinion' },
   { label: 'Podcast', href: '/podcasts' },
-  { label: 'TV', href: '/television' },
   { label: 'Festival', href: '/festival' },
-  { label: 'About', href: '/about' }
+  { label: 'About', href: '/about' },
+  // Documentaries is deliberately not here: it reaches the footer only.
+  // The strands below have no articles yet; they exist so the newsroom has
+  // somewhere to publish into. See getStrands in lib/content.
+  {
+    label: 'More',
+    href: '/more',
+    children: getStrands().map((s) => ({ label: s.name, href: `/more/${s.slug}` }))
+  }
 ];
 
 export function EditionBar() {

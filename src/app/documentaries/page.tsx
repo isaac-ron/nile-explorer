@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getTelevision, getArchive, getLatestEpisode, SITE } from '@/lib/content';
+import { getDocumentaries, getArchive, getLatestEpisode, SITE } from '@/lib/content';
 import { ProgrammeRow } from '@/components/Television';
 import { RankedItem } from '@/components/Story';
 import { PlatformLink } from '@/components/Icons';
+import Empty from '@/components/Empty';
 
 export const metadata: Metadata = {
-  title: 'Television',
+  title: 'Documentaries',
   description:
-    'Programmes, specials and live streams from The Nile Explorer, broadcast on the network YouTube channel.'
+    'Documentaries, specials and live streams from The Nile Explorer, broadcast on the network YouTube channel.'
 };
 
-export default function TelevisionPage() {
-  const programmes = getTelevision();
+export default function DocumentariesPage() {
+  const programmes = getDocumentaries();
   const archive = getArchive(4);
   const episode = getLatestEpisode();
 
@@ -21,8 +22,12 @@ export default function TelevisionPage() {
       <div className="shell withrail">
         <div>
           <div className="section__head">
-            <h1 style={{ fontSize: 'var(--fs-h2)', color: 'var(--navy)' }}>Television</h1>
-            <span className="label label--muted">{programmes.length} programmes</span>
+            <h1 style={{ fontSize: 'var(--fs-h2)', color: 'var(--navy)' }}>Documentaries</h1>
+            {programmes.length > 0 && (
+              <span className="label label--muted">
+                {programmes.length} {programmes.length === 1 ? 'film' : 'films'}
+              </span>
+            )}
           </div>
 
           <p
@@ -32,7 +37,7 @@ export default function TelevisionPage() {
               maxWidth: '62ch'
             }}
           >
-            Specials, live streams and archive broadcasts from the network channel. The podcast is
+            Long-form films, specials and archive broadcasts from the network channel. The podcast is
             published separately, with an audio edition, on{' '}
             <Link
               href="/podcasts"
@@ -43,11 +48,19 @@ export default function TelevisionPage() {
             .
           </p>
 
-          <div>
-            {programmes.map((v) => (
-              <ProgrammeRow video={v} key={v.videoId} />
-            ))}
-          </div>
+          {programmes.length > 0 ? (
+            <div>
+              {programmes.map((v) => (
+                <ProgrammeRow video={v} key={v.videoId} />
+              ))}
+            </div>
+          ) : (
+            <Empty
+              title="No documentaries published yet"
+              body="The first films are in production. They will appear here as they are broadcast on the network channel."
+              action={{ href: SITE.youtube, label: 'Subscribe on YouTube', external: true }}
+            />
+          )}
         </div>
 
         <aside className="rail" aria-label="Elsewhere on the network">
@@ -90,12 +103,15 @@ export default function TelevisionPage() {
             </div>
           )}
 
-          <div>
-            <h2 className="rail__title">From the archive</h2>
-            {archive.map((a, i) => (
-              <RankedItem article={a} n={i + 1} key={a.slug} />
-            ))}
-          </div>
+          {archive.length > 0 && (
+            <div>
+              <h2 className="rail__title">From the archive</h2>
+              {/* Keyed by index: getArchive cycles, so slugs repeat. */}
+              {archive.map((a, i) => (
+                <RankedItem article={a} n={i + 1} key={`${a.slug}-${i}`} />
+              ))}
+            </div>
+          )}
         </aside>
       </div>
     </section>
