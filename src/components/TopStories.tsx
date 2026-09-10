@@ -22,9 +22,16 @@ import { Article, formatDate, formatShortDate, labelFor } from '@/lib/content';
  * Source order is lead first, so the h1 comes before the flanks for screen
  * readers and for the single-column stack on mobile. CSS grid puts the lead
  * back in the middle on wide viewports.
+ *
+ * Stories 4 and 5 hang as headline-only links under each flank. The flanks
+ * carry less than the lead by design, so their columns ran roughly 380px and
+ * 310px short of it; these close part of that. They are taken from the running
+ * order rather than repeated, so the river below loses two rather than the
+ * page showing anything twice.
  */
 export default function TopStories({ stories }: { stories: Article[] }) {
-  const [lead, ...flanks] = stories;
+  const [lead, flankA, flankB, ...extras] = stories;
+  const flanks = [flankA, flankB].filter(Boolean);
   if (!lead) return null;
 
   return (
@@ -78,6 +85,16 @@ export default function TopStories({ stories }: { stories: Article[] }) {
           <p className="top__flankmeta">
             {formatShortDate(a.date)} · {a.readingTime} min read
           </p>
+
+          {extras[i] && (
+            <Link className="top__more" href={`/articles/${extras[i].slug}`}>
+              <span className="top__cat">{labelFor(extras[i])}</span>
+              <span className="top__moretitle">{extras[i].title}</span>
+              <span className="top__flankmeta">
+                {formatShortDate(extras[i].date)} · {extras[i].readingTime} min read
+              </span>
+            </Link>
+          )}
         </article>
       ))}
     </div>

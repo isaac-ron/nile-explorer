@@ -28,9 +28,11 @@ export default function Home() {
   const festival = getFestival();
   const still = episode?.stills?.[0];
 
-  // The trio leads; everything after it fills the rest of the page in order,
-  // so no story appears twice above the archive rail.
-  const top = getTopStories(3);
+  // Five, not three: the trio plus one headline-only story hanging under each
+  // flank to close the short columns. Everything after them fills the rest of
+  // the page in order, so no story appears twice above the archive rail. The
+  // river absorbs the loss, dropping from five rows to three.
+  const top = getTopStories(5);
   const led = new Set(top.map((a) => a.slug));
   const rest = articles.filter((a) => !led.has(a.slug));
   const grid = rest.slice(0, 3);

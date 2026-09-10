@@ -261,6 +261,32 @@
   color: var(--muted);
 }
 
+/* The fourth and fifth stories, hanging under each flank. Headline only: an
+   image here would give them the same weight as the flank above and flatten
+   the hierarchy the trio exists to create. The rule is what marks them as a
+   continuation of the column rather than a fourth story of equal rank. */
+.top__more {
+  display: grid;
+  gap: 6px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+
+.top__moretitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.04rem;
+  line-height: 1.22;
+  color: var(--navy);
+}
+
+.top__more:hover .top__moretitle {
+  text-decoration: underline;
+  text-decoration-color: var(--navy);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
 /* One column: the rules that bind the flanks to the centre become dividers
    between stacked stories instead, and the lead keeps its overlay. */
 @media (max-width: 900px) {
