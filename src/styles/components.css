@@ -403,6 +403,24 @@
   color: var(--muted);
 }
 
+/* ---------- Status mark ----------
+   Sits beside a kicker on anything invented that carries no link: the episodes
+   that have not been recorded, the pieces that have not been filed. Without it
+   those read as published work that simply fails to open. */
+
+.mark {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+}
+
+.mark--soon {
+  color: var(--gold-text);
+  border: 1px solid var(--gold);
+}
+
 .cardgrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -467,6 +485,24 @@
 .story__meta .dot::before {
   content: '·';
   margin-right: var(--space-3);
+}
+
+/* Commissioned but unfiled. No thumbnail column: there is no photograph of a
+   piece nobody has written yet, and a blank frame would read as a broken one.
+   See placeholder-articles.json. */
+.story--pending {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.story__kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.story--pending .story__title {
+  color: var(--ink-deck);
 }
 
 /* ---------- Rails ---------- */
@@ -1350,10 +1386,12 @@
   padding-top: 20%;
 }
 
+/* The episode that is out now leads at two thirds of the band; the rest stack
+   beside it at a third. Single column below 760px, which is also where the
+   artwork above swaps to its portrait cut. */
 .podgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--col-gap);
+  gap: var(--space-6);
 }
 
 .podep {
@@ -1363,8 +1401,60 @@
   min-width: 0;
 }
 
+.podside {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+  min-width: 0;
+}
+
 .podep__thumb {
   margin-bottom: var(--space-1);
+}
+
+@media (min-width: 760px) {
+  .podgrid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--col-gap);
+  }
+
+  /* Nothing to stack once the invented episodes are deleted: one card across
+     the full width beats a two-thirds card with a hole beside it. */
+  .podgrid--solo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .podside {
+    border-left: 1px solid var(--rule);
+    padding-left: var(--col-gap);
+  }
+
+  /* Divides the pair, the way the river divides its rows. */
+  .podside > * + * {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-5);
+  }
+
+  /* The stack is the taller column, so the lead's picture takes the difference
+     instead of leaving a well of ground under it: the frame drops its aspect
+     ratio here and becomes the one flexible row of the card. */
+  .podep--lead {
+    align-content: stretch;
+    grid-template-rows: minmax(220px, 1fr);
+    grid-auto-rows: auto;
+  }
+
+  .podep--lead .podep__thumb {
+    aspect-ratio: auto;
+  }
+
+  .podep--lead .podep__title {
+    font-size: var(--fs-h2);
+  }
+
+  .podep--side .podep__title {
+    font-size: 1.08rem;
+  }
 }
 
 .podep__no {
@@ -1377,15 +1467,6 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--navy);
-}
-
-/* Marks the invented episodes. They are not links, so without this they would
-   read as published work that simply failed to open. */
-.podep__soon {
-  letter-spacing: 0.12em;
-  color: var(--gold-text);
-  border: 1px solid var(--gold);
-  padding: 2px 6px;
 }
 
 .podep__title {

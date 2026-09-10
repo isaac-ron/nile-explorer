@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Article, formatDate, formatShortDate, labelFor } from '@/lib/content';
+import { Article, PendingStory, formatDate, formatShortDate, labelFor } from '@/lib/content';
 
 /** Fallback alt when WordPress supplied none. */
 const altFor = (a: Article) => a.image?.alt || `Illustration for “${a.title}”`;
@@ -61,6 +61,33 @@ export function StoryRow({ article }: { article: Article }) {
           />
         </Link>
       )}
+    </article>
+  );
+}
+
+/**
+ * A commissioned piece that has not been filed, running in the river.
+ *
+ * Same rhythm as StoryRow so the column reads as one continuous list rather
+ * than as a widget bolted on the end, but an <article> and not a link, and no
+ * picture: there is no photograph of a piece nobody has written. The status
+ * mark beside the kicker is doing the honest work here — without it these read
+ * as published stories that fail to open. See placeholder-articles.json.
+ */
+export function PendingRow({ story }: { story: PendingStory }) {
+  return (
+    <article className="story story--pending">
+      <div className="story__body">
+        <span className="card__cat story__kicker">
+          {story.topic}
+          <span className="mark mark--soon">{story.status}</span>
+        </span>
+        <h3 className="story__title">{story.title}</h3>
+        <p className="story__blurb">{story.standfirst}</p>
+        <div className="story__meta">
+          <span>{story.author}</span>
+        </div>
+      </div>
     </article>
   );
 }

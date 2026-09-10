@@ -14,6 +14,7 @@ import televisionJson from '../../content/television.json';
 import documentariesJson from '../../content/documentaries.json';
 import festivalJson from '../../content/festival.json';
 import podcastMetaJson from '../../content/podcast-meta.json';
+import pendingJson from '../../content/placeholder-articles.json';
 
 export type Block =
   | { type: 'para'; text: string }
@@ -143,6 +144,7 @@ const television = televisionJson as Video[];
 const films = (documentariesJson as { films: Film[] }).films;
 const festival = festivalJson as Festival;
 const podcastMeta = podcastMetaJson as unknown as PodcastMeta;
+const pending = (pendingJson as { stories: PendingStory[] }).stories;
 
 export const getArticles = (): Article[] => articles;
 
@@ -290,10 +292,22 @@ export type BannerEpisode = {
   published: boolean;
 };
 
+/**
+ * Strip a trailing "Episode N" from a YouTube title.
+ *
+ * The upload is called "Peace, War and the Search for a Political Solution.
+ * Episode 1", and the band prints "Episode 1" as the kicker directly above it.
+ * That read as a typo once the lead episode's headline grew to fill two-thirds
+ * of the band. Only the display copy is trimmed; the ingested title is
+ * untouched, so the podcast page and the player still show it in full.
+ */
+const trimEpisodeSuffix = (title: string): string =>
+  title.replace(/[.\s—–-]*\s*Episode\s+\d+\s*$/i, '').trim() || title;
+
 export const getBannerEpisodes = (count = 3): BannerEpisode[] => {
   const real: BannerEpisode[] = getEpisodes().map((e) => ({
     number: e.number,
-    title: e.title,
+    title: trimEpisodeSuffix(e.title),
     blurb: e.blurb ?? e.summary,
     date: e.published,
     thumbnail: e.stills?.[0]?.src ?? e.thumbnail,
@@ -457,6 +471,35 @@ export function getRelated(
   };
 }
 
+/* ---------------------------------------------------------------------------
+   Commissioned pieces that have not been filed
+   ---------------------------------------------------------------------------
+   The Analysis & opinion river runs three pieces deep, because the front-page
+   trio takes the five most recent and there are only eleven articles in all.
+   That left the column finishing well above the archive rail beside it.
+
+   These fill it. They are inventions, they live in placeholder-articles.json
+   flagged as such, and nothing renders them as links: a headline that opens
+   nothing is worse than a headline that says it is not written yet.
+
+   They are deliberately NOT merged into `articles`. Doing that would put them
+   in /articles, in the topic counts, in the sitemap and in getRelated, and the
+   ingest would then have to know to leave them alone. Keeping them a separate
+   list means one component knows about them and deleting the file is enough.
+--------------------------------------------------------------------------- */
+
+export type PendingStory = {
+  slug: string;
+  topic: string;
+  title: string;
+  standfirst: string;
+  author: string;
+  /** Printed beside the kicker. What stops the row reading as published. */
+  status: string;
+};
+
+export const getPendingStories = (): PendingStory[] => pending;
+
 /**
  * Oldest pieces first, for the rail beside Analysis & opinion.
  *
@@ -479,8 +522,14 @@ export const getArchive = (limit = 4): Article[] => {
   return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
 };
 
-/** Slots the front-page rail is built to hold. See getArchive. */
-export const archiveCapacity = 10;
+/**
+ * Slots the front-page rail is built to hold. See getArchive.
+ *
+ * Sized against the river beside it, which now runs two commissioned pieces
+ * past its last published one. Twelve slots against eleven articles means one
+ * repeat at the foot; ten left the rail 100px short of the river.
+ */
+export const archiveCapacity = 12;
 
 /** How many of those slots can be filled without repeating. */
 export const archiveDepth = (): number => Math.min(articles.length, archiveCapacity);

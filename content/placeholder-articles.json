@@ -1,0 +1,21 @@
+{
+  "_note": "PLACEHOLDER. None of these pieces exists. They were invented to run at the foot of the Analysis & opinion river on the front page, where the column was finishing ~280px above the archive rail beside it. They are not links and they carry a visible 'In production' mark, because there is nothing behind them to open. Bylined to the newsroom rather than to a named writer: attributing invented opinion on live South Sudanese politics to a real person is the one thing this file must not do. Empty `stories` (or delete the file's contents down to an empty array) and the river simply ends at the last real piece. The count is two because two lands the river level with the rail; a third overshot it by ~180px and would have needed five repeated headlines in the rail to match. If you add or remove one, re-check `archiveCapacity` in lib/content.",
+  "stories": [
+    {
+      "slug": "every-extension-is-argued-as-the-last",
+      "topic": "Peace",
+      "title": "Every Extension Is Argued as the Last",
+      "standfirst": "The transitional timetable has been redrawn more than once, and each revision arrives with the same promise attached to it. What would actually have to change for one of them to hold?",
+      "author": "The Nile Explorer",
+      "status": "In production"
+    },
+    {
+      "slug": "who-pays-for-the-roads",
+      "topic": "Geo-politics",
+      "title": "Who Pays for the Roads",
+      "standfirst": "Infrastructure financed against future barrels is a bet on a price nobody in Juba controls. What the country has put its name to, and what it has signed away with it.",
+      "author": "The Nile Explorer",
+      "status": "In production"
+    }
+  ]
+}

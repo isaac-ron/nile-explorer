@@ -9,10 +9,11 @@ import {
   getArchive,
   getFestival,
   getFestivalSlides,
+  getPendingStories,
   archiveCapacity,
   SITE
 } from '@/lib/content';
-import { ArticleCard, StoryRow, RankedItem } from '@/components/Story';
+import { ArticleCard, StoryRow, RankedItem, PendingRow } from '@/components/Story';
 import { FilmCard } from '@/components/Television';
 import { PlatformLink } from '@/components/Icons';
 import TopStories from '@/components/TopStories';
@@ -37,6 +38,9 @@ export default function Home() {
   const grid = rest.slice(0, 3);
   const river = rest.slice(3);
   const archive = getArchive(archiveCapacity);
+  // Invented, and marked as such on the page. They exist to carry the river
+  // down to the foot of the archive rail; see placeholder-articles.json.
+  const pending = getPendingStories();
 
   return (
     <>
@@ -93,6 +97,9 @@ export default function Home() {
             <div className="river">
               {river.map((a) => (
                 <StoryRow article={a} key={a.slug} />
+              ))}
+              {pending.map((s) => (
+                <PendingRow story={s} key={s.slug} />
               ))}
             </div>
 
