@@ -194,17 +194,14 @@ export default function PodcastsPage() {
           {programmes.length > 0 && (
             <div>
               <h2 className="rail__title">Also in Documentaries</h2>
-              {programmes.map((v) => (
-                <a
-                  className="sidestory"
-                  href={v.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={v.videoId}
-                >
-                  <span className="card__cat">Film</span>
-                  <span className="sidestory__title">{v.title}</span>
-                </a>
+              {/* Not links: none of these is shot yet, so there is nothing to
+                  open. The strand page carries the same caveat. */}
+              {programmes.map((f) => (
+                <div className="sidestory" key={f.slug}>
+                  <span className="card__cat">{f.status}</span>
+                  <span className="sidestory__title">{f.title}</span>
+                  <span className="sidestory__meta">{f.standfirst}</span>
+                </div>
               ))}
               <Link className="section__more" href="/documentaries" style={{ marginTop: 10 }}>
                 All films →

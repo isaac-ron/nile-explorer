@@ -23,11 +23,14 @@ import { Article, formatDate, formatShortDate, labelFor } from '@/lib/content';
  * readers and for the single-column stack on mobile. CSS grid puts the lead
  * back in the middle on wide viewports.
  *
- * Stories 4 and 5 hang as headline-only links under each flank. The flanks
- * carry less than the lead by design, so their columns ran roughly 380px and
- * 310px short of it; these close part of that. They are taken from the running
- * order rather than repeated, so the river below loses two rather than the
- * page showing anything twice.
+ * Stories 4 and 5 hang under each flank, with pictures. The flanks carry less
+ * than the lead by design, so their columns ran roughly 380px and 310px short
+ * of it; a headline-only version closed about a third of that, and the client
+ * asked for the space filled properly, so these take images too.
+ *
+ * The rule above each still marks them as a continuation of the column rather
+ * than a fourth and fifth story of equal rank, and their pictures are smaller
+ * than the flank's own.
  */
 export default function TopStories({ stories }: { stories: Article[] }) {
   const [lead, flankA, flankB, ...extras] = stories;
@@ -88,6 +91,17 @@ export default function TopStories({ stories }: { stories: Article[] }) {
 
           {extras[i] && (
             <Link className="top__more" href={`/articles/${extras[i].slug}`}>
+              {extras[i].image && (
+                <span className="frame frame--wide">
+                  <Image
+                    src={extras[i].image!.url}
+                    alt={extras[i].image!.alt || `Illustration for “${extras[i].title}”`}
+                    width={extras[i].image!.width ?? 1200}
+                    height={extras[i].image!.height ?? 800}
+                    sizes="(max-width: 900px) 100vw, 330px"
+                  />
+                </span>
+              )}
               <span className="top__cat">{labelFor(extras[i])}</span>
               <span className="top__moretitle">{extras[i].title}</span>
               <span className="top__flankmeta">

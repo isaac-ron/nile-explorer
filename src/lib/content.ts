@@ -11,6 +11,7 @@ import topicsJson from '../../content/topics.json';
 import sectionsJson from '../../content/sections.json';
 import podcastJson from '../../content/podcast.json';
 import televisionJson from '../../content/television.json';
+import documentariesJson from '../../content/documentaries.json';
 import festivalJson from '../../content/festival.json';
 import podcastMetaJson from '../../content/podcast-meta.json';
 
@@ -92,10 +93,33 @@ export type UpcomingEpisode = {
   releaseDate?: string;
 };
 
+/** Invented episodes filling the banner strip. See podcast-meta.json. */
+export type PlaceholderEpisode = {
+  number: number;
+  title: string;
+  blurb: string;
+  date: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+  guests?: Guest[];
+};
+
 export type PodcastMeta = {
   show: { tagline: string; blurb: string };
   episodes: Record<string, EpisodeMeta>;
   upcoming: UpcomingEpisode[];
+  placeholderEpisodes?: PlaceholderEpisode[];
+};
+
+/** A documentary. Curated in documentaries.json, not ingested. */
+export type Film = {
+  slug: string;
+  title: string;
+  standfirst: string;
+  summary: string;
+  poster: string;
+  posterAlt: string;
+  status: string;
 };
 
 /** An episode with its hand-edited metadata folded in. */
@@ -116,6 +140,7 @@ const topics = topicsJson as Topic[];
 const sections = sectionsJson as Section[];
 const podcast = podcastJson as Podcast;
 const television = televisionJson as Video[];
+const films = (documentariesJson as { films: Film[] }).films;
 const festival = festivalJson as Festival;
 const podcastMeta = podcastMetaJson as unknown as PodcastMeta;
 
@@ -230,11 +255,66 @@ export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
 export const getUpcoming = (): UpcomingEpisode[] => podcastMeta.upcoming;
 
 /**
- * Renamed from Television. The underlying feed and the `kind: 'television'`
- * value on each item still come from the ingest, so the data shape is
- * untouched; only what the site calls the strand has changed.
+ * Renamed from Television. The ingested YouTube feed is still in
+ * television.json and still carries `kind: 'television'`, but the strand now
+ * shows the curated films in documentaries.json instead: the feed held a test
+ * upload, two podcast repackages and two third-party speeches, none of which
+ * is a documentary.
+ *
+ * PLACEHOLDER: the three films are not commissioned and their key art is
+ * AI-generated. Empty `films` in that file and this falls back to the feed.
  */
-export const getDocumentaries = (): Video[] => television;
+export const getDocumentaries = (): Film[] => films;
+
+/** The ingested channel feed, kept for the fallback and for reference. */
+export const getChannelFeed = (): Video[] => television;
+
+/* ---------------------------------------------------------------------------
+   Podcast episodes for the banner strip
+   ---------------------------------------------------------------------------
+   The banner carries three episodes. One exists. The other two are invented
+   and live under `placeholderEpisodes` in podcast-meta.json, flagged there.
+   Both shapes are normalised here so the strip does not have to know which is
+   which, and so deleting the placeholders degrades to however many are real.
+--------------------------------------------------------------------------- */
+
+export type BannerEpisode = {
+  number: number;
+  title: string;
+  blurb: string;
+  date: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+  guests: Guest[];
+  /** False for the invented ones: they get no link, because there is nothing to open. */
+  published: boolean;
+};
+
+export const getBannerEpisodes = (count = 3): BannerEpisode[] => {
+  const real: BannerEpisode[] = getEpisodes().map((e) => ({
+    number: e.number,
+    title: e.title,
+    blurb: e.blurb ?? e.summary,
+    date: e.published,
+    thumbnail: e.stills?.[0]?.src ?? e.thumbnail,
+    thumbnailAlt: e.stills?.[0]?.alt ?? `Artwork for “${e.title}”`,
+    guests: e.guests ?? [],
+    published: true
+  }));
+
+  const invented: BannerEpisode[] = (podcastMeta.placeholderEpisodes ?? []).map((p) => ({
+    number: p.number,
+    title: p.title,
+    blurb: p.blurb,
+    date: p.date,
+    thumbnail: p.thumbnail,
+    thumbnailAlt: p.thumbnailAlt,
+    guests: p.guests ?? [],
+    published: false
+  }));
+
+  return [...real, ...invented].slice(0, count);
+};
 
 export const getFestival = (): Festival => festival;
 

@@ -272,7 +272,10 @@
 
 .footer {
   border-top: 2px solid var(--gold);
-  background: var(--navy);
+  /* Matched to the newsletter strip above it on client direction. The two now
+     read as one navy foot divided by the gold rule, rather than as a strip
+     sitting on a lighter block. */
+  background: var(--navy-deep);
   color: var(--on-navy-soft);
 }
 

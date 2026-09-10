@@ -5,18 +5,18 @@ import {
   getTopics,
   getTopStories,
   getDocumentaries,
-  getLatestEpisode,
+  getBannerEpisodes,
   getArchive,
   getFestival,
   getFestivalSlides,
   archiveCapacity,
-  canWatch,
   SITE
 } from '@/lib/content';
 import { ArticleCard, StoryRow, RankedItem } from '@/components/Story';
-import { ProgrammeCard } from '@/components/Television';
+import { FilmCard } from '@/components/Television';
 import { PlatformLink } from '@/components/Icons';
 import TopStories from '@/components/TopStories';
+import PodcastBanner from '@/components/PodcastBanner';
 import FestivalCarousel from '@/components/FestivalCarousel';
 import Newsletter from '@/components/Newsletter';
 
@@ -24,9 +24,8 @@ export default function Home() {
   const articles = getArticles();
   const topics = getTopics();
   const documentaries = getDocumentaries();
-  const episode = getLatestEpisode();
+  const episodes = getBannerEpisodes(3);
   const festival = getFestival();
-  const still = episode?.stills?.[0];
 
   // Five, not three: the trio plus one headline-only story hanging under each
   // flank to close the short columns. Everything after them fills the rest of
@@ -49,119 +48,19 @@ export default function Home() {
         <TopStories stories={top} />
       </section>
 
-      {/* ---------- Podcast ---------- */}
-      {episode && (
+      {/* ---------- Podcast ----------
+          Supplied banner artwork across the top with three episodes under it.
+          Two of the three are invented and carry no link; see the placeholder
+          note in podcast-meta.json. */}
+      {episodes.length > 0 && (
         <section className="section section--band" id="podcasts" aria-labelledby="pod-heading">
-          <div className="shell">
-          <div className="section__head">
-            <h2 id="pod-heading">The Nile Explorer Podcast</h2>
-            <Link className="section__more" href="/podcasts">
-              {canWatch(episode) ? 'Watch or listen →' : 'Listen →'}
-            </Link>
-          </div>
-          <div className="withrail">
-            <div>
-              {/* While the video is withdrawn the lead still stands in for the
-                  thumbnail. It is a photograph of this episode, not artwork. */}
-              <Link
-                className="frame frame--wide"
-                href="/podcasts"
-                aria-label={`Open episode ${episode.number}: ${episode.title}`}
-              >
-                {canWatch(episode) ? (
-                  <>
-                    <Image
-                      src={episode.thumbnail}
-                      alt={`Artwork for “${episode.title}”`}
-                      width={1280}
-                      height={720}
-                      sizes="(max-width: 1000px) 100vw, 700px"
-                    />
-                    <span className="playbadge" aria-hidden="true">
-                      <span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M8 5.2v13.6L19 12z" />
-                        </svg>
-                      </span>
-                    </span>
-                  </>
-                ) : still ? (
-                  <Image
-                    src={still.src}
-                    alt={still.alt}
-                    width={still.width}
-                    height={still.height}
-                    sizes="(max-width: 1000px) 100vw, 700px"
-                  />
-                ) : (
-                  <span className="player__holding">
-                    <Image
-                      src="/brand/podcast-logo.png"
-                      alt="The Nile Explorer Podcast"
-                      width={1729}
-                      height={1660}
-                      sizes="260px"
-                    />
-                  </span>
-                )}
-              </Link>
-              {!canWatch(episode) && still && episode.photographer && (
-                <p className="credit">Photograph by {episode.photographer}</p>
-              )}
+          <PodcastBanner episodes={episodes} />
+          <div className="shell podband__platforms">
+            <p className="label label--muted">Listen on</p>
+            <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
+              <PlatformLink name="spotify" href={SITE.spotify} label="Listen on Spotify" />
+              <PlatformLink name="youtube" href={SITE.youtube} label="Watch on YouTube" />
             </div>
-            <div>
-              <p className="card__cat">Episode {episode.number}</p>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: 'var(--fs-h3)',
-                  color: 'var(--navy)',
-                  margin: '6px 0 var(--space-3)'
-                }}
-              >
-                {episode.title}
-              </h3>
-              {(episode.blurb ?? episode.summary) && (
-                <p className="episode__desc">{episode.blurb ?? episode.summary}</p>
-              )}
-              {episode.guests && episode.guests.length > 0 && (
-                <div className="guests">
-                  <p className="label label--muted">Featuring</p>
-                  <ul className="guests__list">
-                    {episode.guests.map((g) => (
-                      <li key={g.name}>
-                        <span className="guests__name">{g.name}</span>
-                        <span className="guests__role">{g.role}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {episode.topics && episode.topics.length > 0 && (
-                <div style={{ marginTop: 'var(--space-4)' }}>
-                  <p className="label label--muted">In this episode</p>
-                  <div className="chips" style={{ marginTop: 'var(--space-2)' }}>
-                    {episode.topics.map((t) => (
-                      <span className="chip chip--static" key={t}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
-                {canWatch(episode) ? 'Watch or listen on' : 'Listen on'}
-              </p>
-              <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
-                <PlatformLink name="spotify" href={SITE.spotify} label="Listen on Spotify" />
-                {canWatch(episode) && (
-                  <PlatformLink name="youtube" href={episode.url} label="Watch on YouTube" />
-                )}
-              </div>
-            </div>
-          </div>
           </div>
         </section>
       )}
@@ -249,8 +148,8 @@ export default function Home() {
               </Link>
             </div>
             <div className="cardgrid">
-              {documentaries.slice(0, 3).map((v) => (
-                <ProgrammeCard video={v} key={v.videoId} />
+              {documentaries.slice(0, 3).map((f) => (
+                <FilmCard film={f} key={f.slug} />
               ))}
             </div>
           </div>

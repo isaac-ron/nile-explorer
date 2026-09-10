@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getDocumentaries, getArchive, getLatestEpisode, SITE } from '@/lib/content';
-import { ProgrammeRow } from '@/components/Television';
+import { FilmRow } from '@/components/Television';
 import { RankedItem } from '@/components/Story';
 import { PlatformLink } from '@/components/Icons';
 import Empty from '@/components/Empty';
@@ -50,8 +50,8 @@ export default function DocumentariesPage() {
 
           {programmes.length > 0 ? (
             <div>
-              {programmes.map((v) => (
-                <ProgrammeRow video={v} key={v.videoId} />
+              {programmes.map((f) => (
+                <FilmRow film={f} key={f.slug} />
               ))}
             </div>
           ) : (

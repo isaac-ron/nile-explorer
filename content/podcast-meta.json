@@ -1,11 +1,9 @@
 {
   "_note": "Hand-edited. The ingest does not overwrite this file. Episode entries are keyed by YouTube video id; the id is in the URL after ?v=. Anything left blank simply does not render, so partial entries are safe. Add scheduled episodes to `upcoming` and they appear on the podcast page with their release date.",
-
   "show": {
     "tagline": "Let us talk before we fight.",
     "blurb": "A space for thoughtful conversation, historical reflection and honest debate about South Sudan and the wider world."
   },
-
   "episodes": {
     "p3lHlWR-O3g": {
       "_note": "videoAvailable is false while the edit is reworked. That hides the Watch option and any link out to the video, everywhere on the site. Audio is unaffected. Set it back to true once the re-cut is uploaded. `stills` renders a gallery in place of the player; the first still also stands in for the video thumbnail on the home page.",
@@ -77,6 +75,44 @@
       ]
     }
   },
-
-  "upcoming": []
+  "upcoming": [],
+  "_placeholderNote": "PLACEHOLDER EPISODES. Episodes 2 and 3 below have not been recorded. They were invented to fill the three-episode strip the client asked for under the podcast banner, and their thumbnails are stills from the episode 1 shoot. Delete this key and the array once real episodes exist; getBannerEpisodes falls back to whatever is genuinely published.",
+  "placeholderEpisodes": [
+    {
+      "number": 2,
+      "title": "The Constitution Before the Ballot",
+      "blurb": "A permanent constitution was promised before the country votes. What is actually drafted, who is in the room, and what happens to the December timetable if the text is not ready.",
+      "date": "2026-09-17",
+      "thumbnail": "/podcast/ep1-at-the-microphone.jpg",
+      "thumbnailAlt": "Dr. Aldo Ajou Deng-Akuey at the boom microphone mid-sentence.",
+      "guests": [
+        {
+          "name": "Rebecca Nyandeng Lual",
+          "role": "Constitutional lawyer, Juba"
+        },
+        {
+          "name": "Peter Garang Deng",
+          "role": "National Constitutional Review Commission"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Who Owns the River?",
+      "blurb": "Eleven countries, one river, and a set of colonial-era agreements nobody signed up to. How the Nile basin negotiates water now that the dams are built.",
+      "date": "2026-09-24",
+      "thumbnail": "/podcast/ep1-with-the-team.jpg",
+      "thumbnailAlt": "The host and production team gathered after the recording.",
+      "guests": [
+        {
+          "name": "Amina Tesfaye",
+          "role": "Water policy researcher, Addis Ababa"
+        },
+        {
+          "name": "Joseph Lomoro",
+          "role": "Nile Basin Initiative"
+        }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,33 @@
+{
+  "_note": "PLACEHOLDER. Hand-edited; the ingest does not touch this file. These three films are not in the schedule and the key art is AI-generated, supplied by the client as a stand-in for the unfinished YouTube uploads that used to fill this section. Replace `poster` with real key art and set `status` per film once anything is actually commissioned. The old ingested feed still lives in television.json and getDocumentaries falls back to it if `films` is emptied.",
+
+  "films": [
+    {
+      "slug": "south-sudan",
+      "title": "South Sudan",
+      "standfirst": "The Land of Hope",
+      "summary": "The country at fourteen, told by the people who built it and the generation inheriting it, ahead of the first elections in over a decade.",
+      "poster": "/documentaries/south-sudan.jpg",
+      "posterAlt": "Key art for the documentary South Sudan: The Land of Hope. A woman in beaded jewellery in profile against a river at sunset, a boat crossing behind her.",
+      "status": "In production"
+    },
+    {
+      "slug": "congo",
+      "title": "Congo",
+      "standfirst": "People · Resources · Tomorrow",
+      "summary": "Who owns what lies under the ground, who decides, and what the arrangement has cost the people living above it.",
+      "poster": "/documentaries/congo.jpg",
+      "posterAlt": "Key art for the documentary Congo: People, Resources, Tomorrow. A young man in profile against a river winding through dense forest.",
+      "status": "In production"
+    },
+    {
+      "slug": "burkina-faso",
+      "title": "Burkina Faso",
+      "standfirst": "Resilience · Culture · Change",
+      "summary": "A country that keeps rewriting its own terms, and the artists, farmers and organisers holding the middle of it together.",
+      "poster": "/documentaries/burkina-faso.jpg",
+      "posterAlt": "Key art for the documentary Burkina Faso: Resilience, Culture, Change. A woman in a patterned headwrap in profile before a village and a granite outcrop.",
+      "status": "In development"
+    }
+  ]
+}

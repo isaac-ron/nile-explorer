@@ -1311,6 +1311,146 @@
   color: var(--on-navy-muted);
 }
 
+/* ---------- Podcast band ----------
+   Supplied banner artwork across the top, three episodes under it.
+
+   The artwork is a background, not an <img>, because its lower two-fifths are
+   transparent: as a background that costs no layout space, and the band's own
+   ground shows through instead of needing a colour match, so there is no seam
+   where art meets page.
+
+   padding-top is a percentage of the band's WIDTH, which is exactly how a
+   `background-size: 100% auto` image scales. 512/2560 = 20%, the height of the
+   artwork inside the file, so the episodes clear the swash at every viewport
+   with no media query doing arithmetic. */
+
+/* The artwork runs to the band's top edge. Without this the section's own
+   padding leaves a strip of ground above it and the banner reads as pasted
+   into the band rather than as the band. */
+#podcasts.section {
+  padding-top: 0;
+}
+
+.podband {
+  position: relative;
+}
+
+.podband__art {
+  position: absolute;
+  inset: 0;
+  background-image: url('/podcast/banner.png');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  pointer-events: none;
+}
+
+.podband__inner {
+  position: relative;
+  padding-top: 20%;
+}
+
+.podgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--col-gap);
+}
+
+.podep {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  min-width: 0;
+}
+
+.podep__thumb {
+  margin-bottom: var(--space-1);
+}
+
+.podep__no {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+/* Marks the invented episodes. They are not links, so without this they would
+   read as published work that simply failed to open. */
+.podep__soon {
+  letter-spacing: 0.12em;
+  color: var(--gold-text);
+  border: 1px solid var(--gold);
+  padding: 2px 6px;
+}
+
+.podep__title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--fs-h3);
+  line-height: 1.18;
+  color: var(--navy);
+}
+
+.podep:hover .podep__title {
+  text-decoration: underline;
+  text-decoration-color: var(--navy);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.podep__blurb {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-blurb);
+}
+
+.podep__guests {
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--ink-deck);
+}
+
+.podep__meta {
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.podband__platforms {
+  margin-top: var(--space-6);
+}
+
+/* The portrait artwork carries the same swash at a larger relative scale, so
+   the lockup stays readable where the wide version would shrink it to 60px.
+   173/900 = 19.2%. */
+@media (max-width: 900px) {
+  .podband__art {
+    background-image: url('/podcast/banner-portrait.png');
+  }
+  .podband__inner {
+    padding-top: 19.2%;
+  }
+}
+
+/* ---------- Documentaries ---------- */
+
+/* The supplied key art is square and carries its own title, so it gets a
+   square frame; a 16:9 crop cuts the film's name off the bottom. */
+.film__standfirst {
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--gold-text);
+}
+
+.film .episode__title {
+  color: var(--navy);
+}
+
 /* ---------- Empty strands ----------
    Several sections now exist ahead of their content. Bordered rather than
    borderless, against the usual card rule, because this is furniture marking
