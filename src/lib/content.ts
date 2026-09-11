@@ -15,18 +15,33 @@ import documentariesJson from '../../content/documentaries.json';
 import festivalJson from '../../content/festival.json';
 import podcastMetaJson from '../../content/podcast-meta.json';
 import pendingJson from '../../content/placeholder-articles.json';
+import suppliedJson from '../../content/supplied-articles.json';
 
 export type Block =
   | { type: 'para'; text: string }
   | { type: 'heading'; level: number; text: string }
   | { type: 'quote'; text: string }
-  | { type: 'list'; ordered: boolean; items: string[] };
+  | { type: 'list'; ordered: boolean; items: string[] }
+  /** A picture in the body. WordPress never produced these; supplied copy does. */
+  | {
+      type: 'figure';
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+      caption?: string;
+      credit?: string;
+    };
 
 export type Image = {
   url: string;
+  /** Describes the frame, for screen readers. Never printed. */
   alt: string;
   width: number | null;
   height: number | null;
+  /** Printed under the picture. Separate from alt, which says something else. */
+  caption?: string;
+  credit?: string;
 };
 
 export type Article = {
@@ -38,11 +53,16 @@ export type Article = {
   section: string;
   topic: { name: string; slug: string } | null;
   author: string;
+  /** Overrides the house colophon line. Supplied with outside contributions. */
+  authorBio?: string;
+  /** Where it was reported from. Absent means none is known — do not guess. */
+  dateline?: string | null;
   image: Image | null;
   blocks: Block[];
   summary: string;
   readingTime: number;
-  source: string;
+  /** The WordPress original. Null for pieces filed straight to this site. */
+  source: string | null;
 };
 
 export type Topic = { name: string; slug: string; count: number };
@@ -136,9 +156,53 @@ export type Festival = {
   awards: { name: string; detail: string };
 };
 
-const articles = articlesJson as Article[];
-const topics = topicsJson as Topic[];
-const sections = sectionsJson as Section[];
+/* ---------------------------------------------------------------------------
+   The article pool
+   ---------------------------------------------------------------------------
+   Two sources, one list. articles.json is ingest output and `npm run ingest`
+   rewrites it wholesale, so anything filed by hand into it is deleted on the
+   next run. Pieces supplied directly by the newsroom therefore live in their
+   own file and are merged here, newest first, exactly as if they had come
+   down the wire. Every consumer sees one sorted list and knows nothing about
+   the split.
+
+   When the CMS lands, both sources collapse into it and this merge goes away.
+--------------------------------------------------------------------------- */
+const supplied = (suppliedJson as { articles: Article[] }).articles;
+
+const articles = [...(articlesJson as Article[]), ...supplied].sort(
+  (a, b) => +new Date(b.date) - +new Date(a.date)
+);
+
+/* topics.json and sections.json are ingest output too, so their counts see
+   only the ingested pieces. Recount against the merged list, and carry through
+   any subject the supplied pieces introduce, or a hand-filed article would be
+   missing from its own chip. */
+function recount(
+  seed: { name: string; slug: string }[],
+  keyOf: (a: Article) => { name: string; slug: string } | null
+): Topic[] {
+  const names = new Map(seed.map((t) => [t.slug, t.name]));
+  for (const a of articles) {
+    const k = keyOf(a);
+    if (k) names.set(k.slug, names.get(k.slug) ?? k.name);
+  }
+  return [...names.entries()]
+    .map(([slug, name]) => ({
+      name,
+      slug,
+      count: articles.filter((a) => keyOf(a)?.slug === slug).length
+    }))
+    .filter((t) => t.count > 0)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+const topics = recount(topicsJson as Topic[], (a) => a.topic);
+const sections: Section[] = recount(sectionsJson as Section[], (a) => ({
+  name: a.section,
+  slug: a.section.toLowerCase()
+}));
+
 const podcast = podcastJson as Podcast;
 const television = televisionJson as Video[];
 const films = (documentariesJson as { films: Film[] }).films;

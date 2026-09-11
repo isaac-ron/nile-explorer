@@ -65,6 +65,32 @@ function renderBlock(block: Block, i: number) {
       return block.level <= 2 ? <h2 key={i}>{block.text}</h2> : <h3 key={i}>{block.text}</h3>;
     case 'quote':
       return <blockquote key={i}>{block.text}</blockquote>;
+    case 'figure':
+      return (
+        <figure className="prose__figure" key={i}>
+          <span
+            className="frame"
+            style={{
+              aspectRatio: `${block.width} / ${block.height}`,
+              maxWidth: block.width
+            }}
+          >
+            <Image
+              src={block.src}
+              alt={block.alt}
+              width={block.width}
+              height={block.height}
+              sizes={`(max-width: 1000px) 100vw, min(860px, ${block.width}px)`}
+            />
+          </span>
+          {(block.caption || block.credit) && (
+            <figcaption>
+              {block.caption}
+              {block.credit && <span className="credit">Photograph: {block.credit}</span>}
+            </figcaption>
+          )}
+        </figure>
+      );
     case 'list':
       return block.ordered ? (
         <ol key={i}>
@@ -109,7 +135,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <span className="kicker__cat">{article.section}</span>
                 )}
                 <span className="kicker__rule" />
-                <span className="kicker__meta">Juba</span>
+                {/* Only where one is on the record. It used to read "Juba" for
+                    everything, which was a guess, and wrong the moment a piece
+                    was reported from anywhere else. */}
+                {article.dateline && <span className="kicker__meta">{article.dateline}</span>}
               </div>
 
               <h1 className="article__title">{article.title}</h1>
@@ -139,19 +168,37 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     priority
                   />
                 </span>
-                {article.image.alt && <figcaption>{article.image.alt}</figcaption>}
+                {/* The caption, not the alt: alt describes the frame for a
+                    screen reader and would read as a non-sequitur in print. */}
+                {(article.image.caption || article.image.credit) && (
+                  <figcaption>
+                    {article.image.caption}
+                    {article.image.credit && (
+                      <span className="credit">Photograph: {article.image.credit}</span>
+                    )}
+                  </figcaption>
+                )}
               </figure>
             )}
 
-            <div className="prose">{article.blocks.map(renderBlock)}</div>
+            <div className="prose prose--wide">{article.blocks.map(renderBlock)}</div>
 
+            {/* The provenance line only makes the claim it can back: `source`
+                is null for anything filed straight to this site, and the house
+                bio gives way to the contributor's own where one was supplied. */}
             <div className="colophon">
-              {article.author} writes on peace, governance and regional geopolitics. Originally
-              published on{' '}
-              <a href={article.source} target="_blank" rel="noopener noreferrer">
-                nilexplorer.net
-              </a>
-              . Corrections and rights of reply: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              {article.authorBio ??
+                `${article.author} writes on peace, governance and regional geopolitics.`}{' '}
+              {article.source && (
+                <>
+                  Originally published on{' '}
+                  <a href={article.source} target="_blank" rel="noopener noreferrer">
+                    nilexplorer.net
+                  </a>
+                  .{' '}
+                </>
+              )}
+              Corrections and rights of reply: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             </div>
           </div>
 

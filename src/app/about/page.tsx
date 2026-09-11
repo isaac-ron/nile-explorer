@@ -5,7 +5,8 @@ import { getArticles, getTopics, formatShortDate, labelFor, SITE } from '@/lib/c
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `About ${SITE.name}, the Nile Explorer Podcast, and patron ${SITE.patron}.`
+  description:
+    'A multimedia platform delivering conversations and opinion on peace, democracy, governance and nation building from South Sudan and across Africa.'
 };
 
 /* Recurring subjects, taken from the published articles rather than asserted. */
@@ -35,13 +36,49 @@ export default function AboutPage() {
 
   return (
     <>
-      {/* ---------- Patron ---------- */}
-      <section className="section shell" aria-labelledby="patron-heading">
+      {/* ---------- The platform ----------
+          Copy supplied by the newsroom. It leads the page because that is the
+          order the supplied document puts it in: what this is, then who founded
+          it. The only change to the text is a missing space after a full stop
+          and the split into two paragraphs; not a word has been altered. */}
+      <section className="section shell" aria-labelledby="about-heading">
         <div className="kicker">
-          <span className="kicker__cat">The patron</span>
+          <span className="kicker__cat">About</span>
           <span className="kicker__rule" />
-          <span className="kicker__meta"> </span>
+          <span className="kicker__meta">{SITE.tagline}</span>
         </div>
+
+        <h1 className="about__name" id="about-heading" style={{ marginBottom: 'var(--space-4)' }}>
+          About {SITE.name}
+        </h1>
+
+        <div className="prose" style={{ maxWidth: '68ch' }}>
+          <p>
+            {SITE.name} is a multimedia platform delivering conversations and opinion on peace,
+            democracy, governance and nation building from South Sudan and across Africa. Through
+            podcast, television broadcast, print and social media, we document and amplify the
+            voices, stories and ideas shaping peace, security and governance across South Sudan,
+            the East African region, the Nile basin and the wider African continent.
+          </p>
+          <p>
+            {SITE.name} operates on a single governing conviction: that every voice carries weight
+            in the making of a peaceful and sovereign Africa. The statesman and the
+            constitutionalist, woman leader and the peacebuilder. The young person inheriting
+            today&rsquo;s decisions, and the child whose future depends on whether those decisions
+            are made well. None is dispensable to the account we build.
+          </p>
+          <p>
+            Our work is carried out by a team of journalists, human rights advocates and academics
+            drawn from across Africa, the UK and the United States, operating from London, Nairobi
+            and South Sudan, three vantage points chosen deliberately for what they allow us to see
+            and report with authority.
+          </p>
+        </div>
+      </section>
+
+      {/* ---------- Founder ---------- */}
+      <section className="section section--band" aria-labelledby="patron-heading">
+        <div className="shell">
 
         <div className="about__grid">
           <div className="about__portrait">
@@ -59,7 +96,7 @@ export default function AboutPage() {
             <ul className="factlist">
               <li>
                 <span className="k">Role</span>
-                <span>Patron &amp; contributing author</span>
+                <span>Founder, Patron &amp; Lead Curator</span>
               </li>
               <li>
                 <span className="k">Published</span>
@@ -75,27 +112,36 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <p className="about__role">Patron of The Nile Explorer</p>
-            <h1 className="about__name" id="patron-heading">
+            <p className="about__role">Founder, Patron and Lead Curator</p>
+            <h2 className="about__name" id="patron-heading">
               {SITE.patron}
-            </h1>
+            </h2>
 
             <div className="prose" style={{ marginTop: 'var(--space-4)', maxWidth: '64ch' }}>
               <p>
-                Dr. Aldo Ajou Deng-Akuey has spent more than five decades at the centre of this
-                story, not as an observer but as a participant. From Sudan&rsquo;s parliament to
-                South Sudan&rsquo;s Council of States, he has been present in the rooms where peace
-                was negotiated, where constitutions were debated, and where the architecture of a
-                new nation was drawn in real time.
+                {SITE.name} is founded, patronised and curated by {SITE.patron}, a veteran South
+                Sudanese statesman and former senior government officer whose public life spans more
+                than five decades of the region&rsquo;s political transformation.
               </p>
               <p>
-                He is a believer in the independence and self-determination of African states: in
-                Africa&rsquo;s right to govern itself, to own its resources, to trade on its own
-                terms, and to build institutions that answer to African citizens rather than
-                external creditors. He stands with the government of South Sudan in its commitment
-                to the peace process and the constitutional path forward, out of the conviction
-                that stability and legitimate governance are the preconditions for everything else:
-                economic justice, youth opportunity, and national unity.
+                Dr. Deng-Akuey&rsquo;s career has run through the institutions that defined
+                Sudan&rsquo;s and South Sudan&rsquo;s modern political trajectory, from
+                Sudan&rsquo;s parliament to South Sudan&rsquo;s Council of States. His has not been
+                a career of commentary from the margins but of direct participation in the
+                country&rsquo;s constitutional and peacebuilding processes, present in the
+                negotiations that shaped successive peace settlements, in the deliberations that
+                produced South Sudan&rsquo;s constitutional architecture, and in the institutional
+                work of nation building that followed independence. His political philosophy is
+                rooted in a firm commitment to African sovereignty and self-determination: the
+                principle that African states hold the right to govern themselves, to control and
+                benefit from their own natural resources, to set the terms of their own trade
+                relationships, and to build institutions of accountability that answer first to
+                their own citizens rather than to external creditors or foreign interests. He has
+                aligned himself publicly with the government of South Sudan&rsquo;s commitment to
+                the peace process and the constitutional path forward, on the premise that durable
+                stability and legitimate governance are the foundational preconditions for economic
+                justice, youth opportunity and national cohesion, rather than outcomes that can be
+                achieved independently of them.
               </p>
               <blockquote>
                 The path forward cannot be the burden of the government alone, nor of political
@@ -104,10 +150,14 @@ export default function AboutPage() {
                 shift from blame to responsibility, from suspicion to trust, from division to unity.
               </blockquote>
               <p>
-                He is the patron of The Nile Explorer, bringing to it his credibility, his
-                relationships and his institutional memory. The platform, though, is not about one
-                man. It is about a continent: built for the people, owned by the people, speaking to
-                and for the people.
+                It is from this same political conviction that {SITE.name} draws its mandate. Dr.
+                Deng-Akuey holds a considered view of media not as a passive chronicler of events
+                but as an instrument of nation building in its own right, capable of shaping the
+                terms on which peace and governance are debated and ultimately determined, rather
+                than merely reporting on them after the fact. His broader vision, one of African
+                sovereignty, self-determination and the economic empowerment of African people, is
+                intended to reach citizens, diplomats and policymakers across the continent and its
+                global diaspora.
               </p>
             </div>
 
@@ -153,11 +203,12 @@ export default function AboutPage() {
             </div>
           </aside>
         </div>
+        </div>
       </section>
 
       {/* ---------- Themes ---------- */}
-      <section className="section section--band" aria-labelledby="themes-heading">
-        <div className="shell">
+      <section className="section shell" aria-labelledby="themes-heading">
+        <div>
           <div className="section__head">
             <h2 id="themes-heading">Recurring subjects</h2>
             <Link className="section__more" href="/articles">
@@ -176,7 +227,8 @@ export default function AboutPage() {
       </section>
 
       {/* ---------- Selected writing ---------- */}
-      <section className="section shell" aria-labelledby="writing-heading">
+      <section className="section section--band" aria-labelledby="writing-heading">
+        <div className="shell">
         <div className="section__head">
           <h2 id="writing-heading">Selected writing</h2>
           <Link className="section__more" href="/articles">
@@ -203,24 +255,24 @@ export default function AboutPage() {
             </li>
           ))}
         </ul>
+        </div>
       </section>
 
-      {/* ---------- Publication + contact ---------- */}
-      <section className="section section--band" aria-labelledby="pub-heading">
+      {/* ---------- What it is for + contact ---------- */}
+      <section className="section" aria-labelledby="pub-heading">
         <div className="shell withrail">
           <div>
             <div className="section__head">
-              <h2 id="pub-heading">About the publication</h2>
+              <h2 id="pub-heading">What it is for</h2>
             </div>
             <div className="prose" style={{ maxWidth: '64ch' }}>
               <p>
-                The Nile Explorer is an independent media network reporting on peace, governance and
-                geopolitics across South Sudan and the wider Nile basin. It publishes written
-                analysis, produces The Nile Explorer Podcast, and carries video from the newsroom
-                and the field.
+                {SITE.name} exists to widen the conversation on the issues shaping South Sudan and
+                Africa&rsquo;s future, from peace and security to governance and the long, unfinished
+                work of nation building.
               </p>
               <p>
-                The masthead line, <em>The Mirror of Africa</em>, is meant literally: coverage of the
+                The masthead line, <em>{SITE.tagline}</em>, is meant literally: coverage of the
                 region written from inside it, for readers who live with the consequences of what is
                 reported.
               </p>
