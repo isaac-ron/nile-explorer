@@ -1,89 +1,80 @@
 /**
  * Content access layer.
  *
- * Reads the JSON produced by `npm run ingest`. Everything is static at build
- * time, so pages can be fully prerendered. When the CMS lands, only this file
- * changes: the page components consume these types, not the JSON shape.
+ * Reads from Sanity. Everything runs at build time and is baked into static
+ * HTML; publishing triggers a rebuild. Page components consume the types
+ * below, not the shape Sanity returns, so a change to a GROQ projection stops
+ * here rather than rippling through the app.
+ *
+ * Every getter is async. Most callers are already async server components and
+ * need only an `await`; anything calling these at module scope has to move the
+ * call inside the component.
  */
 
-import articlesJson from '../../content/articles.json';
-import topicsJson from '../../content/topics.json';
-import sectionsJson from '../../content/sections.json';
-import podcastJson from '../../content/podcast.json';
-import televisionJson from '../../content/television.json';
-import documentariesJson from '../../content/documentaries.json';
-import festivalJson from '../../content/festival.json';
-import podcastMetaJson from '../../content/podcast-meta.json';
-import pendingJson from '../../content/placeholder-articles.json';
+import type { PortableTextBlock } from '@portabletext/types';
+import { sanityFetch } from './sanity/client';
+import { toImage, type SanityImage } from './sanity/image';
+import * as Q from './sanity/queries';
 
-export type Block =
-  | { type: 'para'; text: string }
-  | { type: 'heading'; level: number; text: string }
-  | { type: 'quote'; text: string }
-  | { type: 'list'; ordered: boolean; items: string[] };
+export type { PortableTextBlock };
 
 export type Image = {
   url: string;
   alt: string;
   width: number | null;
   height: number | null;
+  credit?: string;
+};
+
+export type Author = {
+  name: string;
+  role?: string;
+  colophon?: string;
+  isPatron?: boolean;
 };
 
 export type Article = {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   date: string;
-  modified: string;
+  state: 'published' | 'commissioned';
   section: string;
   topic: { name: string; slug: string } | null;
-  author: string;
+  author: Author;
+  dateline?: string;
   image: Image | null;
-  blocks: Block[];
+  body: PortableTextBlock[];
   summary: string;
   readingTime: number;
-  source: string;
+  weight?: number;
 };
 
 export type Topic = { name: string; slug: string; count: number };
 export type Section = { name: string; slug: string; count: number };
 
-export type Video = {
-  kind: 'podcast' | 'television';
-  videoId: string;
-  slug: string;
-  title: string;
-  published: string;
-  description: string;
-  summary: string;
-  thumbnail: string;
-  url: string;
-  embed: string;
-  number: number;
-};
-
-export type Podcast = {
-  title: string;
-  rssFeed: string | null;
-  spotify: { showId: string; url: string; embed: string };
-  episodes: Video[];
-};
-
 export type Guest = { name: string; role: string };
 
-/** Intrinsic dimensions are carried so next/image can reserve the box. */
-export type Still = { src: string; alt: string; width: number; height: number };
-
-export type EpisodeMeta = {
-  blurb?: string;
-  topics?: string[];
-  guests?: Guest[];
-  /** false while an edit is reworked: hides Watch and any link to the video. */
-  videoAvailable?: boolean;
+export type Episode = {
+  id: string;
+  number: number;
+  title: string;
+  slug: string;
+  published: string;
+  state: 'published' | 'upcoming';
+  blurb: string;
+  youtubeId: string | null;
+  videoAvailable: boolean;
   videoNote?: string;
-  stills?: Still[];
-  /** Credited wherever a still from this episode appears. */
+  guests: Guest[];
+  topics: string[];
+  stills: Image[];
   photographer?: string;
+  placeholder: boolean;
+  /** Derived from youtubeId, and null while the video is withdrawn. */
+  thumbnail: string | null;
+  url: string | null;
+  embed: string | null;
 };
 
 export type UpcomingEpisode = {
@@ -94,128 +85,322 @@ export type UpcomingEpisode = {
   releaseDate?: string;
 };
 
-/** Invented episodes filling the banner strip. See podcast-meta.json. */
-export type PlaceholderEpisode = {
-  number: number;
-  title: string;
-  blurb: string;
-  date: string;
-  thumbnail: string;
-  thumbnailAlt: string;
-  guests?: Guest[];
-};
-
-export type PodcastMeta = {
-  show: { tagline: string; blurb: string };
-  episodes: Record<string, EpisodeMeta>;
-  upcoming: UpcomingEpisode[];
-  placeholderEpisodes?: PlaceholderEpisode[];
-};
-
-/** A documentary. Curated in documentaries.json, not ingested. */
 export type Film = {
   slug: string;
   title: string;
   standfirst: string;
   summary: string;
-  poster: string;
-  posterAlt: string;
   status: string;
+  placeholder: boolean;
+  poster: Image | null;
 };
 
-/** An episode with its hand-edited metadata folded in. */
-export type EpisodeWithMeta = Video & EpisodeMeta;
+export type Strand = {
+  slug: string;
+  name: string;
+  standfirst: string;
+  topic?: string;
+};
+
+export type NavItem = {
+  label: string;
+  href: string;
+  expandStrands?: boolean;
+};
+
+export type SiteSettings = {
+  name: string;
+  tagline: string;
+  description: string;
+  url: string;
+  email: string;
+  youtube?: string;
+  youtubeHandle?: string;
+  instagram?: string;
+  instagramHandle?: string;
+  newsletterAction?: string;
+  patron?: { name: string; role?: string };
+  pullQuote?: { text?: string; attribution?: string };
+  nav: NavItem[];
+};
+
+export type NamedDetail = { name: string; detail: string };
+
+export type AboutPage = {
+  patronKicker?: string;
+  patronRole?: string;
+  editorialNote?: string;
+  themesHeading?: string;
+  themes: NamedDetail[];
+  publicationHeading?: string;
+  publicationBody: PortableTextBlock[];
+  contactBlurb?: string;
+  correctionsNote?: string;
+  patron?: Author & { bio?: PortableTextBlock[]; portrait: Image | null };
+};
 
 export type Festival = {
   name: string;
-  datesAnnounced: boolean;
-  dates: string;
   standfirst: string;
   blurb: string;
-  strands: { name: string; detail: string }[];
-  awards: { name: string; detail: string };
+  foundationBody?: PortableTextBlock[];
+  editorialNote?: string;
+  datesAnnounced: boolean;
+  dates?: string;
+  strands: NamedDetail[];
+  awards?: NamedDetail;
+  slides: Image[];
 };
 
-const articles = articlesJson as Article[];
-const topics = topicsJson as Topic[];
-const sections = sectionsJson as Section[];
-const podcast = podcastJson as Podcast;
-const television = televisionJson as Video[];
-const films = (documentariesJson as { films: Film[] }).films;
-const festival = festivalJson as Festival;
-const podcastMeta = podcastMetaJson as unknown as PodcastMeta;
-const pending = (pendingJson as { stories: PendingStory[] }).stories;
+export type PodcastShow = {
+  title: string;
+  tagline?: string;
+  blurb?: string;
+  spotifyShowId?: string;
+  rssFeed?: string;
+  appleUrl?: string;
+  /** Built from spotifyShowId. Null when no show id is set. */
+  spotifyEmbed: string | null;
+  spotifyUrl: string | null;
+};
 
-export const getArticles = (): Article[] => articles;
+export type PendingStory = {
+  slug: string;
+  topic: string;
+  title: string;
+  standfirst: string;
+  author: string;
+  status: string;
+};
 
-export const getArticle = (slug: string): Article | undefined =>
-  articles.find((a) => a.slug === slug);
+/* ---------------------------------------------------------------------------
+   Fetching
+   ---------------------------------------------------------------------------
+   A build renders every route separately, and most routes ask for the
+   articles. Without this memo that is one network round trip per route per
+   query, which turns a thirty-second build into a slow one for no reason.
+
+   The memo is deliberately skipped when previewing a draft: the whole point of
+   preview is to see what was just typed.
+--------------------------------------------------------------------------- */
+
+const cache = new Map<string, Promise<unknown>>();
+
+function query<T>(q: string, params: Record<string, unknown> = {}, preview = false): Promise<T> {
+  if (preview) return sanityFetch<T>(q, params, true);
+  const key = q + JSON.stringify(params);
+  if (!cache.has(key)) cache.set(key, sanityFetch<T>(q, params));
+  return cache.get(key) as Promise<T>;
+}
+
+/* ---------------------------------------------------------------------------
+   Derived values
+--------------------------------------------------------------------------- */
+
+/** Words in a Portable Text body, for the reading estimate. */
+function wordCount(body: PortableTextBlock[] | undefined): number {
+  if (!Array.isArray(body)) return 0;
+  return body.reduce((n, block) => {
+    const children = (block as { children?: { text?: string }[] }).children;
+    if (!Array.isArray(children)) return n;
+    const text = children.map((c) => c.text ?? '').join(' ');
+    return n + text.split(/\s+/).filter(Boolean).length;
+  }, 0);
+}
+
+const readingTime = (body: PortableTextBlock[] | undefined): number =>
+  Math.max(1, Math.round(wordCount(body) / 220));
+
+type RawArticle = Omit<Article, 'image' | 'readingTime'> & { image: SanityImage | null };
+
+const hydrateArticle = (a: RawArticle): Article => ({
+  ...a,
+  image: toImage(a.image),
+  readingTime: readingTime(a.body)
+});
+
+type RawEpisode = Omit<Episode, 'stills' | 'thumbnail' | 'url' | 'embed'> & {
+  stills: SanityImage[] | null;
+};
+
+/**
+ * Fill in the YouTube URLs an episode implies.
+ *
+ * When the video is withdrawn these stay null rather than being computed and
+ * hidden later, so the id never reaches a page in the first place. See
+ * toPlayerEpisode below for why that matters.
+ */
+const hydrateEpisode = (e: RawEpisode): Episode => {
+  const watchable = e.videoAvailable !== false && Boolean(e.youtubeId);
+  return {
+    ...e,
+    stills: (e.stills ?? []).map(toImage).filter((i): i is Image => i !== null),
+    thumbnail: watchable ? `https://i.ytimg.com/vi/${e.youtubeId}/maxresdefault.jpg` : null,
+    url: watchable ? `https://www.youtube.com/watch?v=${e.youtubeId}` : null,
+    embed: watchable ? `https://www.youtube-nocookie.com/embed/${e.youtubeId}?rel=0` : null
+  };
+};
+
+/* ---------------------------------------------------------------------------
+   Articles
+--------------------------------------------------------------------------- */
+
+export const getArticles = async (preview = false): Promise<Article[]> =>
+  (await query<RawArticle[]>(Q.ARTICLES_QUERY, {}, preview)).map(hydrateArticle);
+
+export const getArticle = async (
+  slug: string,
+  preview = false
+): Promise<Article | undefined> => {
+  const a = await query<RawArticle | null>(Q.ARTICLE_BY_SLUG_QUERY, { slug }, preview);
+  return a ? hydrateArticle(a) : undefined;
+};
+
+export const getArticleSlugs = async (): Promise<string[]> =>
+  query<string[]>(Q.ARTICLE_SLUGS_QUERY);
 
 /* ---------------------------------------------------------------------------
    Top stories
    ---------------------------------------------------------------------------
-   The front page leads on a ranked trio rather than a single editor's pick, so
-   the ordering needs to come from somewhere. Today nothing measures anything,
-   so it falls through to recency, which is an arbitrary but honest default.
+   The front page leads on a ranked set rather than a single editor's pick.
+   Ordering comes from the `weight` field an editor can set in the Studio;
+   everything unweighted falls through to recency, which is an arbitrary but
+   honest default and the normal case.
 
-   THE SWAP POINT IS `popularity` BELOW. Fill it with slug -> score from
-   whatever lands first (page views, click counts, a CMS "featured" weight) and
-   both the lead and the running order re-elect themselves with no change to
-   any component. Scores are relative, not absolute: only their order matters.
+   Setting a weight is the deliberate act of promoting something. Clearing it
+   lets the page go back to leading on whatever is newest, with nothing to
+   remember to undo.
 --------------------------------------------------------------------------- */
 
-/** slug -> score. Empty until a metric source exists. Higher wins. */
-const popularity: Record<string, number> = {};
-
-/** Recency in ms, used as the tiebreak and as the whole score while unmeasured. */
 const recencyOf = (a: Article): number => +new Date(a.date);
-
-const scoreOf = (a: Article): number => popularity[a.slug] ?? 0;
+const scoreOf = (a: Article): number => a.weight ?? 0;
 
 /**
  * The stories that lead the front page, best first.
  *
  * `[0]` is the main story: the biggest well in the hero, and the page's `h1`.
- * Ties (which is every article today, since every score is 0) break on recency,
- * so the current behaviour is exactly the old "newest first" lead.
+ * TopStories expects at least five to fill the flanks and the rows under them.
  */
-export const getTopStories = (count = 3): Article[] =>
-  [...articles]
+export const getTopStories = async (count = 3): Promise<Article[]> =>
+  [...(await getArticles())]
     .sort((a, b) => scoreOf(b) - scoreOf(a) || recencyOf(b) - recencyOf(a))
     .slice(0, count);
 
-/** True once anything is actually measuring. Lets the UI stop saying "Latest". */
-export const hasPopularityData = (): boolean => Object.keys(popularity).length > 0;
+export const getTopics = async (): Promise<Topic[]> => query<Topic[]>(Q.TOPICS_QUERY);
 
-export const getTopics = (): Topic[] => topics;
+/** Sections in use, counted from the articles that carry them. */
+export const getSections = async (): Promise<Section[]> => {
+  const names = await query<string[]>(Q.SECTIONS_QUERY);
+  const counts = new Map<string, number>();
+  for (const n of names) counts.set(n, (counts.get(n) ?? 0) + 1);
+  return [...counts.entries()]
+    .map(([name, count]) => ({ name, slug: name.toLowerCase(), count }))
+    .sort((a, b) => b.count - a.count);
+};
 
-export const getSections = (): Section[] => sections;
+export const getArticlesByTopic = async (slug: string): Promise<Article[]> =>
+  (await getArticles()).filter((a) => a.topic?.slug === slug);
 
-export const getArticlesByTopic = (slug: string): Article[] =>
-  articles.filter((a) => a.topic?.slug === slug);
-
-export const getArticlesBySection = (slug: string): Article[] =>
-  articles.filter((a) => a.section.toLowerCase() === slug);
+export const getArticlesBySection = async (slug: string): Promise<Article[]> =>
+  (await getArticles()).filter((a) => a.section.toLowerCase() === slug);
 
 /**
- * What to print in a kicker. Most pieces carry a subject topic; those whose
- * WordPress category was really a section fall back to the section name so the
- * kicker is never blank.
+ * What to print in a kicker. Most pieces carry a subject topic; those without
+ * one fall back to the section name so the kicker is never blank.
  */
 export const labelFor = (a: Article): string => a.topic?.name ?? a.section;
 
-export const getPodcast = (): Podcast => podcast;
+/**
+ * Sidebar recommendations.
+ *
+ * Returns the heading alongside the articles so the label always describes
+ * what is actually in the list — an earlier version mixed same-topic and
+ * merely-recent pieces under one heading and routinely listed things that had
+ * nothing to do with the story.
+ */
+export async function getRelated(
+  article: Article,
+  limit = 4
+): Promise<{ heading: string; articles: Article[] }> {
+  const articles = await getArticles();
 
-export const getPodcastMeta = (): PodcastMeta => podcastMeta;
+  const sameTopic = article.topic
+    ? articles.filter((a) => a.slug !== article.slug && a.topic?.slug === article.topic!.slug)
+    : [];
 
-/** Episodes with guests, topics and a hand-written blurb folded in where present. */
-export const getEpisodes = (): EpisodeWithMeta[] =>
-  podcast.episodes.map((e) => ({ ...e, ...(podcastMeta.episodes[e.videoId] ?? {}) }));
+  if (sameTopic.length >= 2) {
+    return { heading: `More on ${article.topic!.name}`, articles: sameTopic.slice(0, limit) };
+  }
 
-export const getLatestEpisode = (): EpisodeWithMeta | undefined => getEpisodes()[0];
+  return {
+    heading: 'More from the newsroom',
+    articles: articles.filter((a) => a.slug !== article.slug).slice(0, limit)
+  };
+}
 
-/** Default true: an episode is watchable unless meta says otherwise. */
-export const canWatch = (e: EpisodeWithMeta): boolean => e.videoAvailable !== false;
+/**
+ * Commissioned pieces that have not been filed.
+ *
+ * These fill the foot of the Analysis & opinion river. Nothing renders them as
+ * links: a headline that opens nothing is worse than a headline that says it
+ * is not written yet.
+ */
+export const getPendingStories = async (): Promise<PendingStory[]> =>
+  query<PendingStory[]>(Q.COMMISSIONED_QUERY);
+
+/**
+ * Oldest pieces first, for the rail beside Analysis & opinion.
+ *
+ * The rail is sized to hold `limit` items so the column reaches the foot of
+ * the river. While the archive holds fewer pieces than the rail has slots the
+ * list cycles, which is visible as a stopgap — the same headlines appear twice
+ * in one column — and resolves itself with no code change as the archive grows.
+ *
+ * Callers must key on index, not slug: slugs repeat here.
+ */
+export const getArchive = async (limit = 4): Promise<Article[]> => {
+  const pool = [...(await getArticles())].sort((a, b) => +new Date(a.date) - +new Date(b.date));
+  if (pool.length === 0) return [];
+  return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
+};
+
+/** Slots the front-page rail is built to hold. See getArchive. */
+export const archiveCapacity = 12;
+
+/* ---------------------------------------------------------------------------
+   Podcast
+--------------------------------------------------------------------------- */
+
+export const getEpisodes = async (): Promise<Episode[]> =>
+  (await query<RawEpisode[]>(Q.EPISODES_QUERY)).map(hydrateEpisode);
+
+/** Released, real episodes. What the podcast page lists and the player plays. */
+export const getReleasedEpisodes = async (): Promise<Episode[]> =>
+  (await query<RawEpisode[]>(Q.RELEASED_EPISODES_QUERY)).map(hydrateEpisode);
+
+export const getLatestEpisode = async (): Promise<Episode | undefined> =>
+  (await getReleasedEpisodes())[0];
+
+export const getUpcoming = async (): Promise<UpcomingEpisode[]> =>
+  query<UpcomingEpisode[]>(Q.UPCOMING_EPISODES_QUERY);
+
+/** Default true: an episode is watchable unless it has been withdrawn. */
+export const canWatch = (e: Episode): boolean => e.videoAvailable !== false && Boolean(e.youtubeId);
+
+export const getPodcastShow = async (): Promise<PodcastShow> => {
+  const show = await query<PodcastShow | null>(Q.PODCAST_SHOW_QUERY);
+  const id = show?.spotifyShowId;
+  return {
+    title: show?.title ?? 'The Nile Explorer Podcast',
+    tagline: show?.tagline,
+    blurb: show?.blurb,
+    spotifyShowId: id,
+    rssFeed: show?.rssFeed,
+    appleUrl: show?.appleUrl,
+    spotifyUrl: id ? `https://open.spotify.com/show/${id}` : null,
+    spotifyEmbed: id ? `https://open.spotify.com/embed/show/${id}?theme=0` : null
+  };
+};
 
 export type PlayerEpisode = {
   number: number;
@@ -224,7 +409,7 @@ export type PlayerEpisode = {
   thumbnail: string | null;
   videoAvailable: boolean;
   videoNote?: string;
-  stills: Still[];
+  stills: Image[];
   photographer?: string;
   /** Null while the video is withdrawn, so the URL never reaches the client. */
   url: string | null;
@@ -235,10 +420,10 @@ export type PlayerEpisode = {
  * Narrow an episode to what the player needs.
  *
  * The player is a client component, so whatever it receives is serialized into
- * the RSC payload and readable in page source. Passing the whole episode leaked
- * the video URL even with every link to it removed.
+ * the RSC payload and readable in page source. Passing the whole episode
+ * leaked the video URL even with every link to it removed.
  */
-export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
+export function toPlayerEpisode(e: Episode): PlayerEpisode {
   const watchable = canWatch(e);
   return {
     number: e.number,
@@ -246,38 +431,19 @@ export function toPlayerEpisode(e: EpisodeWithMeta): PlayerEpisode {
     thumbnail: watchable ? e.thumbnail : null,
     videoAvailable: watchable,
     videoNote: e.videoNote,
-    stills: e.stills ?? [],
+    stills: e.stills,
     photographer: e.photographer,
     url: watchable ? e.url : null,
     embed: watchable ? e.embed : null
   };
 }
 
-/** Scheduled but unreleased. Empty until someone fills in podcast-meta.json. */
-export const getUpcoming = (): UpcomingEpisode[] => podcastMeta.upcoming;
-
-/**
- * Renamed from Television. The ingested YouTube feed is still in
- * television.json and still carries `kind: 'television'`, but the strand now
- * shows the curated films in documentaries.json instead: the feed held a test
- * upload, two podcast repackages and two third-party speeches, none of which
- * is a documentary.
- *
- * PLACEHOLDER: the three films are not commissioned and their key art is
- * AI-generated. Empty `films` in that file and this falls back to the feed.
- */
-export const getDocumentaries = (): Film[] => films;
-
-/** The ingested channel feed, kept for the fallback and for reference. */
-export const getChannelFeed = (): Video[] => television;
-
 /* ---------------------------------------------------------------------------
    Podcast episodes for the banner strip
    ---------------------------------------------------------------------------
-   The banner carries three episodes. One exists. The other two are invented
-   and live under `placeholderEpisodes` in podcast-meta.json, flagged there.
-   Both shapes are normalised here so the strip does not have to know which is
-   which, and so deleting the placeholders degrades to however many are real.
+   The band carries three episodes, real and announced alike, normalised to one
+   shape so the strip does not have to know which is which. Anything not yet
+   released gets no link, because there is nothing to open.
 --------------------------------------------------------------------------- */
 
 export type BannerEpisode = {
@@ -285,274 +451,118 @@ export type BannerEpisode = {
   title: string;
   blurb: string;
   date: string;
-  thumbnail: string;
+  thumbnail: string | null;
   thumbnailAlt: string;
   guests: Guest[];
-  /** False for the invented ones: they get no link, because there is nothing to open. */
   published: boolean;
 };
 
 /**
- * Strip a trailing "Episode N" from a YouTube title.
+ * Strip a trailing "Episode N" from a title.
  *
- * The upload is called "Peace, War and the Search for a Political Solution.
- * Episode 1", and the band prints "Episode 1" as the kicker directly above it.
- * That read as a typo once the lead episode's headline grew to fill two-thirds
- * of the band. Only the display copy is trimmed; the ingested title is
- * untouched, so the podcast page and the player still show it in full.
+ * Kept for titles imported from YouTube, where the number was part of the
+ * upload name and the band prints it as a kicker directly above — which read
+ * as a typo. New episodes carry the number in its own field, so this is a
+ * no-op for anything created in the Studio.
  */
 const trimEpisodeSuffix = (title: string): string =>
   title.replace(/[.\s—–-]*\s*Episode\s+\d+\s*$/i, '').trim() || title;
 
-export const getBannerEpisodes = (count = 3): BannerEpisode[] => {
-  const real: BannerEpisode[] = getEpisodes().map((e) => ({
+export const getBannerEpisodes = async (count = 3): Promise<BannerEpisode[]> =>
+  (await getEpisodes()).slice(0, count).map((e) => ({
     number: e.number,
     title: trimEpisodeSuffix(e.title),
-    blurb: e.blurb ?? e.summary,
+    blurb: e.blurb,
     date: e.published,
-    thumbnail: e.stills?.[0]?.src ?? e.thumbnail,
-    thumbnailAlt: e.stills?.[0]?.alt ?? `Artwork for “${e.title}”`,
+    thumbnail: e.stills[0]?.url ?? e.thumbnail,
+    thumbnailAlt: e.stills[0]?.alt ?? `Artwork for “${e.title}”`,
     guests: e.guests ?? [],
-    published: true
+    published: e.state === 'published' && !e.placeholder
   }));
 
-  const invented: BannerEpisode[] = (podcastMeta.placeholderEpisodes ?? []).map((p) => ({
-    number: p.number,
-    title: p.title,
-    blurb: p.blurb,
-    date: p.date,
-    thumbnail: p.thumbnail,
-    thumbnailAlt: p.thumbnailAlt,
-    guests: p.guests ?? [],
-    published: false
-  }));
-
-  return [...real, ...invented].slice(0, count);
-};
-
-export const getFestival = (): Festival => festival;
-
 /* ---------------------------------------------------------------------------
-   PLACEHOLDER FESTIVAL IMAGERY  —  REPLACE BEFORE THE INAUGURAL EDITION
-   ---------------------------------------------------------------------------
-   The Nile Festival has not happened, so none of these is a photograph of it.
-   They are licensed stock standing in until the first edition is shot.
-
-   Swap: drop the real photographs into public/festival/, point `src` at them,
-   rewrite `alt` to describe the actual scene, and remove the images.unsplash.com
-   entry from next.config.ts. Nothing else references these.
-
-   Alt text describes what is in each frame and does not claim the festival as
-   its subject, so the page never asserts something untrue to a screen reader.
---------------------------------------------------------------------------- */
-const festivalSlides = [
-  {
-    src: 'https://images.unsplash.com/photo-1784123476511-c8f9da501f5d?auto=format&fit=crop&w=1900&q=70',
-    alt: 'Dancers in blue and gold wax-print dress performing outside a large stone building.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1764670085286-55cd79507a72?auto=format&fit=crop&w=1900&q=70',
-    alt: 'Three drummers playing together at an outdoor gathering.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1758875913518-7869eb5e1e91?auto=format&fit=crop&w=1900&q=70',
-    alt: 'A group in traditional dress dancing together in the open air.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1778848268262-3a9e40cae69c?auto=format&fit=crop&w=1900&q=70',
-    alt: 'Performers in costume on a lit stage at night.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1764145162259-04eaf2b3d86a?auto=format&fit=crop&w=1900&q=70',
-    alt: 'A crowd in white dress gathered outdoors for a celebration.'
-  }
-];
-
-export const getFestivalSlides = () => festivalSlides;
-
-/* ---------------------------------------------------------------------------
-   Editorial strands behind the More menu
-   ---------------------------------------------------------------------------
-   Coverage areas that mirror the Nile Festival's pillars. None of them holds an
-   article yet; the routes exist so the menu is real and so the newsroom has
-   somewhere to publish into. Each page falls back to an empty state that says
-   so plainly rather than showing an empty list.
-
-   `topic` maps a strand to an existing topic slug when one appears in
-   topics.json, so a strand starts filling itself the moment the ingest carries
-   pieces tagged that way.
+   Documentaries, strands and the singletons
 --------------------------------------------------------------------------- */
 
-export type Strand = {
-  slug: string;
-  name: string;
-  standfirst: string;
-  /** Topic slug to pull articles from, when the newsroom starts tagging them. */
-  topic?: string;
-};
+type RawFilm = Omit<Film, 'poster'> & { poster: SanityImage | null };
 
-const strands: Strand[] = [
-  {
-    slug: 'culture',
-    name: 'Cultural commentary',
-    standfirst:
-      'Writing on the traditions, languages and public life carried between South Sudan and its diaspora.',
-    topic: 'culture'
-  },
-  {
-    slug: 'media',
-    name: 'Media',
-    standfirst:
-      'The press, broadcasting and information environment across the region, and who gets to tell the story.',
-    topic: 'media'
-  },
-  {
-    slug: 'entertainment',
-    name: 'Entertainment',
-    standfirst: 'Music, film, performance and the people making them.',
-    topic: 'entertainment'
-  },
-  {
-    slug: 'food',
-    name: 'Food',
-    standfirst: 'The cooking of the river and the regions, and the people who keep it.',
-    topic: 'food'
-  },
-  {
-    slug: 'sport',
-    name: 'Sport',
-    standfirst:
-      'Competition across the states, and the athletes who carry the country’s name abroad.',
-    topic: 'sport'
-  },
-  {
-    slug: 'fashion',
-    name: 'Fashion & textiles',
-    standfirst: 'Designers and makers working with South Sudanese cloth, pattern and form.',
-    topic: 'fashion'
-  }
-];
+export const getDocumentaries = async (): Promise<Film[]> =>
+  (await query<RawFilm[]>(Q.FILMS_QUERY)).map((f) => ({ ...f, poster: toImage(f.poster) }));
 
-export const getStrands = (): Strand[] => strands;
+export const getStrands = async (): Promise<Strand[]> => query<Strand[]>(Q.STRANDS_QUERY);
 
-export const getStrand = (slug: string): Strand | undefined =>
-  strands.find((s) => s.slug === slug);
+export const getStrand = async (slug: string): Promise<Strand | undefined> =>
+  (await getStrands()).find((s) => s.slug === slug);
 
-/** Articles filed under a strand. Empty for every strand today. */
-export const getStrandArticles = (strand: Strand): Article[] =>
-  strand.topic ? articles.filter((a) => a.topic?.slug === strand.topic) : [];
+/** Articles filed under a strand, via the topic it is fed by. */
+export const getStrandArticles = async (strand: Strand): Promise<Article[]> =>
+  strand.topic ? (await getArticles()).filter((a) => a.topic?.slug === strand.topic) : [];
 
-/**
- * Sidebar recommendations.
- *
- * The previous version mixed same-category and merely-recent pieces under one
- * heading, so "Also in this story" routinely listed things that had nothing to
- * do with the story. This returns the heading alongside the articles so the
- * label always describes what is actually in the list.
- */
-export function getRelated(
-  article: Article,
-  limit = 4
-): { heading: string; articles: Article[] } {
-  const sameTopic = article.topic
-    ? articles.filter((a) => a.slug !== article.slug && a.topic?.slug === article.topic!.slug)
-    : [];
+type RawFestival = Omit<Festival, 'slides'> & { slides: SanityImage[] | null };
 
-  if (sameTopic.length >= 2) {
-    return {
-      heading: `More on ${article.topic!.name}`,
-      articles: sameTopic.slice(0, limit)
-    };
-  }
-
+export const getFestival = async (): Promise<Festival> => {
+  const f = await query<RawFestival | null>(Q.FESTIVAL_QUERY);
   return {
-    heading: 'More from the newsroom',
-    articles: articles.filter((a) => a.slug !== article.slug).slice(0, limit)
+    name: f?.name ?? 'The Nile Festival',
+    standfirst: f?.standfirst ?? '',
+    blurb: f?.blurb ?? '',
+    foundationBody: f?.foundationBody,
+    editorialNote: f?.editorialNote,
+    datesAnnounced: f?.datesAnnounced ?? false,
+    dates: f?.dates,
+    strands: f?.strands ?? [],
+    awards: f?.awards,
+    slides: (f?.slides ?? []).map(toImage).filter((i): i is Image => i !== null)
   };
-}
+};
+
+type RawAbout = Omit<AboutPage, 'patron'> & {
+  patron?: (Author & { bio?: PortableTextBlock[]; portrait: SanityImage | null }) | null;
+};
+
+export const getAboutPage = async (): Promise<AboutPage> => {
+  const a = await query<RawAbout | null>(Q.ABOUT_PAGE_QUERY);
+  return {
+    ...a,
+    themes: a?.themes ?? [],
+    publicationBody: a?.publicationBody ?? [],
+    patron: a?.patron ? { ...a.patron, portrait: toImage(a.patron.portrait) } : undefined
+  };
+};
+
+/**
+ * The masthead, the menu, the footer and the site's own description.
+ *
+ * Was a hardcoded `SITE` constant. The fallbacks below exist so a missing or
+ * half-filled Site settings document degrades to something sensible rather
+ * than crashing the build — but they are a safety net, not the source: what
+ * ships is whatever is in the Studio.
+ */
+export const getSite = async (): Promise<SiteSettings> => {
+  const s = await query<SiteSettings | null>(Q.SITE_SETTINGS_QUERY);
+  return {
+    name: s?.name ?? 'The Nile Explorer',
+    tagline: s?.tagline ?? 'The Mirror of Africa',
+    description: s?.description ?? '',
+    url: s?.url ?? 'https://nilexplorer.net',
+    email: s?.email ?? '',
+    youtube: s?.youtube,
+    youtubeHandle: s?.youtubeHandle,
+    instagram: s?.instagram,
+    instagramHandle: s?.instagramHandle,
+    newsletterAction: s?.newsletterAction,
+    patron: s?.patron,
+    pullQuote: s?.pullQuote,
+    nav: s?.nav ?? []
+  };
+};
 
 /* ---------------------------------------------------------------------------
-   Commissioned pieces that have not been filed
-   ---------------------------------------------------------------------------
-   The Analysis & opinion river runs three pieces deep, because the front-page
-   trio takes the five most recent and there are only eleven articles in all.
-   That left the column finishing well above the archive rail beside it.
-
-   These fill it. They are inventions, they live in placeholder-articles.json
-   flagged as such, and nothing renders them as links: a headline that opens
-   nothing is worse than a headline that says it is not written yet.
-
-   They are deliberately NOT merged into `articles`. Doing that would put them
-   in /articles, in the topic counts, in the sitemap and in getRelated, and the
-   ingest would then have to know to leave them alone. Keeping them a separate
-   list means one component knows about them and deleting the file is enough.
+   Formatting
 --------------------------------------------------------------------------- */
-
-export type PendingStory = {
-  slug: string;
-  topic: string;
-  title: string;
-  standfirst: string;
-  author: string;
-  /** Printed beside the kicker. What stops the row reading as published. */
-  status: string;
-};
-
-export const getPendingStories = (): PendingStory[] => pending;
-
-/**
- * Oldest pieces first, for the rail beside Analysis & opinion.
- *
- * The rail is sized to hold `limit` items so the column reaches the foot of the
- * river instead of leaving a well of white under the patron's quote. There are
- * currently fewer articles in the archive than slots in the rail, so the list
- * cycles: once the pool is exhausted it starts again from the oldest.
- *
- * That is a stopgap and it is visible as one, because the same headlines appear
- * twice in one column. It resolves itself with no code change the moment the
- * archive holds `limit` pieces, which is the point of filling by cycling rather
- * than by padding with something invented. `archiveCapacity` below is the
- * number to grow into.
- *
- * Callers must key on index, not slug: slugs repeat here.
- */
-export const getArchive = (limit = 4): Article[] => {
-  const pool = [...articles].sort((a, b) => +new Date(a.date) - +new Date(b.date));
-  if (pool.length === 0) return [];
-  return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
-};
-
-/**
- * Slots the front-page rail is built to hold. See getArchive.
- *
- * Sized against the river beside it, which now runs two commissioned pieces
- * past its last published one. Twelve slots against eleven articles means one
- * repeat at the foot; ten left the rail 100px short of the river.
- */
-export const archiveCapacity = 12;
-
-/** How many of those slots can be filled without repeating. */
-export const archiveDepth = (): number => Math.min(articles.length, archiveCapacity);
 
 export const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
 export const formatShortDate = (iso: string): string =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-
-export const SITE = {
-  name: 'The Nile Explorer',
-  tagline: 'The Mirror of Africa',
-  description:
-    'Independent reporting, analysis and opinion on peace, governance and geopolitics across South Sudan and the Nile basin.',
-  url: 'https://nilexplorer.net',
-  youtube: 'https://www.youtube.com/@thenilexplorerpodcast',
-  instagram: 'https://www.instagram.com/thenilexplorer_podcast',
-  spotify: podcast.spotify.url,
-  email: 'newsroom@nilexplorer.net',
-  patron: 'Dr. Aldo Ajou Deng-Akuey'
-} as const;

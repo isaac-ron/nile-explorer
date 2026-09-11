@@ -2,52 +2,57 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  getPodcast,
-  getEpisodes,
+  getReleasedEpisodes,
   getUpcoming,
-  getPodcastMeta,
+  getPodcastShow,
   toPlayerEpisode,
   getDocumentaries,
   getArchive,
-  formatDate,
-  SITE
+  getSite,
+  formatDate
 } from '@/lib/content';
 import PodcastPlayer from '@/components/PodcastPlayer';
 import { RankedItem } from '@/components/Story';
 import { PlatformLink } from '@/components/Icons';
 
-export const metadata: Metadata = {
-  title: 'The Nile Explorer Podcast',
-  description:
-    'Conversations on peace, governance and the future of South Sudan and the Nile basin. Watch on YouTube or listen on Spotify.'
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const show = await getPodcastShow();
+  return {
+    title: show.title,
+    description:
+      show.blurb ??
+      'Conversations on peace, governance and the future of South Sudan and the Nile basin.'
+  };
+}
 
-export default function PodcastsPage() {
-  const podcast = getPodcast();
-  const meta = getPodcastMeta();
-  const [latest, ...older] = getEpisodes();
-  const upcoming = getUpcoming();
-  const programmes = getDocumentaries().slice(0, 3);
-  const archive = getArchive(4);
+export default async function PodcastsPage() {
+  const [show, released, upcoming, films, archive, site] = await Promise.all([
+    getPodcastShow(),
+    getReleasedEpisodes(),
+    getUpcoming(),
+    getDocumentaries(),
+    getArchive(4),
+    getSite()
+  ]);
+  const [latest, ...older] = released;
+  const programmes = films.slice(0, 3);
 
   return (
     <section className="section">
       <div className="shell withrail">
         <div>
           <div className="section__head">
-            <h1 style={{ fontSize: 'var(--fs-h2)', color: 'var(--navy)' }}>
-              The Nile Explorer Podcast
-            </h1>
+            <h1 style={{ fontSize: 'var(--fs-h2)', color: 'var(--navy)' }}>{show.title}</h1>
             <span className="label label--muted">
-              {podcast.episodes.length === 1
-                ? 'Episode 1 out now'
-                : `${podcast.episodes.length} episodes`}
+              {released.length === 1 ? 'Episode 1 out now' : `${released.length} episodes`}
             </span>
           </div>
 
-          <p className="episode__desc" style={{ marginBottom: 'var(--space-5)' }}>
-            {meta.show.blurb} <em>{meta.show.tagline}</em>
-          </p>
+          {(show.blurb || show.tagline) && (
+            <p className="episode__desc" style={{ marginBottom: 'var(--space-5)' }}>
+              {show.blurb} {show.tagline && <em>{show.tagline}</em>}
+            </p>
+          )}
 
           {latest && (
             <>
@@ -65,12 +70,16 @@ export default function PodcastsPage() {
 
               <PodcastPlayer
                 episode={toPlayerEpisode(latest)}
-                podcast={{ title: podcast.title, spotify: podcast.spotify }}
+                podcast={{
+                  title: show.title,
+                  spotifyUrl: show.spotifyUrl,
+                  spotifyEmbed: show.spotifyEmbed
+                }}
               />
 
-              {(latest.blurb ?? latest.summary) && (
+              {latest.blurb && (
                 <p className="episode__desc" style={{ marginTop: 'var(--space-4)' }}>
-                  {latest.blurb ?? latest.summary}
+                  {latest.blurb}
                 </p>
               )}
 
@@ -116,7 +125,7 @@ export default function PodcastsPage() {
                 {upcoming.map((u) => (
                   <article className="upcoming" key={u.title}>
                     <span className="upcoming__when">
-                      {u.releaseDate ? u.releaseDate : 'Date to be announced'}
+                      {u.releaseDate ? formatDate(u.releaseDate) : 'Date to be announced'}
                     </span>
                     <div className="episode__body">
                       <h3 className="episode__title">{u.title}</h3>
@@ -139,24 +148,46 @@ export default function PodcastsPage() {
                 <h2>Previous episodes</h2>
               </div>
               <div>
-                {older.map((e) => (
-                  <a
-                    className="episode"
-                    href={e.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key={e.videoId}
-                  >
-                    <span className="frame frame--wide">
-                      <Image src={e.thumbnail} alt="" width={1280} height={720} sizes="210px" />
-                    </span>
-                    <span className="episode__body">
-                      <span className="card__cat">Episode {e.number}</span>
-                      <span className="episode__title">{e.title}</span>
-                      <span className="card__meta">{formatDate(e.published)}</span>
-                    </span>
-                  </a>
-                ))}
+                {older.map((e) => {
+                  const body = (
+                    <>
+                      {/* Null while the video is withdrawn, so neither the
+                          thumbnail nor the link carries the video id. */}
+                      {e.thumbnail && (
+                        <span className="frame frame--wide">
+                          <Image
+                            src={e.thumbnail}
+                            alt=""
+                            width={1280}
+                            height={720}
+                            sizes="210px"
+                          />
+                        </span>
+                      )}
+                      <span className="episode__body">
+                        <span className="card__cat">Episode {e.number}</span>
+                        <span className="episode__title">{e.title}</span>
+                        <span className="card__meta">{formatDate(e.published)}</span>
+                      </span>
+                    </>
+                  );
+
+                  return e.url ? (
+                    <a
+                      className="episode"
+                      href={e.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      key={e.id}
+                    >
+                      {body}
+                    </a>
+                  ) : (
+                    <article className="episode" key={e.id}>
+                      {body}
+                    </article>
+                  );
+                })}
               </div>
             </>
           )}
@@ -171,23 +202,39 @@ export default function PodcastsPage() {
               height={1660}
               style={{ width: '100%', height: 'auto' }}
             />
-            <p
-              style={{
-                marginTop: 'var(--space-3)',
-                fontSize: 'var(--fs-small)',
-                color: 'var(--ink-blurb)',
-                lineHeight: 1.55
-              }}
-            >
-              Conversations on peace, governance and the future of the Nile basin, recorded in  Nairobi.
-            </p>
+            {show.tagline && (
+              <p
+                style={{
+                  marginTop: 'var(--space-3)',
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.02rem',
+                  color: 'var(--navy)',
+                  lineHeight: 1.35
+                }}
+              >
+                {show.tagline}
+              </p>
+            )}
             <p className="label label--muted" style={{ marginTop: 'var(--space-4)' }}>
               Subscribe
             </p>
             <div className="platforms" style={{ marginTop: 'var(--space-2)' }}>
-              <PlatformLink name="spotify" href={podcast.spotify.url} label="Listen on Spotify" />
-              <PlatformLink name="youtube" href={SITE.youtube} label="Watch on YouTube" />
-              <PlatformLink name="instagram" href={SITE.instagram} label="Follow on Instagram" />
+              {show.spotifyUrl && (
+                <PlatformLink name="spotify" href={show.spotifyUrl} label="Listen on Spotify" />
+              )}
+              {show.appleUrl && (
+                <PlatformLink
+                  name="apple-podcasts"
+                  href={show.appleUrl}
+                  label="Listen on Apple Podcasts"
+                />
+              )}
+              {site.youtube && (
+                <PlatformLink name="youtube" href={site.youtube} label="Watch on YouTube" />
+              )}
+              {site.instagram && (
+                <PlatformLink name="instagram" href={site.instagram} label="Follow on Instagram" />
+              )}
             </div>
           </div>
 
@@ -209,12 +256,16 @@ export default function PodcastsPage() {
             </div>
           )}
 
-          <div>
-            <h2 className="rail__title">From the archive</h2>
-            {archive.map((a, i) => (
-              <RankedItem article={a} n={i + 1} key={a.slug} />
-            ))}
-          </div>
+          {archive.length > 0 && (
+            <div>
+              <h2 className="rail__title">From the archive</h2>
+              {/* Keyed on index, not slug: getArchive cycles, so slugs
+                  repeat while the archive is shallower than the rail. */}
+              {archive.map((a, i) => (
+                <RankedItem article={a} n={i + 1} key={`${a.slug}-${i}`} />
+              ))}
+            </div>
+          )}
         </aside>
       </div>
     </section>

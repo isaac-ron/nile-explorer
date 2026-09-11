@@ -2,10 +2,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Article, PendingStory, formatDate, formatShortDate, labelFor } from '@/lib/content';
 
-/** Fallback alt when WordPress supplied none. */
+/**
+ * Fallback alt.
+ *
+ * The CMS requires a description on every image, so this should never fire.
+ * It stays for the archive pieces imported from WordPress, which arrived with
+ * empty alt attributes and may not all have been described yet.
+ */
 const altFor = (a: Article) => a.image?.alt || `Illustration for “${a.title}”`;
 
-export function ArticleCard({ article, priority }: { article: Article; priority?: boolean }) {
+export function ArticleCard({ article, preload }: { article: Article; preload?: boolean }) {
   return (
     <Link className="card" href={`/articles/${article.slug}`}>
       {article.image && (
@@ -16,7 +22,7 @@ export function ArticleCard({ article, priority }: { article: Article; priority?
             width={article.image.width ?? 1200}
             height={article.image.height ?? 800}
             sizes="(max-width: 700px) 100vw, 300px"
-            priority={priority}
+            preload={preload}
           />
         </span>
       )}
@@ -40,7 +46,7 @@ export function StoryRow({ article }: { article: Article }) {
         </h3>
         <p className="story__blurb">{article.summary}</p>
         <div className="story__meta">
-          <span>{article.author}</span>
+          <span>{article.author.name}</span>
           <span className="dot">{formatDate(article.date)}</span>
           <span className="dot">{article.readingTime} min read</span>
         </div>
@@ -72,7 +78,8 @@ export function StoryRow({ article }: { article: Article }) {
  * than as a widget bolted on the end, but an <article> and not a link, and no
  * picture: there is no photograph of a piece nobody has written. The status
  * mark beside the kicker is doing the honest work here — without it these read
- * as published stories that fail to open. See placeholder-articles.json.
+ * as published stories that fail to open. These are articles whose stage is
+ * "Commissioned" in the Studio.
  */
 export function PendingRow({ story }: { story: PendingStory }) {
   return (

@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
-export type Slide = { src: string; alt: string };
+/** Matches the Image shape returned by lib/content, so slides pass straight through. */
+export type Slide = { url: string; alt: string };
 
 /**
  * Hero images behind the festival band.
@@ -14,7 +15,7 @@ export type Slide = { src: string; alt: string };
  * - A pause control. WCAG 2.2.2 requires a way to stop anything that moves on
  *   its own for more than five seconds, and this moves every six.
  * - prefers-reduced-motion holds it on the first slide and cross-fades nothing.
- * - Only the first slide is priority-loaded; the rest are lazy. The audience is
+ * - Only the first slide is preloaded; the rest are lazy. The audience is
  *   on mid-range Android over a weak connection, and a carousel otherwise pays
  *   full freight for images most people never see.
  *
@@ -59,16 +60,9 @@ export default function FestivalCarousel({ slides }: { slides: Slide[] }) {
         {slides.map((s, i) => (
           <div
             className={i === index ? 'fest__slide fest__slide--on' : 'fest__slide'}
-            key={s.src}
+            key={s.url}
           >
-            <Image
-              src={s.src}
-              alt={s.alt}
-              fill
-              sizes="100vw"
-              priority={i === 0}
-              quality={70}
-            />
+            <Image src={s.url} alt={s.alt} fill sizes="100vw" preload={i === 0} quality={75} />
           </div>
         ))}
       </div>
@@ -97,7 +91,7 @@ export default function FestivalCarousel({ slides }: { slides: Slide[] }) {
             {slides.map((s, i) => (
               <button
                 type="button"
-                key={s.src}
+                key={s.url}
                 className={i === index ? 'fest__dot fest__dot--on' : 'fest__dot'}
                 aria-label={`Festival image ${i + 1} of ${slides.length}`}
                 aria-current={i === index}

@@ -1,27 +1,32 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import SiteNav, { type NavItem } from '@/components/SiteNav';
-import { getStrands, SITE } from '@/lib/content';
+import { getStrands, getSite } from '@/lib/content';
 
-const NAV: NavItem[] = [
-  // News and Opinion resolve to the same articles today, because every piece
-  // published so far is commentary. They diverge as sourced reporting arrives.
-  { label: 'News', href: '/articles' },
-  { label: 'Opinion', href: '/articles?section=opinion' },
-  { label: 'Podcast', href: '/podcasts' },
-  { label: 'Festival', href: '/festival' },
-  { label: 'About', href: '/about' },
-  // Documentaries is deliberately not here: it reaches the footer only.
-  // The strands below have no articles yet; they exist so the newsroom has
-  // somewhere to publish into. See getStrands in lib/content.
-  {
-    label: 'More',
-    href: '/more',
-    children: getStrands().map((s) => ({ label: s.name, href: `/more/${s.slug}` }))
-  }
-];
+/**
+ * Build the menu from Site settings.
+ *
+ * A menu item marked "show the strands underneath" grows a drop-down listing
+ * every strand, so adding a strand adds a menu entry with nothing else to
+ * remember. Documentaries is deliberately absent from the default menu: it
+ * reaches the footer only.
+ */
+async function navItems(): Promise<NavItem[]> {
+  const [site, strands] = await Promise.all([getSite(), getStrands()]);
 
-export function EditionBar() {
+  return site.nav.map((item) =>
+    item.expandStrands
+      ? {
+          label: item.label,
+          href: item.href,
+          children: strands.map((s) => ({ label: s.name, href: `/more/${s.slug}` }))
+        }
+      : { label: item.label, href: item.href }
+  );
+}
+
+export async function EditionBar() {
+  const site = await getSite();
   const today = new Date().toLocaleDateString('en-GB', {
     weekday: 'long',
     day: 'numeric',
@@ -33,15 +38,19 @@ export function EditionBar() {
     <div className="editionbar on-navy">
       <div className="editionbar__inner shell">
         <span>
-          {today} &nbsp;·&nbsp; 
+          {today} &nbsp;·&nbsp;
         </span>
         <span className="editionbar__links">
-          <a href={SITE.youtube} target="_blank" rel="noopener noreferrer">
-            YouTube
-          </a>
-          <a href={SITE.instagram} target="_blank" rel="noopener noreferrer">
-            Instagram
-          </a>
+          {site.youtube && (
+            <a href={site.youtube} target="_blank" rel="noopener noreferrer">
+              YouTube
+            </a>
+          )}
+          {site.instagram && (
+            <a href={site.instagram} target="_blank" rel="noopener noreferrer">
+              Instagram
+            </a>
+          )}
           <Link href="/about">Contact</Link>
         </span>
       </div>
@@ -49,19 +58,25 @@ export function EditionBar() {
   );
 }
 
-export default function Masthead() {
+export default async function Masthead() {
+  const [items, site] = await Promise.all([navItems(), getSite()]);
+
   return (
     <>
       <EditionBar />
       <header className="masthead on-navy">
         <div className="masthead__inner shell">
-          <Logo reversed priority />
-          <SiteNav items={NAV} />
+          <Logo reversed preload />
+          <SiteNav items={items} />
           {/* Gold, not the default navy fill: a navy button on a navy
-              masthead has no edge. */}
-          <Link className="btn btn--gold" href="/#newsletter">
-            Subscribe
-          </Link>
+              masthead has no edge. Hidden until a newsletter provider is
+              configured, since the anchor would otherwise scroll to a section
+              that does not render. */}
+          {site.newsletterAction && (
+            <Link className="btn btn--gold" href="/#newsletter">
+              Subscribe
+            </Link>
+          )}
         </div>
       </header>
     </>

@@ -4,19 +4,19 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
   getArticle,
-  getArticles,
+  getArticleSlugs,
   getRelated,
   getLatestEpisode,
+  getSite,
   formatDate,
-  Block,
-  SITE
+  labelFor
 } from '@/lib/content';
 import { RankedItem } from '@/components/Story';
-import { labelFor } from '@/lib/content';
 import { PlatformLink } from '@/components/Icons';
+import Prose from '@/components/Prose';
 
-export function generateStaticParams() {
-  return getArticles().map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  return (await getArticleSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -25,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getArticle(slug);
   if (!article) return {};
   return {
     title: article.title,
@@ -35,7 +35,7 @@ export async function generateMetadata({
       description: article.summary,
       type: 'article',
       publishedTime: article.date,
-      authors: [article.author],
+      authors: [article.author.name],
       images: article.image ? [article.image.url] : undefined
     }
   };
@@ -59,40 +59,18 @@ const SHARE = (url: string, title: string) => [
   }
 ];
 
-function renderBlock(block: Block, i: number) {
-  switch (block.type) {
-    case 'heading':
-      return block.level <= 2 ? <h2 key={i}>{block.text}</h2> : <h3 key={i}>{block.text}</h3>;
-    case 'quote':
-      return <blockquote key={i}>{block.text}</blockquote>;
-    case 'list':
-      return block.ordered ? (
-        <ol key={i}>
-          {block.items.map((it, j) => (
-            <li key={j}>{it}</li>
-          ))}
-        </ol>
-      ) : (
-        <ul key={i}>
-          {block.items.map((it, j) => (
-            <li key={j}>{it}</li>
-          ))}
-        </ul>
-      );
-    default:
-      return <p key={i}>{block.text}</p>;
-  }
-}
-
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getArticle(slug);
   if (!article) notFound();
 
-  const related = getRelated(article, 4);
+  const [related, episode, site] = await Promise.all([
+    getRelated(article, 4),
+    getLatestEpisode(),
+    getSite()
+  ]);
   const relatedItems = related.articles;
-  const episode = getLatestEpisode();
-  const url = `${SITE.url}/articles/${article.slug}`;
+  const url = `${site.url}/articles/${article.slug}`;
 
   return (
     <>
@@ -109,14 +87,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <span className="kicker__cat">{article.section}</span>
                 )}
                 <span className="kicker__rule" />
-                <span className="kicker__meta">Juba</span>
+                {/* The dateline is per-article now. It used to say Juba on
+                    everything, which asserted a filing location for pieces
+                    that had none. */}
+                {article.dateline && <span className="kicker__meta">{article.dateline}</span>}
               </div>
 
               <h1 className="article__title">{article.title}</h1>
               <p className="article__deck">{article.summary}</p>
 
               <div className="byline">
-                <span className="byline__author">By {article.author}</span>
+                <span className="byline__author">By {article.author.name}</span>
                 <span>{formatDate(article.date)}</span>
                 <span>{article.readingTime} min read</span>
                 <span className="share">
@@ -132,26 +113,26 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <span className="frame frame--lede">
                   <Image
                     src={article.image.url}
+                    /* Fallback for the archive pieces imported from
+                       WordPress, which arrived with empty alt attributes.
+                       The CMS requires a description on anything new. */
                     alt={article.image.alt || `Illustration for “${article.title}”`}
                     width={article.image.width ?? 1200}
                     height={article.image.height ?? 768}
                     sizes="(max-width: 1000px) 100vw, 860px"
-                    priority
+                    preload
                   />
                 </span>
-                {article.image.alt && <figcaption>{article.image.alt}</figcaption>}
+                {article.image.credit && <figcaption>{article.image.credit}</figcaption>}
               </figure>
             )}
 
-            <div className="prose">{article.blocks.map(renderBlock)}</div>
+            <Prose value={article.body} />
 
             <div className="colophon">
-              {article.author} writes on peace, governance and regional geopolitics. Originally
-              published on{' '}
-              <a href={article.source} target="_blank" rel="noopener noreferrer">
-                nilexplorer.net
-              </a>
-              . Corrections and rights of reply: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              {article.author.colophon ? `${article.author.colophon} ` : ''}
+              Corrections and rights of reply:{' '}
+              <a href={`mailto:${site.email}`}>{site.email}</a>
             </div>
           </div>
 
@@ -183,11 +164,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 >
                   {episode.title}
                 </p>
-                <Link
-                  className="section__more"
-                  href="/podcasts"
-                  style={{ marginTop: 10 }}
-                >
+                <Link className="section__more" href="/podcasts" style={{ marginTop: 10 }}>
                   Play episode →
                 </Link>
               </div>

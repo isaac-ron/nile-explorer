@@ -49,7 +49,7 @@ export default function TopStories({ stories }: { stories: Article[] }) {
                 width={lead.image.width ?? 1200}
                 height={lead.image.height ?? 768}
                 sizes="(max-width: 900px) 100vw, 620px"
-                priority
+                preload
               />
             </span>
           )}
@@ -62,7 +62,7 @@ export default function TopStories({ stories }: { stories: Article[] }) {
         </Link>
         <p className="top__leaddeck">{lead.summary}</p>
         <p className="top__leadmeta">
-          By {lead.author} · {formatDate(lead.date)} · {lead.readingTime} min read
+          By {lead.author.name} · {formatDate(lead.date)} · {lead.readingTime} min read
         </p>
       </article>
 
@@ -77,7 +77,7 @@ export default function TopStories({ stories }: { stories: Article[] }) {
                   width={a.image.width ?? 1200}
                   height={a.image.height ?? 800}
                   sizes="(max-width: 900px) 100vw, 330px"
-                  priority
+                  preload
                 />
               </span>
             )}

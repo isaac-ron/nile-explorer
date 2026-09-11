@@ -14,8 +14,9 @@ export const metadata: Metadata = {
  * It exists so the menu's own label is a real destination (and so the mobile
  * panel has somewhere to go), not only as a parent for the strands.
  */
-export default function MorePage() {
-  const strands = getStrands();
+export default async function MorePage() {
+  const strands = await getStrands();
+  const counts = await Promise.all(strands.map(async (s) => (await getStrandArticles(s)).length));
 
   return (
     <section className="section shell">
@@ -35,8 +36,8 @@ export default function MorePage() {
       </p>
 
       <div className="strandgrid">
-        {strands.map((s) => {
-          const n = getStrandArticles(s).length;
+        {strands.map((s, i) => {
+          const n = counts[i];
           return (
             <Link className="strandcard" href={`/more/${s.slug}`} key={s.slug}>
               <span className="strandcard__name">{s.name}</span>

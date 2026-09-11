@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { SITE } from '@/lib/content';
+import { getSite } from '@/lib/content';
 
 /**
  * The lockup, in one place because it now has two forms.
@@ -11,32 +11,34 @@ import { SITE } from '@/lib/content';
  * river blue 2.62:1, so the continent and the Nile both vanish and only the
  * eagle's gold survives.
  */
-export default function Logo({
+export default async function Logo({
   reversed,
-  priority
+  preload
 }: {
   reversed?: boolean;
-  priority?: boolean;
+  /** Replaces the `priority` prop, deprecated in Next 16. */
+  preload?: boolean;
 }) {
   const variant = reversed ? '-reversed' : '';
+  const site = await getSite();
 
   return (
-    <Link className="logo" href="/" aria-label={`${SITE.name}, home`}>
+    <Link className="logo" href="/" aria-label={`${site.name}, home`}>
       <Image
         className="logo__mark"
         src={`/brand/logo-mark${variant}.png`}
         alt=""
         width={889}
         height={1044}
-        priority={priority}
+        preload={preload}
       />
       <Image
         className="logo__word"
         src={`/brand/logo-wordmark${variant}.png`}
-        alt={SITE.name}
+        alt={site.name}
         width={1729}
         height={334}
-        priority={priority}
+        preload={preload}
       />
     </Link>
   );

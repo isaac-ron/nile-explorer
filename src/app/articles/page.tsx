@@ -6,14 +6,14 @@ import {
   getArticlesByTopic,
   getArticlesBySection,
   getArchive,
-  SITE
+  getSite
 } from '@/lib/content';
 import { StoryRow, RankedItem } from '@/components/Story';
 
-export const metadata: Metadata = {
-  title: 'Articles',
-  description: SITE.description
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  return { title: 'Articles', description: site.description };
+}
 
 export default async function ArticlesPage({
   searchParams
@@ -21,19 +21,18 @@ export default async function ArticlesPage({
   searchParams: Promise<{ topic?: string; section?: string }>;
 }) {
   const { topic, section } = await searchParams;
-  const topics = getTopics();
+  const [topics, all, archive] = await Promise.all([getTopics(), getArticles(), getArchive(4)]);
   const active = topics.find((t) => t.slug === topic);
   const articles = active
-    ? getArticlesByTopic(active.slug)
+    ? await getArticlesByTopic(active.slug)
     : section
-      ? getArticlesBySection(section)
-      : getArticles();
+      ? await getArticlesBySection(section)
+      : all;
   const heading = active
     ? active.name
     : section
       ? section.charAt(0).toUpperCase() + section.slice(1)
       : 'News & Opinion';
-  const archive = getArchive(4);
 
   return (
     <section className="section">
@@ -55,7 +54,7 @@ export default async function ArticlesPage({
               aria-current={!active ? 'page' : undefined}
             >
               All
-              <span className="chip__n">{getArticles().length}</span>
+              <span className="chip__n">{all.length}</span>
             </Link>
             {topics.map((t) => (
               <Link
@@ -80,8 +79,10 @@ export default async function ArticlesPage({
         <aside className="rail" aria-label="From the archive">
           <div>
             <h2 className="rail__title">From the archive</h2>
+            {/* Keyed on index, not slug: getArchive cycles, so slugs repeat
+                whenever the archive holds fewer pieces than the rail has slots. */}
             {archive.map((a, i) => (
-              <RankedItem article={a} n={i + 1} key={a.slug} />
+              <RankedItem article={a} n={i + 1} key={`${a.slug}-${i}`} />
             ))}
           </div>
 

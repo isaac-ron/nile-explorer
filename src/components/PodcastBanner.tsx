@@ -20,22 +20,25 @@ import { type BannerEpisode, formatShortDate } from '@/lib/content';
  * well as in size, and the lead's picture stretches to whatever height the
  * stack ends up being, which keeps the bottom edge flush.
  *
- * Everything after the first episode is invented; see podcast-meta.json. Those
- * carry no link, because there is nothing behind them to open.
+ * Anything not yet released carries no link, because there is nothing behind
+ * it to open, and is marked "Coming soon" rather than left to read as though
+ * it were published.
  */
 
 function EpisodeBody({ episode, lead }: { episode: BannerEpisode; lead: boolean }) {
   return (
     <>
-      <span className={`frame podep__thumb ${lead ? 'frame--card' : 'frame--wide'}`}>
-        <Image
-          src={episode.thumbnail}
-          alt={episode.thumbnailAlt}
-          width={lead ? 1280 : 640}
-          height={lead ? 853 : 360}
-          sizes={lead ? '(max-width: 760px) 100vw, 820px' : '(max-width: 760px) 100vw, 420px'}
-        />
-      </span>
+      {episode.thumbnail && (
+        <span className={`frame podep__thumb ${lead ? 'frame--card' : 'frame--wide'}`}>
+          <Image
+            src={episode.thumbnail}
+            alt={episode.thumbnailAlt}
+            width={lead ? 1280 : 640}
+            height={lead ? 853 : 360}
+            sizes={lead ? '(max-width: 760px) 100vw, 820px' : '(max-width: 760px) 100vw, 420px'}
+          />
+        </span>
+      )}
       <span className="podep__no">
         Episode {episode.number}
         {!episode.published && <span className="mark mark--soon">Coming soon</span>}
@@ -65,7 +68,13 @@ function EpisodeCard({ episode, lead }: { episode: BannerEpisode; lead: boolean 
   );
 }
 
-export default function PodcastBanner({ episodes }: { episodes: BannerEpisode[] }) {
+export default function PodcastBanner({
+  episodes,
+  title
+}: {
+  episodes: BannerEpisode[];
+  title: string;
+}) {
   const [lead, ...side] = episodes;
   if (!lead) return null;
 
@@ -75,14 +84,14 @@ export default function PodcastBanner({ episodes }: { episodes: BannerEpisode[] 
 
       <div className="shell podband__inner">
         <div className="section__head">
-          <h2 id="pod-heading">The Nile Explorer Podcast</h2>
+          <h2 id="pod-heading">{title}</h2>
           <Link className="section__more" href="/podcasts">
             All episodes →
           </Link>
         </div>
 
-        {/* Solo when the invented episodes are deleted: one card across the
-            full width reads better than a two-thirds card with a hole in it. */}
+        {/* Solo when there is only one episode: a card across the full width
+            reads better than a two-thirds card with a hole beside it. */}
         <div className={`podgrid${side.length === 0 ? ' podgrid--solo' : ''}`}>
           <EpisodeCard episode={lead} lead />
           {side.length > 0 && (

@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { getFestival, getArchive, SITE } from '@/lib/content';
+import { getFestival, getArchive, getSite } from '@/lib/content';
 import { RankedItem } from '@/components/Story';
 import { PlatformLink } from '@/components/Icons';
+import Prose from '@/components/Prose';
 
-const festival = getFestival();
+export async function generateMetadata(): Promise<Metadata> {
+  const festival = await getFestival();
+  return {
+    title: festival.name,
+    description: `${festival.standfirst} ${festival.blurb}`.trim()
+  };
+}
 
-export const metadata: Metadata = {
-  title: festival.name,
-  description: `${festival.standfirst} ${festival.blurb}`
-};
-
-export default function FestivalPage() {
-  const archive = getArchive(4);
+export default async function FestivalPage() {
+  const [festival, archive, site] = await Promise.all([getFestival(), getArchive(4), getSite()]);
 
   return (
     <>
@@ -39,33 +40,38 @@ export default function FestivalPage() {
             </div>
             <div className="prose" style={{ maxWidth: '64ch' }}>
               <p>{festival.blurb}</p>
-              <p>
-                The festival is also the platform&rsquo;s sustainability engine. Alongside it sits
-                the foundation, which carries the Nile Explorer Scholarships, the Nile Festival
-                Awards and the Nile Explorer Academy, so that the newsroom and the training pipeline
-                are funded from something the public actually turns up to rather than from
-                donor cycles.
-              </p>
             </div>
+            {/* The foundation, the scholarships, the awards and the academy.
+                Edited in the Studio so nothing here asserts a programme that
+                has not been established. */}
+            <Prose value={festival.foundationBody} />
 
-            <div className="section__head" style={{ marginTop: 'var(--space-6)' }}>
-              <h2>The strands</h2>
-            </div>
-            <div className="cardgrid">
-              {festival.strands.map((s) => (
-                <div className="card" key={s.name}>
-                  <span className="card__title">{s.name}</span>
-                  <span className="card__blurb">{s.detail}</span>
+            {festival.strands.length > 0 && (
+              <>
+                <div className="section__head" style={{ marginTop: 'var(--space-6)' }}>
+                  <h2>The strands</h2>
                 </div>
-              ))}
-            </div>
+                <div className="cardgrid">
+                  {festival.strands.map((s) => (
+                    <div className="card" key={s.name}>
+                      <span className="card__title">{s.name}</span>
+                      <span className="card__blurb">{s.detail}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
-            <div className="section__head" style={{ marginTop: 'var(--space-6)' }}>
-              <h2>{festival.awards.name}</h2>
-            </div>
-            <div className="prose" style={{ maxWidth: '64ch' }}>
-              <p>{festival.awards.detail}</p>
-            </div>
+            {festival.awards && (
+              <>
+                <div className="section__head" style={{ marginTop: 'var(--space-6)' }}>
+                  <h2>{festival.awards.name}</h2>
+                </div>
+                <div className="prose" style={{ maxWidth: '64ch' }}>
+                  <p>{festival.awards.detail}</p>
+                </div>
+              </>
+            )}
           </div>
 
           <aside className="rail" aria-label="Festival details">
@@ -83,36 +89,56 @@ export default function FestivalPage() {
                   ? `The inaugural edition runs ${festival.dates}. Full programme to follow.`
                   : 'Dates for the inaugural edition have not been announced. The programme, venues and ticketing will be published here once they are confirmed.'}
               </p>
-              <a className="btn" href={`mailto:${SITE.email}`} style={{ marginTop: 'var(--space-3)' }}>
-                Register interest
-              </a>
+              {site.email && (
+                <a
+                  className="btn"
+                  href={`mailto:${site.email}`}
+                  style={{ marginTop: 'var(--space-3)' }}
+                >
+                  Register interest
+                </a>
+              )}
             </div>
 
             <div className="railcard">
               <p className="label label--muted">Follow the build-up</p>
               <div className="platforms" style={{ marginTop: 'var(--space-3)' }}>
-                <PlatformLink name="instagram" href={SITE.instagram} label="Follow on Instagram" />
-                <PlatformLink name="youtube" href={SITE.youtube} label="Subscribe on YouTube" />
+                {site.instagram && (
+                  <PlatformLink
+                    name="instagram"
+                    href={site.instagram}
+                    label="Follow on Instagram"
+                  />
+                )}
+                {site.youtube && (
+                  <PlatformLink name="youtube" href={site.youtube} label="Subscribe on YouTube" />
+                )}
               </div>
             </div>
 
-            <div>
-              <h2 className="rail__title">From the newsroom</h2>
-              {archive.map((a, i) => (
-                <RankedItem article={a} n={i + 1} key={a.slug} />
-              ))}
-            </div>
+            {archive.length > 0 && (
+              <div>
+                <h2 className="rail__title">From the newsroom</h2>
+                {/* Keyed on index, not slug: getArchive cycles, so slugs
+                    repeat while the archive is shallower than the rail. */}
+                {archive.map((a, i) => (
+                  <RankedItem article={a} n={i + 1} key={`${a.slug}-${i}`} />
+                ))}
+              </div>
+            )}
           </aside>
         </div>
       </section>
 
-      <section className="section section--band shell">
-        <div className="callout">
-          <strong>Editorial note:</strong> this page describes the festival as set out in the
-          communications strategy. Dates, venues, the programme and ticketing are not yet confirmed
-          and nothing on this page should be read as a published schedule.
-        </div>
-      </section>
+      {/* Shown to readers while anything on this page is still provisional.
+          Clearing the field in the Studio removes the box. */}
+      {festival.editorialNote && (
+        <section className="section section--band shell">
+          <div className="callout">
+            <strong>Editorial note:</strong> {festival.editorialNote}
+          </div>
+        </section>
+      )}
     </>
   );
 }

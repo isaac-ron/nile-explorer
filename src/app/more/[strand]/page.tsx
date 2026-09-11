@@ -5,8 +5,8 @@ import { getStrand, getStrands, getStrandArticles, getArchive } from '@/lib/cont
 import { StoryRow, RankedItem } from '@/components/Story';
 import Empty from '@/components/Empty';
 
-export function generateStaticParams() {
-  return getStrands().map((s) => ({ strand: s.slug }));
+export async function generateStaticParams() {
+  return (await getStrands()).map((s) => ({ strand: s.slug }));
 }
 
 export async function generateMetadata({
@@ -15,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ strand: string }>;
 }): Promise<Metadata> {
   const { strand } = await params;
-  const s = getStrand(strand);
+  const s = await getStrand(strand);
   if (!s) return {};
   return { title: s.name, description: s.standfirst };
 }
@@ -26,13 +26,17 @@ export default async function StrandPage({
   params: Promise<{ strand: string }>;
 }) {
   const { strand } = await params;
-  const s = getStrand(strand);
+  const s = await getStrand(strand);
   if (!s) notFound();
 
-  const articles = getStrandArticles(s);
-  // Short, unlike the front page's rail: this column has an empty state beside
-  // it, not a river, and a ten-deep list would leave the page lopsided.
-  const archive = getArchive(4);
+  const [articles, archive, strands] = await Promise.all([
+    getStrandArticles(s),
+    // Short, unlike the front page's rail: this column has an empty state
+    // beside it, not a river, and a ten-deep list would leave the page
+    // lopsided.
+    getArchive(4),
+    getStrands()
+  ]);
 
   return (
     <section className="section">
@@ -76,7 +80,7 @@ export default async function StrandPage({
           <div className="railcard">
             <p className="label label--muted">Also in More</p>
             <div className="strandlinks">
-              {getStrands()
+              {strands
                 .filter((o) => o.slug !== s.slug)
                 .map((o) => (
                   <Link className="strandlinks__item" href={`/more/${o.slug}`} key={o.slug}>

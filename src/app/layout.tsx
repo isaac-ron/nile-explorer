@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Newsreader, Schibsted_Grotesk } from 'next/font/google';
 import Masthead from '@/components/Masthead';
 import Footer from '@/components/Footer';
-import { SITE } from '@/lib/content';
+import DraftBanner from '@/components/DraftBanner';
+import { getSite } from '@/lib/content';
 import '@/styles/globals.css';
 
 /**
@@ -38,19 +39,22 @@ const sans = Schibsted_Grotesk({
   display: 'swap'
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: `${SITE.name} — ${SITE.tagline}`,
-    template: `%s — ${SITE.name}`
-  },
-  description: SITE.description,
-  openGraph: {
-    siteName: SITE.name,
-    type: 'website',
-    locale: 'en_GB'
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: `${site.name} — ${site.tagline}`,
+      template: `%s — ${site.name}`
+    },
+    description: site.description,
+    openGraph: {
+      siteName: site.name,
+      type: 'website',
+      locale: 'en_GB'
+    }
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -59,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#main">
           Skip to content
         </a>
+        <DraftBanner />
         <Masthead />
         <main id="main">{children}</main>
         <Footer />

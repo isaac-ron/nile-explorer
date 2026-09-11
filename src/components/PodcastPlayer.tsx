@@ -5,8 +5,14 @@ import Image from 'next/image';
 import { PlatformLink } from '@/components/Icons';
 import type { PlayerEpisode } from '@/lib/content';
 
-/** Only what the player needs: the full Podcast carries every episode's URL. */
-type PlayerShow = { title: string; spotify: { url: string; embed: string } };
+/**
+ * Only what the player needs.
+ *
+ * Both fields are nullable because the Spotify show id is an editable setting
+ * now: if it is cleared, the Listen path simply disappears rather than
+ * mounting an iframe pointed at nothing.
+ */
+type PlayerShow = { title: string; spotifyUrl: string | null; spotifyEmbed: string | null };
 
 type Mode = 'idle' | 'video' | 'audio';
 
@@ -63,12 +69,12 @@ export default function PodcastPlayer({
             </>
           ) : lead ? (
             <Image
-              src={lead.src}
+              src={lead.url}
               alt={lead.alt}
-              width={lead.width}
-              height={lead.height}
+              width={lead.width ?? 1200}
+              height={lead.height ?? 800}
               sizes="(max-width: 1000px) 100vw, 700px"
-              priority
+              preload
             />
           ) : (
             <div className="player__holding">
@@ -91,9 +97,9 @@ export default function PodcastPlayer({
           />
         )}
 
-        {mode === 'audio' && (
+        {mode === 'audio' && podcast.spotifyEmbed && (
           <iframe
-            src={podcast.spotify.embed}
+            src={podcast.spotifyEmbed}
             title={`${podcast.title} — audio`}
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
@@ -113,19 +119,23 @@ export default function PodcastPlayer({
               Watch
             </button>
           )}
-          <button
-            type="button"
-            className="player__mode"
-            aria-pressed={mode === 'audio'}
-            onClick={() => setMode('audio')}
-          >
-            Listen
-          </button>
+          {podcast.spotifyEmbed && (
+            <button
+              type="button"
+              className="player__mode"
+              aria-pressed={mode === 'audio'}
+              onClick={() => setMode('audio')}
+            >
+              Listen
+            </button>
+          )}
         </div>
 
         <div className="platforms">
           <span className="player__on">On</span>
-          <PlatformLink name="spotify" href={podcast.spotify.url} label="Listen on Spotify" />
+          {podcast.spotifyUrl && (
+            <PlatformLink name="spotify" href={podcast.spotifyUrl} label="Listen on Spotify" />
+          )}
           {watchable && episode.url && (
             <PlatformLink name="youtube" href={episode.url} label="Watch on YouTube" />
           )}
@@ -148,12 +158,12 @@ export default function PodcastPlayer({
           </figcaption>
           <div className="stills__grid">
             {rest.map((s) => (
-              <span className="frame frame--square" key={s.src}>
+              <span className="frame frame--square" key={s.url}>
                 <Image
-                  src={s.src}
+                  src={s.url}
                   alt={s.alt}
-                  width={s.width}
-                  height={s.height}
+                  width={s.width ?? 1200}
+                  height={s.height ?? 800}
                   sizes="(max-width: 700px) 45vw, 220px"
                 />
               </span>

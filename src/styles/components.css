@@ -670,7 +670,12 @@
   max-width: 68ch;
 }
 
-.prose > p > a {
+/* Links inside body text. List items and quotes are included because the CMS
+   can put a link anywhere in a block, and an underline is the only thing
+   distinguishing one from the surrounding sentence. */
+.prose > p > a,
+.prose li > a,
+.prose blockquote a {
   text-decoration: underline;
   text-decoration-color: var(--navy);
   text-decoration-thickness: 2px;

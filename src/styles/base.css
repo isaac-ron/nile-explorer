@@ -95,6 +95,39 @@ button {
   left: 0;
 }
 
+/* Preview bar. Only rendered while an editor is viewing unpublished work, so
+   it never reaches a reader. Deliberately loud: an invisible preview mode is
+   how someone spends an afternoon editing a page nobody else can see. */
+.draftbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: var(--gold-text, #96690f);
+  color: #fff;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--fs-small);
+  text-align: center;
+}
+
+.draftbar button {
+  padding: 6px 14px;
+  min-height: 32px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.draftbar button:hover {
+  background: rgb(255 255 255 / 0.15);
+}
+
 .vh {
   position: absolute;
   width: 1px;

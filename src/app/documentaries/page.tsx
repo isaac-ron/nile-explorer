@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getDocumentaries, getArchive, getLatestEpisode, SITE } from '@/lib/content';
+import { getDocumentaries, getArchive, getLatestEpisode, getSite } from '@/lib/content';
 import { FilmRow } from '@/components/Television';
 import { RankedItem } from '@/components/Story';
 import { PlatformLink } from '@/components/Icons';
@@ -12,10 +12,13 @@ export const metadata: Metadata = {
     'Documentaries, specials and live streams from The Nile Explorer, broadcast on the network YouTube channel.'
 };
 
-export default function DocumentariesPage() {
-  const programmes = getDocumentaries();
-  const archive = getArchive(4);
-  const episode = getLatestEpisode();
+export default async function DocumentariesPage() {
+  const [programmes, archive, episode, site] = await Promise.all([
+    getDocumentaries(),
+    getArchive(4),
+    getLatestEpisode(),
+    getSite()
+  ]);
 
   return (
     <section className="section">
@@ -58,7 +61,11 @@ export default function DocumentariesPage() {
             <Empty
               title="No documentaries published yet"
               body="The first films are in production. They will appear here as they are broadcast on the network channel."
-              action={{ href: SITE.youtube, label: 'Subscribe on YouTube', external: true }}
+              action={
+                site.youtube
+                  ? { href: site.youtube, label: 'Subscribe on YouTube', external: true }
+                  : undefined
+              }
             />
           )}
         </div>
@@ -78,8 +85,12 @@ export default function DocumentariesPage() {
               streams as they happen.
             </p>
             <div className="platforms" style={{ marginTop: 'var(--space-3)' }}>
-              <PlatformLink name="youtube" href={SITE.youtube} label="Subscribe on YouTube" />
-              <PlatformLink name="instagram" href={SITE.instagram} label="Follow on Instagram" />
+              {site.youtube && (
+                <PlatformLink name="youtube" href={site.youtube} label="Subscribe on YouTube" />
+              )}
+              {site.instagram && (
+                <PlatformLink name="instagram" href={site.instagram} label="Follow on Instagram" />
+              )}
             </div>
           </div>
 
