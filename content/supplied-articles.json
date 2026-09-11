@@ -2,6 +2,114 @@
   "_note": "Articles supplied directly by the newsroom rather than pulled from WordPress. They live here, not in articles.json, because `npm run ingest` rewrites that file wholesale and would delete them; lib/content merges the two. Every piece here needs re-entering in the CMS when it goes live. Prose is verbatim from the supplied .docx; headings, picture placement, dates, topics and alt text were set here.",
   "articles": [
     {
+      "id": 10003,
+      "slug": "one-vote-450-years",
+      "title": "One vote, 450 Years: Africa rewrites the world map",
+      "date": "2026-09-11T16:00:00",
+      "modified": "2026-09-11T16:00:00",
+      "section": "Opinion",
+      "topic": {
+        "name": "Geo-politics",
+        "slug": "geo-politics"
+      },
+      "author": "Ruth Wacuka",
+      "authorBio": "Ruth Wacuka writes for The Nile Explorer.",
+      "dateline": null,
+      "image": {
+        "url": "/articles/one-vote-450-years/un-general-assembly.jpg",
+        "alt": "A full United Nations General Assembly hall, the speaker at the podium also shown on two large screens flanking the UN emblem.",
+        "width": 1341,
+        "height": 608,
+        "caption": "Robert Dussey, Minister for Foreign Affairs of Togo, at the podium and on the screens, introduces the “Correct the map” draft resolution.",
+        "credit": "UN Photo"
+      },
+      "source": null,
+      "blocks": [
+        {
+          "type": "para",
+          "text": "A wall map has hung in classrooms across this continent for decades, in Lagos, in Lusaka, in Nairobi, in a thousand rooms nobody bothered to name. Laminated, curling at the edges, it shows Africa squeezed into a shape barely larger than Greenland, which floats above it near the Arctic Circle. No child is ever told to question it. A map is not handed to a child as an argument to be tested; it is handed over as a fact, in the same register as the multiplication table. Generations grew up carrying that shape of the world inside them. The shape they carried was false."
+        },
+        {
+          "type": "para",
+          "text": "For four hundred and fifty years, the world’s default picture of itself rendered Africa, a continent large enough to hold the United States, China, India, Japan and most of Europe, with room left over, as smaller than Greenland, a slab of Arctic ice with a population you could fit inside a single African city. Nobody sat down in 1569 and voted to shrink a continent out of malice. Gerardus Mercator was solving a sailor’s problem, not writing a doctrine. But doctrines do not always announce themselves. Sometimes they are simply inherited, generation after generation, until a lie grows old enough to wear the clothes of fact."
+        },
+        {
+          "type": "para",
+          "text": "On 4 September 2026, at the United Nations General Assembly in New York, 164 countries said otherwise. Out loud. On the record."
+        },
+        {
+          "type": "para",
+          "text": "The resolution is called “Correct the Map.” It is an African-led campaign, run by African civil society, adopted by the African Union, and carried to the floor by an African state, and it won a vote at the highest table in global governance. Togo brought the resolution on behalf of the African Group, all fifty-four member states, with the AU’s backing behind it. It passed 164 to 1. The United States cast the lone vote against, calling the resolution an “ideological agenda” and a distraction from “genuine problems of international peace, prosperity or good relations.” Serbia, Estonia, Georgia, Lithuania, Moldova and Ukraine abstained. Everyone else put a hand up and confessed that the map was never true, and that the world had long known it."
+        },
+        {
+          "type": "para",
+          "text": "A map that did not matter would not be worth a formal no on the world stage. The objection was itself a confession."
+        },
+        {
+          "type": "para",
+          "text": "This is the era Africa is currently living through. For six decades, the continent won its flags, its anthems, its seats at the table. What it is winning now is something harder to hand over in a ceremony, which is the right to describe itself. A new generation of Pan-Africanists is doing what Nkrumah and Lumumba were doing before anyone thought to call it a movement, turning back to the archive, the textbook, the atlas and the museum shelf, and asking the same blunt question of each one: who wrote this, and on whose authority? Africa is not simply demanding a bigger seat in rooms built by other people. It is asking who drew the room, who decided its dimensions, and why nobody thought to check."
+        },
+        {
+          "type": "para",
+          "text": "The conversation did not start at the UN. It started with a map on a wall, and with two African advocacy organisations, Africa No Filter and Speak Up Africa, who launched what they first called the “Change the Map” campaign, later rebranded “Correct the Map.” Their argument had been made for years by geographers and educators, but rarely with this much organising behind it. The Mercator projection, designed in 1569 by the Flemish cartographer Gerardus Mercator to help European sailors hold a straight compass bearing at sea, was never built to teach a child what the world looks like. It became the default map anyway, in classrooms, atlases and newsrooms, and it shrinks Africa dramatically while inflating Europe and North America."
+        },
+        {
+          "type": "para",
+          "text": "The distortion is not so much a flaw as a trade-off that nobody outside cartography ever gets told about. Any flat map of a round planet has to sacrifice something, because you cannot preserve shape, area and direction all at once, so every projection is really a choice about which lie to tell. Mercator chose to preserve angles and shape, because a sailor needs a straight line on paper to hold a straight compass bearing at sea. The cost of that choice is area, and the cost grows the further you travel from the equator. Landmasses near the poles balloon far beyond their true size, while landmasses near the equator, where most of Africa sits, are rendered smaller than they are. This is why Canada, Russia and Greenland dominate a Mercator map out of all proportion to their populations or land area, and why Africa, India and Indonesia consistently read as smaller than the reality. On a Mercator map, Greenland appears roughly the same size as Africa. In reality, Africa covers roughly 30.3 million square kilometres against Greenland’s 2.2 million, which makes Africa about fourteen times larger."
+        },
+        {
+          "type": "para",
+          "text": "Fara Ndiaye, co-founder of Speak Up Africa, put the stakes plainly. A generation raised on a distorted map absorbs a distorted sense of Africa’s economic, demographic and strategic weight. Moky Makura of Africa No Filter called it what it is, not a cartographic error but a narrative one. The campaign’s ask was institutional, that schools, media houses, the UN, the World Bank and the BBC adopt the Equal Earth projection instead, a map developed by geographers in 2018 that makes the opposite trade-off to Mercator’s. It preserves each landmass’s true relative size at the cost of slightly bending shape and angle, which is a fair exchange for a wall map or a classroom atlas that will never need to plot a ship’s course. Selma Malika Haddadi, speaking for the AU, made the point that has anchored the campaign since. Africa is the world’s second largest continent, and a map that visually erases that fact shapes how the world negotiates with it, invests in it and thinks about it."
+        },
+        {
+          "type": "para",
+          "text": "Togo’s Foreign Minister, Robert Dussey, framed it on the floor of the General Assembly in a single line worth remembering. “A fair world begins with a fair map.” He was direct about where the responsibility sat. “It’s time for us in Africa to take responsibility to change what we can change ourselves.” France announced on the spot that it would retire Mercator for Equal Earth. Togo says it will update its own school geography materials before the year is out. None of this is binding. No country is required to burn an old atlas, and Mercator still does, competently, the one job it was built for, which is helping a ship hold a straight line at sea. What the vote does is put the UN’s institutional weight behind a truer default, and dare the world’s cartographers, publishers and ministries of education to follow."
+        },
+        {
+          "type": "para",
+          "text": "Here is the uncomfortable part of the story. No single figure sat down in 1569 and voted to shrink a continent, and that is precisely what makes this kind of distortion so difficult to undo. Mercator was solving a narrow, genuine problem, not writing a doctrine. A single villain can be named, tried and removed. A structure that reproduces the same convenient lie for centuries, with the benefit spread just widely enough that no one institution ever has to answer for the whole of it, is far harder to dislodge. Colonial administrations adopted his projection and exported it to the territories they governed, not by accident but because a continent that looked smaller was easier to carve up, easier to govern from a distance and easier to justify governing at all. A tool built for European sailors became the map European schools taught, which became the map colonial administrations exported, which became the default that humanity inherited. Nobody re-litigated the choice for four hundred and fifty years or more. It calcified into how the world looks, which is precisely how the most durable distortions survive, through nobody ever being handed a reason to ask why it was drawn that way."
+        },
+        {
+          "type": "para",
+          "text": "The map was never an isolated invention. It arrived as part of a much larger apparatus, one that needed Africa to appear smaller, emptier and less consequential than it was, because a diminished continent was easier to carve up, easier to govern from a distance and easier to justify governing at all. Colonialism did not simply draw borders through African communities with a ruler and a pen. It authored an entire vocabulary for how the continent would be seen, measured and spoken about, as a landmass to be extracted from rather than a civilisation to be reckoned with, as a set of tribes rather than nations, as a blank space waiting to be filled in by someone else’s history. The map was simply the most literal expression of a habit that ran through everything, which was to shrink the subject and make the taking easier to live with."
+        },
+        {
+          "type": "para",
+          "text": "That is the deeper question this vote forces into the open. If something as measurable, as checkable, as a continent’s actual surface area could go uncorrected for four and a half centuries, accepted without challenge by geographers, publishers, ministries of education and the UN itself, what else has the world simply decided not to verify? What else has this continent inherited without ever demanding the receipts? Makura asked almost exactly that once the vote had passed. If the world got something this basic wrong for this long, what else about Africa has it accepted without question? She was precise about one thing, and the precision matters. This was never a campaign to inflate Africa. “Africa doesn’t need to be made bigger. It needs to be seen accurately.”The distinction is the whole argument. The campaign was never asking the world to exaggerate a continent’s importance, only to stop deflating it by default."
+        },
+        {
+          "type": "para",
+          "text": "A map is never neutral. Dussey said as much on the floor of the Assembly, that it shapes perception before anyone is old enough to argue with it, and that it teaches how the place of peoples and continents in the world is understood. Size, on a map, reads as a proxy for significance. A continent drawn smaller than it is gets treated as smaller than it is, in classrooms, in newsroom decisions about what counts as global news, in the boardroom logic that still underprices African markets relative to their scale. The distortion was cartographic. The consequences were economic, political and psychological. This vote is one thread in a larger reckoning the continent is currently having with itself. The African Union named 2025 its Theme of the Year, Justice for Africans and People of African Descent through Reparations, and folded Correct the Map into that agenda as a flagship outcome. Reparations, read this way, is not only about ledgers and compensation. It is about correcting the record everywhere the record was falsified, including the one that hung on a classroom wall."
+        },
+        {
+          "type": "para",
+          "text": "The clearest articulation of the stakes came months before the UN vote, at the 9th Pan-African Congress in Lomé, held under the theme Renewal of Pan-Africanism and Africa’s Role in the Reform of Multilateral Institutions. It reframes the whole campaign away from convincing the world and toward something more internal, which is generations of Africans, educated on the same distorted map as everyone else, absorbing a diminished sense of their own continent’s scale and weight. Pan-Africanism has always argued that liberation has to happen in the mind before it can happen anywhere else. This is that argument applied to something as unglamorous as a wall chart. The Congress closed with three concrete tasks. Sign the petition, audit the maps in your own schools and offices and demand correction where they are wrong. Mobilise your networks, because, as the closing line put it, change starts with us. That is the same posture Dussey carried to the UN floor months later, a statement of intent that Africa would fix what it could fix itself, and invite the rest of the world to follow if it chose to."
+        },
+        {
+          "type": "para",
+          "text": "It would be easy to file this under symbolism and move on. That would be a mistake. Power is not only held in treaties, currencies and militaries. It is held in the frames through which the world is taught to see itself. A map is a frame. For half a millennium, that frame told every schoolchild on earth, African and non-African alike, that Africa was smaller and therefore lesser. It told policymakers the same thing before they ever opened a trade brief."
+        },
+        {
+          "type": "para",
+          "text": "What makes this moment worth marking is not the map itself. It is the sequence. This was not a resolution handed down from above and accepted quietly. It is the spirit of Pan-Africanism this vote actually embodies, not a grievance lodged with the world but Africans setting the terms of their own representation and building the coalition to make it hold. The resolution in New York does not undo four hundred and fifty years of inheritance but it does something a resolution rarely manages. It hands every teacher, every publisher and every parent standing in front of a child and a wall map a reason, finally and officially, to ask why it was ever drawn that way, and to put something truer up in its place."
+        },
+        {
+          "type": "para",
+          "text": "None of this is new territory for the continent’s own thinkers. Sons of the continent, figures like PLO Lumumba, were already asking, in lecture halls and on public platforms across Africa, why the continent keeps inheriting other people’s descriptions of itself without ever being asked to check them, its history, its economics, its very geography, handed down as settled fact rather than something to interrogate. Kwame Nkrumah said it plainer still, decades before any of this had a hashtag, that Africa’s independence would mean nothing if it left the continent’s mind still colonised. The map is simply the version of that argument you can hold up and measure with a ruler. Most of the others are not so easily proven, which may be exactly why they have lasted longer."
+        },
+        {
+          "type": "para",
+          "text": "The real work now sits in the classroom wall, the textbook printer and the newsroom map graphic. Whether ministries of education from Nairobi to Kigali to Juba actually replace those maps is the next test."
+        },
+        {
+          "type": "para",
+          "text": "But the map was the easy one, a single, checkable fact, wrong for 450 years and finally corrected by a vote. What other stories, statistics and assumptions about this continent has the world simply accepted without challenging, and how many of them has Africa accepted about itself? Every generation gets one chance to stop inheriting the answers it was never allowed to question. This is Africa’s."
+        }
+      ],
+      "summary": "A wall map has hung in classrooms across this continent for decades, in Lagos, in Lusaka, in Nairobi, in a thousand rooms nobody bothered to name.",
+      "readingTime": 11
+    },
+    {
       "id": 10001,
       "slug": "kenyas-expulsion-of-small-traders",
       "title": "Kenya’s Expulsion of Small Traders Exposes Africa’s Unpreparedness for Visa-Free Borders",

@@ -589,11 +589,16 @@ export const getArchive = (limit = 4): Article[] => {
 /**
  * Slots the front-page rail is built to hold. See getArchive.
  *
- * Sized against the river beside it, which now runs two commissioned pieces
- * past its last published one. Twelve slots against eleven articles means one
- * repeat at the foot; ten left the rail 100px short of the river.
+ * Sized against the river beside it, measured rather than guessed: at fourteen
+ * articles the river runs six rows, and fifteen slots finish 11px short of it
+ * at 1440. Fourteen left 60px, sixteen overshot by 58px. Fifteen against
+ * fourteen articles is one repeated headline at the foot, and that last slot
+ * stops repeating the moment a fifteenth piece is filed.
+ *
+ * Re-check this whenever the article count moves: the river grows by a row for
+ * every article past the eight the top of the page consumes.
  */
-export const archiveCapacity = 12;
+export const archiveCapacity = 15;
 
 /** How many of those slots can be filled without repeating. */
 export const archiveDepth = (): number => Math.min(articles.length, archiveCapacity);
