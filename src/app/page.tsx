@@ -11,6 +11,7 @@ import {
   getFestivalSlides,
   getPendingStories,
   archiveCapacity,
+  riverDepth,
   SITE
 } from '@/lib/content';
 import { ArticleCard, StoryRow, RankedItem, PendingRow } from '@/components/Story';
@@ -28,18 +29,20 @@ export default function Home() {
   const episodes = getBannerEpisodes(3);
   const festival = getFestival();
 
-  // Five, not three: the trio plus one headline-only story hanging under each
-  // flank to close the short columns. Everything after them fills the rest of
-  // the page in order, so no story appears twice above the archive rail. The
-  // river absorbs the loss, dropping from five rows to three.
+  // Five, not three: the trio plus one story hanging under each flank to close
+  // the short columns. Everything after them fills the page in order, so no
+  // story appears twice above the archive rail.
   const top = getTopStories(5);
   const led = new Set(top.map((a) => a.slug));
   const rest = articles.filter((a) => !led.has(a.slug));
   const grid = rest.slice(0, 3);
-  const river = rest.slice(3);
+  // Capped, not "everything left over": see riverDepth in lib/content for why
+  // the front page stops being a full index. What falls off the end is reached
+  // through More → and the archive rail.
+  const river = rest.slice(3, 3 + riverDepth);
   const archive = getArchive(archiveCapacity);
-  // Invented, and marked as such on the page. They exist to carry the river
-  // down to the foot of the archive rail; see placeholder-articles.json.
+  // Retired while the archive is deep enough to fill the column on its own.
+  // Empty today; see placeholder-articles.json.
   const pending = getPendingStories();
 
   return (

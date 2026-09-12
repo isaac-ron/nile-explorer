@@ -2,6 +2,344 @@
   "_note": "Articles supplied directly by the newsroom rather than pulled from WordPress. They live here, not in articles.json, because `npm run ingest` rewrites that file wholesale and would delete them; lib/content merges the two. Every piece here needs re-entering in the CMS when it goes live. Prose is verbatim from the supplied .docx; headings, picture placement, dates, topics and alt text were set here.",
   "articles": [
     {
+      "id": 10005,
+      "slug": "africa-must-unite",
+      "title": "Africa Must Unite Before the New World Order Divides It Further",
+      "summary": "From Nkrumah’s Unfinished Vision to a United Africa",
+      "date": "2026-09-12T12:00:00",
+      "modified": "2026-09-12T12:00:00",
+      "section": "Opinion",
+      "topic": {
+        "name": "Geo-politics",
+        "slug": "geo-politics"
+      },
+      "author": "Dr. Aldo Ajou Deng-Akuey",
+      "dateline": null,
+      "image": {
+        "url": "/articles/africa-must-unite/oau-addis-1963.jpg",
+        "alt": "A black-and-white photograph of African heads of state standing in two rows on the steps of a building for a group portrait.",
+        "width": 619,
+        "height": 496,
+        "caption": "African Heads of State gather in Addis Ababa, Ethiopia, in 1963, at the founding summit of the Organization of African Unity (OAU)."
+      },
+      "source": null,
+      "blocks": [
+        {
+          "type": "para",
+          "text": "Africa is entering a new and uncertain chapter of world history. The international order that emerged after the Second World War and hardened during the Cold War is changing. The period in which one superpower could exercise overwhelming global influence is giving way to a more competitive and increasingly multipolar world. The United States remains enormously powerful, while China has emerged as a major economic and strategic force, Russia retains significant military and geopolitical influence, India is rising rapidly, and the Gulf states and other Asian powers are becoming increasingly important players."
+        },
+        {
+          "type": "para",
+          "text": "This transformation presents Africa with a historic opportunity. It also presents a serious danger. If Africa remains politically fragmented, economically dependent and militarily divided, the continent may once again become an arena in which powerful countries compete for influence, markets, resources and strategic advantage."
+        },
+        {
+          "type": "para",
+          "text": "If Africa unites, however, it could become one of the principal powers shaping the new international order. That is why the unfinished project of African unity must be brought back to the centre of the continental debate."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Unfinished Dream of African Unity"
+        },
+        {
+          "type": "para",
+          "text": "The idea is not new. In 1963, when independent African leaders gathered in Addis Ababa to establish the Organization of African Unity, Ghana’s first president, Kwame Nkrumah, argued forcefully for a much deeper form of continental unity. Nkrumah understood a fundamental reality: political independence without economic and political unity could leave African countries vulnerable to external pressure."
+        },
+        {
+          "type": "para",
+          "text": "The creation of the OAU was a historic achievement. It provided a continental platform for newly independent states and helped advance the struggle against colonialism and apartheid. But the OAU did not create a single African political authority. The continent remained divided into sovereign states, each pursuing its own national interests and often negotiating separately with much larger external powers. More than sixty years later, the central question remains: has Africa achieved independence without yet achieving sufficient sovereignty?"
+        },
+        {
+          "type": "para",
+          "text": "The years following African independence coincided with the Cold War confrontation between the United States and the Soviet Union. Africa became an important arena in that global struggle. African governments were courted, pressured and sometimes destabilised according to the strategic interests of competing powers. Political movements and leaders who sought independent economic and foreign policies often found themselves operating in an international environment where the interests of great powers could profoundly affect domestic African affairs. The lesson should not be that Africa must choose one external power over another. The lesson should be that Africa must never again allow its future to depend upon the goodwill of external powers."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "A Multipolar World: Opportunity and Risk"
+        },
+        {
+          "type": "para",
+          "text": "The collapse of the Soviet Union between 1989 and 1991 created what became a predominantly unipolar international system, with the United States occupying an exceptionally powerful position. That period is now changing. China’s rise, India’s growing economic and strategic weight, Russia’s continuing geopolitical influence, the growing importance of the Gulf states and the emergence of other centres of power are contributing to a more competitive international system."
+        },
+        {
+          "type": "para",
+          "text": "For Africa, multipolarity could be beneficial. African countries may have more choices of development partners, investors, trading partners and diplomatic allies. Instead of depending excessively on one centre of power, African governments can potentially negotiate with several. But there is a dangerous assumption that must be rejected: multipolarity does not automatically mean equality. A world with several powerful countries can still be a world dominated by powerful countries. If Africa remains weak and divided, the continent may simply exchange one form of dependency for several competing forms of dependency. The objective, therefore, should not be to replace Western dominance with Chinese, Russian, Indian or any other external dominance. The objective must be African strategic autonomy."
+        },
+        {
+          "type": "para",
+          "text": "Africa possesses extraordinary strategic importance. It has enormous mineral wealth, energy resources, agricultural potential, vast land, a young population, important maritime routes and some of the minerals required for the technologies of the future. This makes Africa increasingly important to the world’s major economies. But resources alone do not create power. The ability to control, process, trade and strategically use those resources creates power. For decades, many African economies have exported raw materials while importing finished products. Countries often compete against each other to attract external investment, even when they possess similar resources and face similar economic challenges. This weakens their bargaining position."
+        },
+        {
+          "type": "para",
+          "text": "Imagine, instead, an African continent negotiating collectively over its minerals, energy, agricultural products, infrastructure and consumer markets. The bargaining power would be fundamentally different. A country negotiating alone with a global economic giant is not in the same position as a continental market negotiating collectively."
+        },
+        {
+          "type": "para",
+          "text": "The rise of BRICS has intensified discussion about the future of the global financial system and the dominance of the U.S. dollar. For Africa, the debate is important. Greater use of African currencies, regional payment systems and alternative international settlement mechanisms could reduce some of the continent’s vulnerability to external financial shocks. But Africa must be careful. The purpose of reducing dependence on the dollar should not be to create dependence on another currency or another group of powerful countries. Africa should not simply move from one financial dependency to another."
+        },
+        {
+          "type": "para",
+          "text": "The ultimate objective must be the development of African financial capacity: stronger continental financial institutions, deeper African capital markets, greater intra-African trade and payment systems that make it easier for Africans to conduct business with one another. The African Union’s own Agenda 2063 already places continental integration, economic transformation and Africa’s stronger position in the global arena at the centre of its long-term vision. The question is no longer whether the vision exists. The question is whether African governments will have the political courage to implement it."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Danger of Great-Power Competition, and Why Unity Is Not Isolation"
+        },
+        {
+          "type": "figure",
+          "src": "/articles/africa-must-unite/putin-trump-xi.jpg",
+          "alt": "Three matryoshka dolls painted with the faces of Vladimir Putin, Donald Trump and Xi Jinping, each in their country’s flag colours.",
+          "width": 1200,
+          "height": 800,
+          "caption": "Vladimir Putin, Donald Trump and Xi Jinping could be on the verge of a negotiated new world order.",
+          "credit": "X screengrab"
+        },
+        {
+          "type": "para",
+          "text": "The coming decades are likely to be characterised by intense competition among major powers. The United States wants to preserve its global influence. China wants to expand its economic and strategic position. Russia seeks to maintain and extend its geopolitical influence. India is becoming an increasingly important global economic and political power. The Gulf states are expanding their investments and diplomatic reach. Europe remains a major economic and political actor. None of these powers is necessarily Africa’s enemy. But none should be assumed to be Africa’s permanent friend either. States pursue national interests. That is the normal behaviour of international politics. Africa must therefore learn to pursue its own interests with equal determination."
+        },
+        {
+          "type": "para",
+          "text": "The right question is not “which great power should Africa follow?” The right question is: how can Africa cooperate with all major powers while remaining subordinate to none?"
+        },
+        {
+          "type": "para",
+          "text": "African unity should not be confused with hostility toward the outside world. A united Africa would still trade with Europe. It would still welcome American investment and technology. It would still cooperate with China. It would still maintain diplomatic relations with Russia. It would still work with India, the Gulf states and the rest of Asia. But the relationship would change. Africa would negotiate as a collective power rather than as a collection of vulnerable individual states. Africa should be able to say to the world: we will cooperate with you, we will trade with you, we will invest with you, we will learn from you, but we will not surrender our sovereignty to you. That should be the foundation of African foreign policy in the twenty-first century."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "From Economic Integration to Political Union"
+        },
+        {
+          "type": "para",
+          "text": "The journey toward African unity does not have to begin with the immediate creation of one African state. That would neither be practical nor politically realistic. The process can be gradual."
+        },
+        {
+          "type": "para",
+          "text": "First, Africa must build a genuinely integrated continental market. The African Continental Free Trade Area is an important step in this direction. Second, African countries must develop continental supply chains and industrial capacity: Africa should increasingly process its own minerals, manufacture its own products and add value to its agricultural resources. Third, Africa needs stronger continental financial institutions and payment mechanisms. Fourth, African states need substantially greater cooperation in defence, intelligence, border security and peacekeeping. Fifth, the continent needs stronger common diplomatic positions on issues that affect its collective interests. Only after these foundations are established should Africa seriously consider deeper political federation."
+        },
+        {
+          "type": "para",
+          "text": "The European Union offers an important historical lesson. Europe was once a continent of competing states that had fought devastating wars against one another. Yet European countries gradually created common institutions, common markets and mechanisms for political cooperation. Africa can learn from that experience without simply copying it. Africa has its own history, cultures, languages, political traditions and circumstances. The objective should therefore not be to become another Europe. It should be to build an African system suited to African realities."
+        },
+        {
+          "type": "para",
+          "text": "The European experience demonstrates one important principle: political unity does not have to happen in a single dramatic moment. It can be built step by step. Africa could follow a similar path. Economic integration can lead to stronger political cooperation. Political cooperation can lead to common institutions. Common institutions can lead to collective security. Collective security can lead to a stronger common foreign policy. And, eventually, African peoples may decide whether the continent should become a political federation."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Africa’s Diversity Is Not a Barrier to Unity"
+        },
+        {
+          "type": "para",
+          "text": "There are those who will say that Africa is too diverse to unite. But diversity is not the same as incompatibility. India is enormously diverse. China contains enormous regional, linguistic and cultural differences. The United States itself was formed from states with different histories and interests. The European Union contains nations with different languages, cultures and political traditions. The existence of differences does not make cooperation impossible. Indeed, Africa’s diversity may become one of its greatest strengths if it is organised within institutions capable of managing those differences peacefully. The question is not whether Africans are identical. They are not. The question is whether Africans share enough common interests to justify acting together. The answer is clearly yes."
+        },
+        {
+          "type": "para",
+          "text": "Foreign powers will always compete. That cannot be prevented. What Africa can prevent is becoming permanently divided while others compete over its future. A fragmented Africa will continue to negotiate from weakness; a united Africa could negotiate from strength. A fragmented Africa will struggle to protect its strategic resources; a united Africa could determine how those resources are developed and traded. A fragmented Africa will find it difficult to defend its interests in global institutions; a united Africa could become one of the principal voices shaping those institutions. A fragmented Africa can be pressured individually; a united Africa would be much harder to ignore. This is why African unity should no longer be treated simply as an idealistic Pan-African dream. It is a question of survival in an increasingly competitive international system."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The African Century Will Depend on African Choices"
+        },
+        {
+          "type": "para",
+          "text": "Africa has spent the last century fighting for political independence. The next century must be about converting independence into genuine sovereignty. Sovereignty means more than having a flag, a national anthem and a seat at the United Nations. It means having the economic capacity to make independent decisions. It means having the industrial capacity to create value from African resources. It means having the financial institutions necessary to support African development. It means having the military and security capacity to protect African territory. It means having the diplomatic strength to negotiate with powerful countries on equal terms. And ultimately, it means having the political institutions necessary to allow Africans to decide their collective future."
+        },
+        {
+          "type": "para",
+          "text": "The world is changing. The question is whether Africa will change with it, or whether other powers will once again determine the direction of the continent. Nkrumah’s generation fought to end colonial rule. This generation must complete the next part of that struggle. Africa must move from independence to sovereignty, from sovereignty to integration, and from integration toward unity."
+        },
+        {
+          "type": "para",
+          "text": "Perhaps the final destination will not be a single African state. Perhaps it will be a federation of African nations with strong common institutions. Perhaps it will evolve into something entirely new. That decision must belong to Africans. But whatever form it takes, the principle should be clear: Africa must no longer be merely the territory upon which other powers compete. Africa must become a power that competes on its own terms. That is the unfinished promise of African unity, and that is why the time to build it is now, within the twenty-first century."
+        }
+      ],
+      "readingTime": 9
+    },
+    {
+      "id": 10004,
+      "slug": "rutos-retail-crackdown-and-the-eac",
+      "title": "President Ruto’s Announcement on Foreign Retail Traders: What Does It Mean for the East African Community?",
+      "date": "2026-09-12T10:00:00",
+      "modified": "2026-09-12T10:00:00",
+      "section": "Opinion",
+      "topic": {
+        "name": "Geo-politics",
+        "slug": "geo-politics"
+      },
+      "author": "Dr. Aldo Ajou Deng-Akuey",
+      "dateline": null,
+      "image": {
+        "url": "/articles/rutos-retail-crackdown-and-the-eac/eac-24th-summit.jpg",
+        "alt": "East African heads of state seated on a platform beneath a banner reading The 24th Ordinary Summit of the EAC Heads of State, delegates filling the hall in front of them.",
+        "width": 1080,
+        "height": 720,
+        "caption": "EAC Heads of State sign the amendment making Kiswahili and French official languages of the Community, alongside English, at the 24th Ordinary Summit, a move that reinforces the people-centred vision behind the EAC Common Market.",
+        "credit": "X/EAC"
+      },
+      "source": null,
+      "blocks": [
+        {
+          "type": "para",
+          "text": "The recent announcement by the President of the Republic of Kenya, H.E. Dr. William Samoei Ruto, concerning a crackdown on foreign nationals operating hawking and small-scale retail businesses deserves serious and careful consideration, not only within Kenya, but throughout the East African Community (EAC) and Africa as a whole."
+        },
+        {
+          "type": "para",
+          "text": "President Ruto announced that enforcement against foreign nationals operating certain small businesses would soon begin. His argument is that small-scale businesses, particularly hawking and small retail activities requiring relatively little capital, should primarily provide economic opportunities for Kenyan citizens."
+        },
+        {
+          "type": "para",
+          "text": "There is no doubt that every African government has a responsibility to protect the economic welfare of its citizens. Kenya, like South Sudan, Uganda, Tanzania, Rwanda, Burundi, the Democratic Republic of Congo, Somalia and other African countries, must address unemployment, poverty and the growing economic difficulties facing young people, women and small-scale entrepreneurs."
+        },
+        {
+          "type": "para",
+          "text": "However, an important question arises: can East African integration survive if citizens of the Community are free to cross borders but increasingly prohibited from participating in the economic life of neighbouring countries? This question requires immediate regional discussion."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Kenya Has the Right to Protect Its Citizens"
+        },
+        {
+          "type": "para",
+          "text": "It must be stated clearly from the outset that this discussion should not be interpreted as opposition to Kenya or hostility toward President Ruto. Every sovereign state has the right to regulate its economy. Governments have the authority and responsibility to ensure businesses comply with national laws, including laws on taxation, immigration, licensing, public health, consumer protection and public security. Kenya also has a legitimate responsibility to create economic opportunities for its own citizens; no government should ignore the suffering of its young people and small-scale entrepreneurs while economic opportunities grow harder to access. Kenya is therefore entitled to encourage Kenyan participation in the economy and to regulate illegal or unlicensed businesses."
+        },
+        {
+          "type": "para",
+          "text": "But the question becomes more complicated when a restriction applies to citizens of neighbouring countries that are members of the East African Community. There is an important difference between regulating illegal business activity and imposing a blanket, nationality-based restriction on citizens of EAC Partner States who are legally residing and conducting lawful economic activities. This distinction must be carefully examined."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The East African Community Is More Than a Political Organisation"
+        },
+        {
+          "type": "para",
+          "text": "The East African Community was created with a vision that goes far beyond diplomatic meetings between governments. The ultimate objective of regional integration is to bring the peoples and economies of East Africa closer together. Over the years, the EAC has made remarkable progress: roads and transport corridors increasingly connect the region; communications and digital infrastructure are expanding; citizens move more easily across borders; trade between neighbouring countries continues to grow; and regional institutions, including the East African Legislative Assembly and the East African Court of Justice, are functioning."
+        },
+        {
+          "type": "para",
+          "text": "The EAC Common Market was established to promote the integration of Partner States’ economies and to facilitate the movement of people, labour, services and capital. The Community’s legal framework also recognises the right of establishment and the principle that citizens of Partner States should not face unjustified discrimination merely because they come from another EAC country. East African integration, then, cannot be measured only by the number of kilometres of road constructed. A Common Market must also be measured by the opportunities available to ordinary East Africans."
+        },
+        {
+          "type": "para",
+          "text": "But the fundamental question remains: can an East African citizen travel freely to a neighbouring country, yet be denied the opportunity to establish a lawful livelihood there simply because he or she comes from another EAC Partner State? This is the legal and political question that President Ruto’s announcement has now placed before the region."
+        },
+        {
+          "type": "figure",
+          "src": "/articles/rutos-retail-crackdown-and-the-eac/burundi-embassy-queue.jpg",
+          "alt": "A queue of men waiting at the gate of a building signed Embassy of the Republic of Burundi, Chancery.",
+          "width": 1280,
+          "height": 720,
+          "caption": "Burundian nationals line up outside their embassy in Nairobi, amid growing uncertainty over Kenya’s crackdown on foreign-operated small businesses."
+        },
+        {
+          "type": "para",
+          "text": "The EAC Common Market framework recognises the right of establishment and the pursuit of economic activity by citizens of Partner States within the Community. This does not mean every business activity is entirely unregulated. Partner States may have legitimate laws on licensing, public policy, public security and public health. However, where restrictions are imposed specifically because an individual is a citizen of another EAC Partner State, serious legal questions arise. Can a South Sudanese citizen legally operate a small business in Kenya, and a Kenyan citizen a similar business in South Sudan? Can a Ugandan citizen establish a lawful retail business in Kenya, and a Kenyan one in Uganda? Can Tanzania prohibit citizens of other EAC countries from entire sectors of economic activity while its own citizens conduct business throughout East Africa? These questions must be answered consistently. The EAC cannot become a Community in which every country welcomes its own citizens to do business abroad while restricting citizens of neighbouring Partner States at home. Such a system would inevitably breed resentment and retaliation."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Risk of Retaliation, and the Case for a Common Regional Approach"
+        },
+        {
+          "type": "para",
+          "text": "The greatest danger of unilateral restrictions is that they invite reciprocal action. If Kenya restricts foreign nationals from small-scale retail, other countries may eventually respond in kind, among them Uganda, Tanzania, South Sudan, Rwanda, Burundi, Somalia and the Democratic Republic of Congo. Before long, the East African Community could find itself caught in a contradiction: its governments continuing to speak of regional integration, free movement, common infrastructure, cross-border trade, economic cooperation and African unity, while its citizens increasingly encounter barriers to establishing a livelihood in neighbouring countries."
+        },
+        {
+          "type": "para",
+          "text": "This would weaken the foundation of the Common Market. The greatest victims would not be large multinational corporations, but ordinary citizens: women trading goods across borders, young entrepreneurs, small traders, transport operators, shopkeepers, farmers, and the families and communities that have built economic relationships across East Africa for generations. The EAC must therefore be careful not to divide its citizens economically while its governments simultaneously work to unite the region politically and infrastructurally."
+        },
+        {
+          "type": "para",
+          "text": "One important step Kenya could take is to distinguish clearly between different categories of foreign nationals: citizens of EAC Partner States, who may enjoy rights under the Community’s Treaty and Common Market arrangements; citizens of other African countries outside the EAC; foreign nationals from outside Africa; and individuals operating illegally, without licences or legal residence. Treating all foreign nationals as a single category risks creating unnecessary legal and diplomatic difficulties. An EAC citizen should not automatically be placed in the same category as a foreign investor from another continent, without first examining the special regional obligations created by the EAC Treaty and Common Market Protocol, obligations that exist precisely because Partner States agreed to move beyond the ordinary relations that exist between wholly separate foreign countries."
+        },
+        {
+          "type": "para",
+          "text": "This is precisely the kind of regional question the East African Legislative Assembly should not remain silent on. The EALA should debate the implications of nationality-based restrictions on small businesses, the rights of EAC citizens under the Common Market, the danger of retaliatory economic restrictions, and the possibility of harmonised rules for small-scale trade across the Community. This issue should not become a conflict between Kenya and its neighbours. It should become a serious discussion about the future of the East African Common Market. The correct question is not “should Kenya protect Kenyans?” Of course it should. The correct question is: how can Kenya protect Kenyan entrepreneurs while respecting its regional obligations and the legitimate rights of other East African citizens?"
+        },
+        {
+          "type": "para",
+          "text": "Where uncertainty exists over the interpretation of the EAC Treaty and Common Market Protocol, the East African Court of Justice is the appropriate regional institution to provide authoritative guidance. This matter should not be resolved through political anger or retaliatory restrictions, but through consultation, law and regional institutions, the proper functioning of a regional community voluntarily created by sovereign states."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Future of East Africa Must Be People-Centred"
+        },
+        {
+          "type": "para",
+          "text": "The future of the EAC should not belong only to governments, large corporations and international investors. It must also belong to ordinary East Africans: a South Sudanese woman selling goods legally in Kenya, a Kenyan trader doing business in Juba, a Ugandan entrepreneur operating in Kigali, a Rwandan investor working in Tanzania, a Tanzanian doing business in Burundi. These are the people who give practical meaning to regional integration. If East Africa builds modern roads but closes economic opportunity to the very citizens who travel on them, infrastructure alone will not create genuine integration."
+        },
+        {
+          "type": "figure",
+          "src": "/articles/rutos-retail-crackdown-and-the-eac/eac-sadc-summit.jpg",
+          "alt": "Heads of state and government standing in a line on a red carpet for a group photograph in front of a Joint EAC-SADC Summit backdrop.",
+          "width": 562,
+          "height": 355,
+          "caption": "Leaders gather for the Joint EAC-SADC Summit family photo in Dar es Salaam, Tanzania."
+        },
+        {
+          "type": "para",
+          "text": "The implications of this debate extend beyond the East African Community. Africa has spent decades promoting African unity, regional economic communities, continental trade, freedom of movement and greater cooperation among African peoples. The African Continental Free Trade Area and other continental initiatives rest on the understanding that Africa’s economic future cannot be built through permanent fragmentation. Africa cannot credibly speak of a united continental market while Africans increasingly become economic strangers to one another. This does not mean African countries must abandon the protection of their citizens, but economic empowerment should not automatically mean hostility toward other Africans. The challenge is to find the balance between national development and continental integration, to protect Africans without turning Africans into foreigners in Africa."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "A Call for Consultation"
+        },
+        {
+          "type": "para",
+          "text": "For these reasons, I respectfully believe that President Ruto’s proposed crackdown should be carefully reviewed before its implementation affects citizens of other EAC Partner States. The Kenyan Government should urgently clarify whether the announced restrictions are intended to apply equally to citizens of all EAC Partner States. If they are, the matter should be discussed immediately through the appropriate regional institutions. I therefore propose the following:"
+        },
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            "Immediate clarification by the Government of Kenya, on which categories of foreign nationals and businesses are affected.",
+            "Consultation with EAC Partner States, before implementing measures that could affect the economic rights of millions of East Africans.",
+            "Debate in the East African Legislative Assembly, on the implications for the Common Market, and a proposed harmonised regional approach.",
+            "Legal clarification through EAC institutions, including the East African Court of Justice, where the interpretation of the Treaty and Common Market Protocol is uncertain.",
+            "Protection against retaliation. Partner States should avoid responding with retaliatory restrictions against each other’s citizens. A trade war among East Africans would benefit nobody.",
+            "Development of a common regional policy on small-scale business, local economic empowerment, and the rights of citizens of Partner States."
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Conclusion: Integration Must Not Stop at the Border"
+        },
+        {
+          "type": "para",
+          "text": "President William Ruto’s announcement has opened an important debate. It is understandable that Kenya wishes to protect economic opportunities for its citizens; every government carries a similar responsibility. But Kenya is not acting in isolation; it is one of the most important pillars of the East African Community, and its decisions carry consequences beyond its national borders."
+        },
+        {
+          "type": "para",
+          "text": "The question facing East Africa is not whether national governments should protect their citizens. They must. The question is whether national economic protection can be implemented without undermining the regional agreements East African governments have themselves signed. The EAC cannot advance toward a Common Market while simultaneously erecting new economic borders between its citizens. We cannot build roads across borders and then build economic walls in the minds and livelihoods of the people who use those roads. We cannot speak of free movement while making economic survival difficult for citizens who move lawfully. And we cannot speak of African unity while Africans increasingly view one another as economic competitors rather than partners in development."
+        },
+        {
+          "type": "para",
+          "text": "The proper response, then, is not hostility toward Kenya. It is dialogue, consultation and legal clarity through regional cooperation. President Ruto’s announcement should become an opportunity for the East African Community to ask an important question about its own future: what kind of East Africa are we building? One where governments cooperate but citizens compete behind national barriers? Or one where national development and regional integration reinforce one another?"
+        },
+        {
+          "type": "para",
+          "text": "The answer will determine whether the East African Community remains merely an agreement between governments, or becomes a genuine community of its peoples. East Africa has travelled too far along the road of integration to now walk backward into economic nationalism and division. The citizens of East Africa deserve both national protection and regional opportunity. They should not be forced to choose between the two."
+        },
+        {
+          "type": "note",
+          "text": "Editor’s note: This article is deliberately framed as a call for consultation and legal clarification, rather than a definitive claim that Kenya has already violated EAC law, since the exact implementing legislation and its application to EAC citizens remain crucial to any final legal assessment. The reported announcement has already raised concerns about pressure on Kenya’s regional trade relationships, particularly with Tanzania."
+        }
+      ],
+      "summary": "The recent announcement by the President of the Republic of Kenya, H.E. Dr. William Samoei Ruto, concerning a crackdown on foreign nationals operating hawking and small-scale…",
+      "readingTime": 9
+    },
+    {
       "id": 10003,
       "slug": "one-vote-450-years",
       "title": "One vote, 450 Years: Africa rewrites the world map",

@@ -22,6 +22,11 @@ export type Block =
   | { type: 'heading'; level: number; text: string }
   | { type: 'quote'; text: string }
   | { type: 'list'; ordered: boolean; items: string[] }
+  /**
+   * Editorial apparatus, not the argument: an editor's note appended to a
+   * piece. Set apart from the body so it does not read in the author's voice.
+   */
+  | { type: 'note'; text: string }
   /** A picture in the body. WordPress never produced these; supplied copy does. */
   | {
       type: 'figure';
@@ -586,19 +591,40 @@ export const getArchive = (limit = 4): Article[] => {
   return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
 };
 
+/* ---------------------------------------------------------------------------
+   The front page's two columns
+   ---------------------------------------------------------------------------
+   Analysis & opinion and the archive rail beside it have to finish level, and
+   they grow at very different rates: a river row is about 155px, a rail item
+   about 52px. While the river took every article the page had left over, each
+   new piece pushed it 155px further past the foot of the rail, and the only
+   way to catch up was to repeat headlines in the rail — five of them, by the
+   time the archive reached sixteen pieces.
+
+   So the river is capped instead. The front page stops being a full index of
+   everything published, which is what a front page is supposed to do; More →
+   and All articles → carry the rest to /articles, and the rail still lists
+   fifteen. Between them the page reaches every piece.
+
+   The two numbers are a pair, and both are measured rather than guessed. At
+   sixteen articles, six rows against fourteen slots leaves the river 39px
+   longer than the rail at 1440; fifteen slots overshot the other way by 69px.
+   The residue is deliberately left on the rail's side, because 39px under a
+   narrow column that ends in a pull quote reads as nothing, while the same
+   gap under the main column is the first thing anyone notices.
+
+   Re-measure whenever the archive grows enough to change a row count.
+--------------------------------------------------------------------------- */
+
+/** Rows of Analysis & opinion on the front page. Paired with archiveCapacity. */
+export const riverDepth = 6;
+
 /**
- * Slots the front-page rail is built to hold. See getArchive.
- *
- * Sized against the river beside it, measured rather than guessed: at fourteen
- * articles the river runs six rows, and fifteen slots finish 11px short of it
- * at 1440. Fourteen left 60px, sixteen overshot by 58px. Fifteen against
- * fourteen articles is one repeated headline at the foot, and that last slot
- * stops repeating the moment a fifteenth piece is filed.
- *
- * Re-check this whenever the article count moves: the river grows by a row for
- * every article past the eight the top of the page consumes.
+ * Slots the front-page rail is built to hold. See getArchive and riverDepth.
+ * At fourteen against sixteen articles nothing repeats; getArchive only starts
+ * cycling again if the archive falls below this.
  */
-export const archiveCapacity = 15;
+export const archiveCapacity = 14;
 
 /** How many of those slots can be filled without repeating. */
 export const archiveDepth = (): number => Math.min(articles.length, archiveCapacity);

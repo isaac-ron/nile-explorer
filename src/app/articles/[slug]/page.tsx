@@ -65,6 +65,22 @@ function renderBlock(block: Block, i: number) {
       return block.level <= 2 ? <h2 key={i}>{block.text}</h2> : <h3 key={i}>{block.text}</h3>;
     case 'quote':
       return <blockquote key={i}>{block.text}</blockquote>;
+    case 'note': {
+      // "Editor's note:" is emphasised where the copy opens with it, so the
+      // label reads as a label rather than as the first words of a sentence.
+      const [, label, rest] = /^(Editor’s note:)\s*([\s\S]*)$/.exec(block.text) ?? [];
+      return (
+        <aside className="callout prose__note" key={i}>
+          {label ? (
+            <>
+              <strong>{label}</strong> {rest}
+            </>
+          ) : (
+            block.text
+          )}
+        </aside>
+      );
+    }
     case 'figure':
       return (
         <figure className="prose__figure" key={i}>

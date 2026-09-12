@@ -735,6 +735,15 @@
   max-width: 68ch;
 }
 
+/* An editor's note. It keeps the callout's ground so it reads as apparatus
+   rather than argument, and drops to the sans face because the serif body is
+   the author's voice and this is not. */
+.prose__note {
+  margin-top: var(--space-3);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  max-width: 68ch;
+}
+
 /* Pictures inside the body. Nothing ingested from WordPress carries any;
    copy supplied straight to the newsroom does, with its own caption and
    credit. The frame takes its ratio inline from the file's real dimensions,
