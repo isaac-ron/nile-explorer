@@ -38,7 +38,16 @@ The menu down the left side is the whole site:
 5. Add a **Lead image**. It will ask you to describe the picture — that
    description is read aloud to blind readers and shown if the image fails to
    load, which on a weak connection is often. Say what is in the frame.
-6. Write the **Body**. Headings, bold, italic and links all work.
+6. Write the **Body**. Headings, bold, italic, links and numbered lists all
+   work. Two things in the body are not text:
+   - **Picture.** A photograph part-way down the piece. It asks for a
+     description (read aloud to blind readers), and separately for a
+     **caption**, which is what everyone else sees printed underneath. They are
+     not the same sentence — the description says what is in the frame, the
+     caption says what it means here. Either can be left out.
+   - **Editor's note.** Set apart from the article in a box, in a different
+     typeface, because it is the newsroom speaking rather than the author. Open
+     it with "Editor's note:" and that label is emboldened for you.
 7. Press **Publish**.
 
 The site rebuilds itself and the article is live in about a minute.
@@ -82,7 +91,6 @@ What is currently marked:
 
 | | Why |
 |---|---|
-| 2 commissioned articles | The pieces have not been written |
 | 2 podcast episodes | Not recorded. Their guest names were invented, so they now read "Guest to be confirmed" |
 | 3 documentaries | Not commissioned, and the key art was computer-generated |
 | The Festival | No dates, venues or programme are confirmed |

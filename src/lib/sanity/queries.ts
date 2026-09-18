@@ -16,11 +16,38 @@ import { groq } from 'next-sanity';
  * each topic and it was wrong the moment anything was published.
  */
 
-/** Shared image projection: URL plus the dimensions next/image needs. */
+/**
+ * Shared image projection: URL plus the dimensions next/image needs.
+ *
+ * `alt` and `caption` are both selected and are not the same thing. alt
+ * describes the frame for a screen reader and is never printed; caption is
+ * written to be read under the picture. Printing one as the other is what the
+ * site used to do.
+ */
 const IMAGE = groq`{
   alt,
+  caption,
   credit,
   asset->{ url, metadata { dimensions { width, height } } }
+}`;
+
+/**
+ * Shared body projection for every blockContent field.
+ *
+ * Projecting `body` bare returns a picture's asset as an unresolved `_ref`,
+ * which costs the renderer the file's real dimensions — and those are what set
+ * the frame's ratio and its upscaling ceiling. Spread everything, then
+ * dereference the asset on figures only.
+ *
+ * Use this anywhere a blockContent field is selected. A bare field name works
+ * right up until someone puts a picture in that field.
+ */
+const BODY = groq`[]{
+  ...,
+  _type == "figure" => {
+    ...,
+    asset->{ url, metadata { dimensions { width, height } } }
+  }
 }`;
 
 const ARTICLE_FIELDS = groq`
@@ -43,14 +70,14 @@ export const ARTICLES_QUERY = groq`
   *[_type == "article" && state == "published" && !placeholder]
   | order(publishedAt desc) {
     ${ARTICLE_FIELDS},
-    body
+    "body": body ${BODY}
   }
 `;
 
 export const ARTICLE_BY_SLUG_QUERY = groq`
   *[_type == "article" && slug.current == $slug && state == "published"][0] {
     ${ARTICLE_FIELDS},
-    body
+    "body": body ${BODY}
   }
 `;
 
@@ -171,18 +198,18 @@ export const SITE_SETTINGS_QUERY = groq`
 
 export const ABOUT_PAGE_QUERY = groq`
   *[_type == "aboutPage"][0] {
-    intro,
+    "intro": intro ${BODY},
     patronKicker,
     patronRole,
     editorialNote,
     themesHeading,
     themes[]{ name, detail },
     publicationHeading,
-    publicationBody,
+    "publicationBody": publicationBody ${BODY},
     contactBlurb,
     correctionsNote,
     "patron": *[_type == "author" && isPatron == true][0] {
-      name, role, colophon, bio, "portrait": portrait ${IMAGE}
+      name, role, colophon, "bio": bio ${BODY}, "portrait": portrait ${IMAGE}
     }
   }
 `;
@@ -192,7 +219,7 @@ export const FESTIVAL_QUERY = groq`
     name,
     standfirst,
     blurb,
-    foundationBody,
+    "foundationBody": foundationBody ${BODY},
     editorialNote,
     "datesAnnounced": coalesce(datesAnnounced, false),
     dates,

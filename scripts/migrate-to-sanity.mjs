@@ -136,10 +136,11 @@ async function uploadImage(source, filename) {
 }
 
 /** A `figure` value. `alt` is left empty where the source had none — see below. */
-const figure = (assetRef, alt = '', credit) => ({
+const figure = (assetRef, alt = '', credit, caption) => ({
   _type: 'figure',
   asset: assetRef,
   alt,
+  ...(caption ? { caption } : {}),
   ...(credit ? { credit } : {})
 });
 
@@ -231,6 +232,36 @@ const quoteBlock = (text) => ({
 });
 
 const keyed = (items) => items.map((i) => ({ ...i, _key: randomUUID().slice(0, 12) }));
+
+const key = () => randomUUID().slice(0, 12);
+
+const span = (text) => ({ _type: 'span', _key: key(), text, marks: [] });
+
+/** One text block. `style` is any of the four the Studio offers. */
+const textBlock = (style, text) => ({
+  _type: 'block',
+  _key: key(),
+  style,
+  markDefs: [],
+  children: [span(text)]
+});
+
+/**
+ * One item of a list.
+ *
+ * Portable Text has no list container: each item is an ordinary block carrying
+ * `listItem`, and the renderer groups consecutive ones. So a six-point list is
+ * six blocks, not one.
+ */
+const listItemBlock = (ordered, text) => ({
+  _type: 'block',
+  _key: key(),
+  style: 'normal',
+  listItem: ordered ? 'number' : 'bullet',
+  level: 1,
+  markDefs: [],
+  children: [span(text)]
+});
 
 /* -------------------------------------------------------------------------
    Writing
@@ -419,6 +450,147 @@ async function main() {
     });
   }
   console.log(`  ${pending.stories?.length ?? 0} commissions (as drafts)`);
+
+  /* --- Supplied articles ------------------------------------------------
+     Pieces filed straight to the newsroom as .docx and entered by hand,
+     because the CMS was not live when they arrived. They never went through
+     WordPress, so unlike the archive above there is no REST API to re-parse:
+     content/supplied-articles.json is the only copy, and this is the step that
+     moves it into Sanity for good.
+
+     Three things here that the WordPress path never had to deal with: writers
+     other than the patron, pictures inside the body, and an editor's note.
+  --------------------------------------------------------------------- */
+  console.log('Supplied articles…');
+  const supplied = await readJson('supplied-articles.json');
+  const suppliedArticles = supplied.articles ?? [];
+
+  // Contributors. Their colophon is the bio supplied with the piece: the house
+  // line described every writer as covering peace and governance, which is not
+  // true of an outside contributor and was the reason it was dropped.
+  const authorRefs = new Map([['Dr. Aldo Ajou Deng-Akuey', patronRef]]);
+  for (const art of suppliedArticles) {
+    if (!art.author || authorRefs.has(art.author)) continue;
+    authorRefs.set(
+      art.author,
+      stage({
+        _id: `author-${slugify(art.author)}`,
+        _type: 'author',
+        name: art.author,
+        isPatron: false,
+        ...(art.authorBio ? { colophon: art.authorBio } : {})
+      })
+    );
+  }
+  console.log(`  ${authorRefs.size - 1} contributors besides the patron`);
+
+  // Topics the supplied pieces introduce. Governance is one: it exists in no
+  // WordPress category, so without this it would be invisible in the chips.
+  const topicIds = new Set([...topicRefs.values()].map((r) => r._ref));
+  const topicRefFor = (topic) => {
+    if (!topic?.slug) return null;
+    const id = `topic-${topic.slug}`;
+    if (topicIds.has(id)) return { _type: 'reference', _ref: id };
+    topicIds.add(id);
+    return stage({
+      _id: id,
+      _type: 'topic',
+      name: topic.name,
+      slug: { _type: 'slug', current: topic.slug }
+    });
+  };
+
+  /** A local file under public/, as an uploaded asset reference. */
+  const uploadLocal = (src) =>
+    uploadImage(join(PUBLIC, src.replace(/^\//, '').split('/').join('/')), src.split('/').pop());
+
+  /** The site's own block shapes, as Portable Text. */
+  async function suppliedBody(art) {
+    const out = [];
+    for (const b of art.blocks ?? []) {
+      switch (b.type) {
+        case 'para':
+          out.push(textBlock('normal', b.text));
+          break;
+        case 'heading':
+          out.push(textBlock(b.level <= 2 ? 'h2' : 'h3', b.text));
+          break;
+        case 'quote':
+          out.push(quoteBlock(b.text));
+          break;
+        case 'list':
+          for (const item of b.items ?? []) out.push(listItemBlock(Boolean(b.ordered), item));
+          break;
+        case 'note':
+          out.push({ _type: 'editorsNote', _key: key(), text: b.text });
+          break;
+        case 'figure':
+          out.push({
+            ...figure(await uploadLocal(b.src), b.alt ?? '', b.credit, b.caption),
+            _key: key()
+          });
+          break;
+        default:
+          // Silently dropping a block is the worst thing this could do: the
+          // piece would migrate looking complete and be missing an argument.
+          throw new Error(
+            `Unknown block type "${b.type}" in ${art.slug}. Teach this script to handle it ` +
+              'rather than letting it disappear.'
+          );
+      }
+    }
+    return out;
+  }
+
+  let suppliedFigures = 0;
+  for (const art of suppliedArticles) {
+    if (seenSlugs.has(art.slug)) {
+      throw new Error(
+        `Supplied article "${art.slug}" collides with a WordPress slug. One would be unreachable.`
+      );
+    }
+    seenSlugs.add(art.slug);
+
+    const author = authorRefs.get(art.author);
+    if (!author) throw new Error(`No byline for supplied article "${art.slug}".`);
+
+    const body = await suppliedBody(art);
+    suppliedFigures += body.filter((b) => b._type === 'figure').length;
+
+    const topic = topicRefFor(art.topic);
+    const image = art.image?.url
+      ? figure(
+          await uploadLocal(art.image.url),
+          art.image.alt ?? '',
+          art.image.credit,
+          art.image.caption
+        )
+      : undefined;
+
+    stage({
+      _id: `article-supplied-${art.slug}`,
+      _type: 'article',
+      state: 'published',
+      title: art.title,
+      slug: { _type: 'slug', current: art.slug },
+      standfirst: art.summary,
+      author,
+      // These carry no offset — they were written as wall-clock times by hand.
+      // Reading them as UTC is arbitrary but consistent, and preserves the
+      // order the front page was built around.
+      publishedAt: new Date(`${art.date}Z`).toISOString(),
+      section: art.section ?? 'Opinion',
+      ...(topic ? { topic } : {}),
+      ...(art.dateline ? { dateline: art.dateline } : {}),
+      ...(image ? { image } : {}),
+      body,
+      placeholder: false
+    });
+  }
+  console.log(
+    `  ${suppliedArticles.length} articles, ${suppliedFigures} body pictures, ` +
+      `${suppliedArticles.filter((a) => a.dateline).length} with a dateline`
+  );
 
   /* --- Podcast --------------------------------------------------------- */
   console.log('Podcast…');

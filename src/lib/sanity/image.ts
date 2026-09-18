@@ -15,6 +15,7 @@ const builder = createImageUrlBuilder({ projectId, dataset });
 export type SanityImage = {
   asset?: { _ref?: string; url?: string; metadata?: { dimensions?: { width: number; height: number } } };
   alt?: string;
+  caption?: string;
   credit?: string;
 };
 
@@ -37,6 +38,7 @@ export function toImage(source: SanityImage | null | undefined): Image | null {
     alt: source.alt ?? '',
     width: dimensions?.width ?? null,
     height: dimensions?.height ?? null,
+    caption: source.caption ?? undefined,
     credit: source.credit ?? undefined
   };
 }

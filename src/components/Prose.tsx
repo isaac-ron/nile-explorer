@@ -1,14 +1,17 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import type { PortableTextBlock } from '@portabletext/types';
+import { toImage, type SanityImage } from '@/lib/sanity/image';
 
 /**
  * Body text.
  *
  * Renders exactly the elements the stylesheet dresses — h2, h3, blockquote,
- * ul, ol, p — and nothing else, so a block type that somehow reaches here
- * cannot produce unstyled markup. The Studio only offers these four styles,
- * which is the other half of the same contract.
+ * ul, ol, p, plus a picture and an editor's note — and nothing else, so a
+ * block type that somehow reaches here cannot produce unstyled markup. The
+ * Studio offers exactly these and no more, which is the other half of the
+ * same contract: see sanity/schemaTypes/objects/blockContent.ts.
  *
  * Links and bold and italic are new. The WordPress ingest flattened inline
  * markup with a regex, so the archive's emphasis was lost and a hyperlink was
@@ -28,6 +31,79 @@ const components: PortableTextComponents = {
   listItem: {
     bullet: ({ children }) => <li>{children}</li>,
     number: ({ children }) => <li>{children}</li>
+  },
+  types: {
+    /**
+     * A picture in the body.
+     *
+     * The frame carries the file's real ratio inline and its own pixel width
+     * as a ceiling, so nothing is cropped to a house aspect and a small
+     * supplied file is never upscaled to fill the column. Running the full
+     * column rather than the 68ch text measure is what .prose--wide is for.
+     */
+    figure: ({ value }) => {
+      const image = toImage(value as SanityImage);
+      if (!image) return null;
+
+      const { url, alt, width, height, caption, credit } = image;
+
+      return (
+        <figure className="prose__figure">
+          <span
+            className="frame"
+            style={
+              width && height
+                ? { aspectRatio: `${width} / ${height}`, maxWidth: width }
+                : undefined
+            }
+          >
+            <Image
+              src={url}
+              alt={alt}
+              width={width ?? 1200}
+              height={height ?? 800}
+              sizes={
+                width
+                  ? `(max-width: 1000px) 100vw, min(860px, ${width}px)`
+                  : '(max-width: 1000px) 100vw, 860px'
+              }
+            />
+          </span>
+          {(caption || credit) && (
+            <figcaption>
+              {caption}
+              {credit && <span className="credit">Photograph: {credit}</span>}
+            </figcaption>
+          )}
+        </figure>
+      );
+    },
+
+    /**
+     * An editor's note. The opening "Editor's note:" is emphasised where the
+     * copy carries it, so the label reads as a label rather than as the first
+     * words of a sentence.
+     */
+    editorsNote: ({ value }) => {
+      const text: string = (value as { text?: string })?.text ?? '';
+      if (!text.trim()) return null;
+
+      // Both apostrophes: the Studio's copy is typographic, but text pasted
+      // from elsewhere often is not.
+      const [, label, rest] = /^(Editor['’]s note:)\s*([\s\S]*)$/.exec(text) ?? [];
+
+      return (
+        <aside className="callout prose__note">
+          {label ? (
+            <>
+              <strong>{label}</strong> {rest}
+            </>
+          ) : (
+            text
+          )}
+        </aside>
+      );
+    }
   },
   marks: {
     strong: ({ children }) => <strong>{children}</strong>,
