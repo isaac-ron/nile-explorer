@@ -20,9 +20,12 @@ export type { PortableTextBlock };
 
 export type Image = {
   url: string;
+  /** Describes the frame, for screen readers. Never printed. */
   alt: string;
   width: number | null;
   height: number | null;
+  /** Printed under the picture. Separate from alt, which says something else. */
+  caption?: string;
   credit?: string;
 };
 
@@ -42,6 +45,11 @@ export type Article = {
   section: string;
   topic: { name: string; slug: string } | null;
   author: Author;
+  /**
+   * Where it was reported from. Absent means none is known — do not guess. The
+   * old ingest printed a hardcoded "Juba" on every piece, which was wrong the
+   * moment one was filed from Nairobi.
+   */
   dateline?: string;
   image: Image | null;
   body: PortableTextBlock[];
@@ -127,6 +135,8 @@ export type SiteSettings = {
 export type NamedDetail = { name: string; detail: string };
 
 export type AboutPage = {
+  /** Opens the page: what the platform is, before who founded it. */
+  intro: PortableTextBlock[];
   patronKicker?: string;
   patronRole?: string;
   editorialNote?: string;
@@ -364,8 +374,38 @@ export const getArchive = async (limit = 4): Promise<Article[]> => {
   return Array.from({ length: limit }, (_, i) => pool[i % pool.length]);
 };
 
-/** Slots the front-page rail is built to hold. See getArchive. */
-export const archiveCapacity = 12;
+/* ---------------------------------------------------------------------------
+   The front page's two columns
+   ---------------------------------------------------------------------------
+   Analysis & opinion and the archive rail beside it have to finish level, and
+   they grow at very different rates: a river row is about 155px, a rail item
+   about 52px. While the river took every article the page had left over, each
+   new piece pushed it 155px further past the foot of the rail, and the only
+   way to catch up was to repeat headlines in the rail — five of them, by the
+   time the archive reached sixteen pieces.
+
+   So the river is capped instead. The front page stops being a full index of
+   everything published, which is what a front page is supposed to do; More →
+   and All articles → carry the rest to /articles, and the rail still lists
+   fourteen. Between them the page reaches every piece.
+
+   Both numbers are measured rather than guessed. At sixteen articles, six rows
+   against fourteen slots leaves the river 39px longer than the rail at 1440;
+   fifteen slots overshot the other way by 69px. The residue is deliberately
+   left on the rail's side, because 39px under a narrow column that ends in a
+   pull quote reads as nothing, while the same gap under the main column is the
+   first thing anyone notices.
+
+   These were measured against the sixteen articles on the site at the time.
+   Under the CMS the count moves whenever the newsroom publishes, so re-measure
+   whenever it grows enough to change a row count.
+--------------------------------------------------------------------------- */
+
+/** Rows of Analysis & opinion on the front page. Paired with archiveCapacity. */
+export const riverDepth = 6;
+
+/** Slots the front-page rail is built to hold. See getArchive and riverDepth. */
+export const archiveCapacity = 14;
 
 /* ---------------------------------------------------------------------------
    Podcast
@@ -524,6 +564,7 @@ export const getAboutPage = async (): Promise<AboutPage> => {
   const a = await query<RawAbout | null>(Q.ABOUT_PAGE_QUERY);
   return {
     ...a,
+    intro: a?.intro ?? [],
     themes: a?.themes ?? [],
     publicationBody: a?.publicationBody ?? [],
     patron: a?.patron ? { ...a.patron, portrait: toImage(a.patron.portrait) } : undefined

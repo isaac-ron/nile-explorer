@@ -37,16 +37,44 @@ export default async function AboutPage() {
 
   return (
     <>
-      {/* ---------- Patron ---------- */}
-      {patron && (
-        <section className="section shell" aria-labelledby="patron-heading">
+      {/* ---------- The platform ----------
+          Copy supplied by the newsroom. It leads the page because that is the
+          order the supplied document puts it in: what this is, then who
+          founded it. Held in Site settings → About page → Introduction rather
+          than here, so the newsroom can revise it without a developer. */}
+      {about.intro.length > 0 && (
+        <section className="section shell" aria-labelledby="about-heading">
           <div className="kicker">
-            <span className="kicker__cat">{about.patronKicker ?? 'The patron'}</span>
+            <span className="kicker__cat">About</span>
             <span className="kicker__rule" />
-            <span className="kicker__meta"> </span>
+            <span className="kicker__meta">{site.tagline}</span>
           </div>
 
-          <div className="about__grid">
+          <h1
+            className="about__name"
+            id="about-heading"
+            style={{ marginBottom: 'var(--space-4)' }}
+          >
+            About {site.name}
+          </h1>
+
+          <Prose value={about.intro} />
+        </section>
+      )}
+
+      {/* ---------- Founder ---------- */}
+      {patron && (
+        <section className="section section--band" aria-labelledby="patron-heading">
+          {/* The band runs full-bleed, so its contents need their own shell.
+              On the previous plain section the section carried it. */}
+          <div className="shell">
+            <div className="kicker">
+              <span className="kicker__cat">{about.patronKicker ?? 'The patron'}</span>
+              <span className="kicker__rule" />
+              <span className="kicker__meta"> </span>
+            </div>
+
+            <div className="about__grid">
             <div className="about__portrait">
               {patron.portrait && (
                 <>
@@ -87,9 +115,18 @@ export default async function AboutPage() {
 
             <div>
               {about.patronRole && <p className="about__role">{about.patronRole}</p>}
-              <h1 className="about__name" id="patron-heading">
-                {patron.name}
-              </h1>
+              {/* h2, not h1: the platform section above it opens the page.
+                  Falls back to h1 only when that section is empty, so the
+                  document always has exactly one top-level heading. */}
+              {about.intro.length > 0 ? (
+                <h2 className="about__name" id="patron-heading">
+                  {patron.name}
+                </h2>
+              ) : (
+                <h1 className="about__name" id="patron-heading">
+                  {patron.name}
+                </h1>
+              )}
 
               <Prose value={patron.bio} />
 
@@ -143,14 +180,15 @@ export default async function AboutPage() {
                 )}
               </div>
             </aside>
+            </div>
           </div>
         </section>
       )}
 
       {/* ---------- Recurring subjects ---------- */}
       {about.themes.length > 0 && (
-        <section className="section section--band" aria-labelledby="themes-heading">
-          <div className="shell">
+        <section className="section shell" aria-labelledby="themes-heading">
+          <div>
             <div className="section__head">
               <h2 id="themes-heading">{about.themesHeading ?? 'Recurring subjects'}</h2>
               <Link className="section__more" href="/articles">
@@ -171,33 +209,35 @@ export default async function AboutPage() {
 
       {/* ---------- Selected writing ---------- */}
       {byPatron.length > 0 && (
-        <section className="section shell" aria-labelledby="writing-heading">
-          <div className="section__head">
-            <h2 id="writing-heading">Selected writing</h2>
-            <Link className="section__more" href="/articles">
-              All {articles.length} articles →
-            </Link>
+        <section className="section section--band" aria-labelledby="writing-heading">
+          <div className="shell">
+            <div className="section__head">
+              <h2 id="writing-heading">Selected writing</h2>
+              <Link className="section__more" href="/articles">
+                All {articles.length} articles →
+              </Link>
+            </div>
+            <ul className="factlist" style={{ maxWidth: '90ch' }}>
+              {byPatron.slice(0, 8).map((a) => (
+                <li key={a.slug} style={{ gridTemplateColumns: 'minmax(0,110px) minmax(0,1fr)' }}>
+                  <span className="k">{formatShortDate(a.date)}</span>
+                  <span>
+                    <Link
+                      href={`/articles/${a.slug}`}
+                      style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: '1.02rem',
+                        color: 'var(--navy)'
+                      }}
+                    >
+                      {a.title}
+                    </Link>
+                    <span style={{ color: 'var(--muted)' }}> · {labelFor(a)}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="factlist" style={{ maxWidth: '90ch' }}>
-            {byPatron.slice(0, 8).map((a) => (
-              <li key={a.slug} style={{ gridTemplateColumns: 'minmax(0,110px) minmax(0,1fr)' }}>
-                <span className="k">{formatShortDate(a.date)}</span>
-                <span>
-                  <Link
-                    href={`/articles/${a.slug}`}
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: '1.02rem',
-                      color: 'var(--navy)'
-                    }}
-                  >
-                    {a.title}
-                  </Link>
-                  <span style={{ color: 'var(--muted)' }}> · {labelFor(a)}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
         </section>
       )}
 
@@ -206,7 +246,7 @@ export default async function AboutPage() {
           reads as a page that failed to load rather than one with nothing to
           say yet. */}
       {(about.publicationBody.length > 0 || site.email || site.youtube || site.instagram) && (
-        <section className="section section--band" aria-labelledby="pub-heading">
+        <section className="section" aria-labelledby="pub-heading">
           <div className="shell withrail">
             <div>
               {about.publicationBody.length > 0 && (

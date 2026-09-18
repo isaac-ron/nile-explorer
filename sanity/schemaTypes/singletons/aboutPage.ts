@@ -17,11 +17,22 @@ export default defineType({
   title: 'About page',
   type: 'document',
   groups: [
-    { name: 'patron', title: 'Patron', default: true },
+    { name: 'intro', title: 'Introduction', default: true },
+    { name: 'patron', title: 'Patron' },
     { name: 'subjects', title: 'Recurring subjects' },
     { name: 'publication', title: 'The publication' }
   ],
   fields: [
+    defineField({
+      name: 'intro',
+      title: 'Introduction',
+      type: 'blockContent',
+      group: 'intro',
+      description:
+        'The copy that opens the page: what the platform is, before who founded it. This is the ' +
+        'newsroom\'s own description of itself and the first thing a stranger reads, so it is ' +
+        'worth keeping current. Leave it empty and the page opens on the patron instead.'
+    }),
     defineField({
       name: 'patronKicker',
       title: 'Section label',

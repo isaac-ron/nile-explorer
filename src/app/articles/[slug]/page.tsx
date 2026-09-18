@@ -87,9 +87,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <span className="kicker__cat">{article.section}</span>
                 )}
                 <span className="kicker__rule" />
-                {/* The dateline is per-article now. It used to say Juba on
-                    everything, which asserted a filing location for pieces
-                    that had none. */}
+                {/* Only where one is on the record. It used to read "Juba" for
+                    everything, which was a guess, and wrong the moment a piece
+                    was reported from anywhere else. A field in the Studio now,
+                    left empty for a piece filed from nowhere in particular. */}
                 {article.dateline && <span className="kicker__meta">{article.dateline}</span>}
               </div>
 
@@ -123,12 +124,33 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     preload
                   />
                 </span>
-                {article.image.credit && <figcaption>{article.image.credit}</figcaption>}
+                {/* The caption, not the alt: alt describes the frame for a
+                    screen reader and would read as a non-sequitur in print. */}
+                {(article.image.caption || article.image.credit) && (
+                  <figcaption>
+                    {article.image.caption}
+                    {article.image.credit && (
+                      <span className="credit">Photograph: {article.image.credit}</span>
+                    )}
+                  </figcaption>
+                )}
               </figure>
             )}
 
-            <Prose value={article.body} />
+            {/* prose--wide, not plain prose: it moves the 68ch measure off the
+                container and onto the text, so a body picture can run the full
+                column, and it is what scopes the drop cap to article bodies. */}
+            <Prose value={article.body} className="prose prose--wide" />
 
+            {/* The colophon only makes the claim it can back. The house bio
+                line is gone: it described every writer as covering peace and
+                governance, which is not true of an outside contributor. Each
+                writer's own line comes from their record in the Studio, and
+                where there is none the sentence simply does not appear.
+
+                The "originally published on nilexplorer.net" clause is gone
+                too. It was wrong for anything filed straight here, and once
+                the domain points at this site it says nothing at all. */}
             <div className="colophon">
               {article.author.colophon ? `${article.author.colophon} ` : ''}
               Corrections and rights of reply:{' '}

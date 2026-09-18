@@ -584,6 +584,15 @@ async function main() {
   stage({
     _id: 'aboutPage',
     _type: 'aboutPage',
+    // Supplied by the newsroom as a document and entered verbatim. It opens
+    // the page because that is the order the supplied copy uses: what the
+    // platform is, then who founded it. The only changes made to the text were
+    // a missing space after a full stop and the split into three paragraphs.
+    intro: paragraphs(
+      'The Nile Explorer is a multimedia platform delivering conversations and opinion on peace, democracy, governance and nation building from South Sudan and across Africa. Through podcast, television broadcast, print and social media, we document and amplify the voices, stories and ideas shaping peace, security and governance across South Sudan, the East African region, the Nile basin and the wider African continent.',
+      'The Nile Explorer operates on a single governing conviction: that every voice carries weight in the making of a peaceful and sovereign Africa. The statesman and the constitutionalist, woman leader and the peacebuilder. The young person inheriting today’s decisions, and the child whose future depends on whether those decisions are made well. None is dispensable to the account we build.',
+      'Our work is carried out by a team of journalists, human rights advocates and academics drawn from across Africa, the UK and the United States, operating from London, Nairobi and South Sudan, three vantage points chosen deliberately for what they allow us to see and report with authority.'
+    ),
     patronKicker: 'The patron',
     patronRole: 'Patron of The Nile Explorer',
     editorialNote:

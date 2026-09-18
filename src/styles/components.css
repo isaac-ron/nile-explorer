@@ -682,7 +682,11 @@
   text-underline-offset: 3px;
 }
 
-.prose > p:first-of-type::first-letter {
+/* Article bodies only. On plain .prose it fired on every run of body text on
+   the site, so About and Festival each opened two or three separate sections
+   with a drop cap — a device that says "the story starts here" and cannot say
+   it three times on one page. */
+.prose--wide > p:first-of-type::first-letter {
   float: left;
   font-family: var(--font-serif), Georgia, serif;
   font-size: 3.5rem;
@@ -717,6 +721,51 @@
   font-size: 1.3rem;
   line-height: 1.3;
   color: var(--navy);
+}
+
+/* The 68ch measure on .prose caps every child, pictures included, which sets
+   a body figure visibly narrower than the lede image above it. Here the cap
+   moves onto the text itself so figures can run the full column. Scoped to a
+   modifier: every other .prose on the site wants the plain behaviour. */
+.prose--wide {
+  max-width: none;
+}
+
+.prose--wide > p,
+.prose--wide > h2,
+.prose--wide > h3,
+.prose--wide > ul,
+.prose--wide > ol,
+.prose--wide > blockquote {
+  max-width: 68ch;
+}
+
+/* An editor's note. It keeps the callout's ground so it reads as apparatus
+   rather than argument, and drops to the sans face because the serif body is
+   the author's voice and this is not. */
+.prose__note {
+  margin-top: var(--space-3);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  max-width: 68ch;
+}
+
+/* Pictures inside the body. Nothing ingested from WordPress carries any;
+   copy supplied straight to the newsroom does, with its own caption and
+   credit. The frame takes its ratio inline from the file's real dimensions,
+   so nothing is cropped to fit a house aspect, and its own pixel width as a
+   ceiling, so a small supplied file is never upscaled to fill the column. */
+.prose__figure {
+  margin: var(--space-2) 0;
+}
+
+/* The credit belongs to the picture but is not part of the sentence above it,
+   so it sits on its own line in the caption's register. */
+figcaption .credit {
+  display: block;
+  margin-top: 5px;
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .colophon {
@@ -1391,12 +1440,13 @@
   padding-top: 20%;
 }
 
-/* The episode that is out now leads at two thirds of the band; the rest stack
-   beside it at a third. Single column below 760px, which is also where the
-   artwork above swaps to its portrait cut. */
+/* Equal cards, three abreast. A lead-and-stacked-pair version ran the band
+   674px deep against 433px here; the client reads that depth as wasted space,
+   so the flat grid is the one that ships. */
 .podgrid {
   display: grid;
-  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--col-gap);
 }
 
 .podep {
@@ -1406,60 +1456,8 @@
   min-width: 0;
 }
 
-.podside {
-  display: grid;
-  gap: var(--space-5);
-  align-content: start;
-  min-width: 0;
-}
-
 .podep__thumb {
   margin-bottom: var(--space-1);
-}
-
-@media (min-width: 760px) {
-  .podgrid {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: var(--col-gap);
-  }
-
-  /* Nothing to stack once the invented episodes are deleted: one card across
-     the full width beats a two-thirds card with a hole beside it. */
-  .podgrid--solo {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .podside {
-    border-left: 1px solid var(--rule);
-    padding-left: var(--col-gap);
-  }
-
-  /* Divides the pair, the way the river divides its rows. */
-  .podside > * + * {
-    border-top: 1px solid var(--rule);
-    padding-top: var(--space-5);
-  }
-
-  /* The stack is the taller column, so the lead's picture takes the difference
-     instead of leaving a well of ground under it: the frame drops its aspect
-     ratio here and becomes the one flexible row of the card. */
-  .podep--lead {
-    align-content: stretch;
-    grid-template-rows: minmax(220px, 1fr);
-    grid-auto-rows: auto;
-  }
-
-  .podep--lead .podep__thumb {
-    aspect-ratio: auto;
-  }
-
-  .podep--lead .podep__title {
-    font-size: var(--fs-h2);
-  }
-
-  .podep--side .podep__title {
-    font-size: 1.08rem;
-  }
 }
 
 .podep__no {
@@ -1730,7 +1728,7 @@
   .prose {
     font-size: 1.06rem;
   }
-  .prose > p:first-of-type::first-letter {
+  .prose--wide > p:first-of-type::first-letter {
     font-size: 3rem;
   }
 }

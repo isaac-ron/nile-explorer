@@ -33,6 +33,17 @@ export default defineType({
           .error('Every image needs a description. Say what is in the picture.')
     }),
     defineField({
+      name: 'caption',
+      title: 'Caption',
+      type: 'text',
+      rows: 2,
+      description:
+        'Optional. Printed beneath the image, for readers who can see it. This is not the same ' +
+        'as the description above: a caption says what the picture means here — "Ruto addresses ' +
+        'the European Parliament, March 2025" — while the description says what is in the frame. ' +
+        'Leave it empty and nothing is printed.'
+    }),
+    defineField({
       name: 'credit',
       title: 'Photographer credit',
       type: 'string',

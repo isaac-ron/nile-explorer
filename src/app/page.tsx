@@ -11,7 +11,8 @@ import {
   getPendingStories,
   getPodcastShow,
   getSite,
-  archiveCapacity
+  archiveCapacity,
+  riverDepth
 } from '@/lib/content';
 import { ArticleCard, StoryRow, RankedItem, PendingRow } from '@/components/Story';
 import { FilmCard } from '@/components/Television';
@@ -55,7 +56,10 @@ export default async function Home() {
   const led = new Set(top.map((a) => a.slug));
   const rest = articles.filter((a) => !led.has(a.slug));
   const grid = rest.slice(0, 3);
-  const river = rest.slice(3);
+  // Capped, not "everything left over": see riverDepth in lib/content for why
+  // the front page stops being a full index. What falls off the end is reached
+  // through More → and the archive rail.
+  const river = rest.slice(3, 3 + riverDepth);
 
   return (
     <>

@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { type BannerEpisode, formatShortDate } from '@/lib/content';
 
 /**
- * The podcast band: supplied banner artwork across the top, the episodes under
- * it as a lead and a stacked pair.
+ * The podcast band: supplied banner artwork across the top, three episodes
+ * under it as equal cards.
  *
  * The artwork is mounted as a background rather than an <img> because its
  * lower two-fifths are fully transparent. As a background that transparency
@@ -14,28 +14,29 @@ import { type BannerEpisode, formatShortDate } from '@/lib/content';
  * the episodes clear the swash at every viewport without a media query doing
  * the arithmetic.
  *
- * Layout: the episode that is out now takes two thirds of the width, and the
- * rest stack beside it at a third. The pair carries less than the lead — no
- * standfirst, smaller headline — so the two columns are unequal in weight as
- * well as in size, and the lead's picture stretches to whatever height the
- * stack ends up being, which keeps the bottom edge flush.
+ * Equal cards rather than a lead and a stacked pair. The lead treatment ran
+ * the band 674px deep against 433px for this one, and the depth read to the
+ * client as wasted space. Three abreast is the denser version and the one
+ * they asked to keep.
  *
  * Anything not yet released carries no link, because there is nothing behind
  * it to open, and is marked "Coming soon" rather than left to read as though
  * it were published.
  */
 
-function EpisodeBody({ episode, lead }: { episode: BannerEpisode; lead: boolean }) {
+function EpisodeBody({ episode }: { episode: BannerEpisode }) {
   return (
     <>
+      {/* Guarded: an episode whose video has been withdrawn, or one announced
+          before it is recorded, has no thumbnail to show. */}
       {episode.thumbnail && (
-        <span className={`frame podep__thumb ${lead ? 'frame--card' : 'frame--wide'}`}>
+        <span className="frame frame--wide podep__thumb">
           <Image
             src={episode.thumbnail}
             alt={episode.thumbnailAlt}
-            width={lead ? 1280 : 640}
-            height={lead ? 853 : 360}
-            sizes={lead ? '(max-width: 760px) 100vw, 820px' : '(max-width: 760px) 100vw, 420px'}
+            width={640}
+            height={360}
+            sizes="(max-width: 700px) 100vw, 380px"
           />
         </span>
       )}
@@ -44,7 +45,7 @@ function EpisodeBody({ episode, lead }: { episode: BannerEpisode; lead: boolean 
         {!episode.published && <span className="mark mark--soon">Coming soon</span>}
       </span>
       <span className="podep__title">{episode.title}</span>
-      {lead && <span className="podep__blurb">{episode.blurb}</span>}
+      <span className="podep__blurb">{episode.blurb}</span>
       {episode.guests.length > 0 && (
         <span className="podep__guests">{episode.guests.map((g) => g.name).join(' · ')}</span>
       )}
@@ -53,18 +54,15 @@ function EpisodeBody({ episode, lead }: { episode: BannerEpisode; lead: boolean 
   );
 }
 
-function EpisodeCard({ episode, lead }: { episode: BannerEpisode; lead: boolean }) {
-  const className = `podep ${lead ? 'podep--lead' : 'podep--side'}${
-    episode.published ? '' : ' podep--unpublished'
-  }`;
-  const body = <EpisodeBody episode={episode} lead={lead} />;
+function EpisodeCard({ episode }: { episode: BannerEpisode }) {
+  const body = <EpisodeBody episode={episode} />;
 
   return episode.published ? (
-    <Link className={className} href="/podcasts">
+    <Link className="podep" href="/podcasts">
       {body}
     </Link>
   ) : (
-    <div className={className}>{body}</div>
+    <div className="podep podep--unpublished">{body}</div>
   );
 }
 
@@ -75,8 +73,7 @@ export default function PodcastBanner({
   episodes: BannerEpisode[];
   title: string;
 }) {
-  const [lead, ...side] = episodes;
-  if (!lead) return null;
+  if (episodes.length === 0) return null;
 
   return (
     <div className="podband">
@@ -90,17 +87,10 @@ export default function PodcastBanner({
           </Link>
         </div>
 
-        {/* Solo when there is only one episode: a card across the full width
-            reads better than a two-thirds card with a hole beside it. */}
-        <div className={`podgrid${side.length === 0 ? ' podgrid--solo' : ''}`}>
-          <EpisodeCard episode={lead} lead />
-          {side.length > 0 && (
-            <div className="podside">
-              {side.map((e) => (
-                <EpisodeCard episode={e} lead={false} key={e.number} />
-              ))}
-            </div>
-          )}
+        <div className="podgrid">
+          {episodes.map((e) => (
+            <EpisodeCard episode={e} key={e.number} />
+          ))}
         </div>
       </div>
     </div>

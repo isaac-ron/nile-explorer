@@ -171,6 +171,7 @@ export const SITE_SETTINGS_QUERY = groq`
 
 export const ABOUT_PAGE_QUERY = groq`
   *[_type == "aboutPage"][0] {
+    intro,
     patronKicker,
     patronRole,
     editorialNote,
