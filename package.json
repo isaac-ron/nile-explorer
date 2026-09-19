@@ -5,7 +5,7 @@
   "description": "The Nile Explorer Media Network",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/clear-fetch-cache.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "ingest": "node scripts/ingest.mjs",

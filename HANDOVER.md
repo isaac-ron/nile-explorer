@@ -164,6 +164,37 @@ keystroke triggers a production build:
 
 Set it at sanity.io/manage → API → Webhooks.
 
+### The build must not reuse the last build's content
+
+**This is the one that will silently republish stale content if it gets
+undone.**
+
+Next keeps fetch results in a Data Cache at `.next/cache/fetch-cache`, and
+Vercel restores `.next/cache` on every deployment — its own CI caching guide
+says this is automatic and requires no configuration. Left alone, a rebuild
+triggered by a Sanity publish re-runs every query, gets the *previous* build's
+answers back out of that cache, and ships them. The build log is clean, the
+route count is right, and the thing that was just published is not on the site.
+
+This is measured, not theoretical. An edit made in Sanity survived a full
+`next build` completely unseen and appeared only once that directory was
+deleted.
+
+So `npm run build` runs `scripts/clear-fetch-cache.mjs` first. Two consequences
+worth knowing:
+
+- **Vercel's Build Command must be `npm run build`, not `next build`.** Running
+  `next build` directly skips the script and the staleness returns. Check it at
+  Project → Settings → Build & Development Settings.
+- **Do not "fix" this with `cache: 'no-store'` on the Sanity client.** It does
+  stop the staleness, and it also turns every route dynamic: the site drops
+  from static HTML to server-rendered on demand, which means a running server,
+  a Sanity request on every page view, and the read token live in production.
+  That was tried and reverted. The route table is how you catch it.
+
+Only the Data Cache is cleared. The Turbopack compilation cache beside it is
+untouched and still makes builds fast.
+
 ### Why a rebuild rather than instant revalidation
 
 A full rebuild takes about a minute and has almost nothing in it that can
@@ -251,10 +282,25 @@ node design/tools/cdp.js "http://localhost:3000/podcasts" 1440 design/tools/prob
 The baseline to hold: **0 contrast failures, 0 images without alt text, 0
 unnamed controls, no horizontal overflow.**
 
-One regression test that is easy to lose: set an episode's **video can be
-watched** to off, then view source on `/podcasts` and search the page for the
-YouTube video ID. It must not be there. `toPlayerEpisode` in
-`src/lib/content.ts` exists for this and nothing else.
+Two regression tests that are easy to lose.
+
+**The withdrawn video.** Set an episode's **video can be watched** to off, then
+view source on `/podcasts` and search the page for the YouTube video ID. It
+must not be there. `toPlayerEpisode` in `src/lib/content.ts` exists for this
+and nothing else.
+
+**The stale rebuild.** Change something in Sanity, then rebuild *without*
+deleting `.next`, and confirm the change is in the output:
+
+```bash
+# after editing, say, the site description in the Studio
+npm run build
+grep -r "the words you just typed" .next/server/app/index.html
+```
+
+If that comes back empty, the build is republishing the previous build's
+content and every publish since the break has been invisible. See "The build
+must not reuse the last build's content" above.
 
 ### Things to finish
 
