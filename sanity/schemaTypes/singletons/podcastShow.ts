@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { MicrophoneIcon } from '../../icons';
 
 /**
  * The podcast itself, as distinct from its episodes.
@@ -14,6 +15,7 @@ export default defineType({
   name: 'podcastShow',
   title: 'Podcast settings',
   type: 'document',
+  icon: MicrophoneIcon,
   fields: [
     defineField({
       name: 'title',

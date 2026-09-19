@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity';
 import { placeholderField } from '../placeholder';
+import { CalendarIcon } from '../../icons';
 
 /**
  * The Nile Festival.
@@ -17,6 +18,7 @@ export default defineType({
   name: 'festival',
   title: 'The Festival',
   type: 'document',
+  icon: CalendarIcon,
   groups: [
     { name: 'overview', title: 'Overview', default: true },
     { name: 'programme', title: 'Programme' },

@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity';
 import { placeholderField, placeholderSubtitle } from '../placeholder';
+import { PlayIcon } from '../../icons';
 
 /**
  * A podcast episode.
@@ -19,6 +20,7 @@ export default defineType({
   name: 'episode',
   title: 'Episode',
   type: 'document',
+  icon: PlayIcon,
   groups: [
     { name: 'content', title: 'Episode', default: true },
     { name: 'video', title: 'Video' },

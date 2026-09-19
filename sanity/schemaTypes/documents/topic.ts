@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { TagIcon } from '../../icons';
 
 /**
  * A subject an article can be filed under.
@@ -11,6 +12,7 @@ export default defineType({
   name: 'topic',
   title: 'Topic',
   type: 'document',
+  icon: TagIcon,
   fields: [
     defineField({
       name: 'name',

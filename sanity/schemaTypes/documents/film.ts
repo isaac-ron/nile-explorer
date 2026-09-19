@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity';
 import { placeholderField, placeholderSubtitle } from '../placeholder';
+import { VideoIcon } from '../../icons';
 
 /**
  * A documentary.
@@ -15,6 +16,7 @@ export default defineType({
   name: 'film',
   title: 'Documentary',
   type: 'document',
+  icon: VideoIcon,
   fields: [
     defineField({
       name: 'title',

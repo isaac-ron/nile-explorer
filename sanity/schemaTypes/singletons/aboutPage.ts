@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { InfoOutlineIcon } from '../../icons';
 
 /**
  * The About page.
@@ -16,6 +17,7 @@ export default defineType({
   name: 'aboutPage',
   title: 'About page',
   type: 'document',
+  icon: InfoOutlineIcon,
   groups: [
     { name: 'intro', title: 'Introduction', default: true },
     { name: 'patron', title: 'Patron' },

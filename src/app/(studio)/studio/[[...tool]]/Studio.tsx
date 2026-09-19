@@ -1,7 +1,9 @@
 'use client';
 
 import { NextStudio } from 'next-sanity/studio';
-import config from '../../../../sanity.config';
+// Five levels: [[...tool]] → studio → (studio) → app → src → the repo root.
+// The route group counts even though it never appears in the URL.
+import config from '../../../../../sanity.config';
 
 /**
  * The Studio, behind a client boundary.

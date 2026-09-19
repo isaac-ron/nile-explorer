@@ -1,5 +1,6 @@
 import { defineType, defineField } from 'sanity';
 import { placeholderField, placeholderSubtitle } from '../placeholder';
+import { DocumentTextIcon } from '../../icons';
 
 /**
  * A piece of writing.
@@ -18,6 +19,7 @@ export default defineType({
   name: 'article',
   title: 'Article',
   type: 'document',
+  icon: DocumentTextIcon,
   groups: [
     { name: 'content', title: 'Content', default: true },
     { name: 'filing', title: 'Filing' },

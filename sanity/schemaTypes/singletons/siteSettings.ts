@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { CogIcon } from '../../icons';
 
 /**
  * The masthead, the menu, the footer and the site's own description.
@@ -14,6 +15,7 @@ export default defineType({
   name: 'siteSettings',
   title: 'Site settings',
   type: 'document',
+  icon: CogIcon,
   groups: [
     { name: 'identity', title: 'Identity', default: true },
     { name: 'nav', title: 'Menu' },

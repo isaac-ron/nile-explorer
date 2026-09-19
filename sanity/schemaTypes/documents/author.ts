@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { UsersIcon } from '../../icons';
 
 /**
  * A writer.
@@ -11,6 +12,7 @@ export default defineType({
   name: 'author',
   title: 'Writer',
   type: 'document',
+  icon: UsersIcon,
   fields: [
     defineField({
       name: 'name',

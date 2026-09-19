@@ -5,6 +5,7 @@ import { visionTool } from '@sanity/vision';
 import { apiVersion, dataset, projectId } from './sanity/env';
 import { schemaTypes, SINGLETONS } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
+import StudioLogo from './sanity/components/StudioLogo';
 
 const singletons = new Set<string>(SINGLETONS);
 
@@ -22,6 +23,25 @@ export default defineConfig({
   projectId,
   dataset,
   schema: { types: schemaTypes },
+
+  /**
+   * Studio branding.
+   *
+   * Only the logo is replaced. The navbar, the layout and the tool menu can
+   * all be swapped the same way — see `studio.components` in the Sanity docs —
+   * but every one of them is a component we would then own through Studio
+   * upgrades, and Sanity moves these internals between majors. The logo is the
+   * piece with the most brand value and the least surface area.
+   *
+   * Theming is available too, and was left alone on purpose: `buildLegacyTheme`
+   * is deprecated in this version, and the current token API wants a full
+   * palette across both colour schemes rather than a couple of brand colours.
+   * Worth doing deliberately with Sanity's theme generator, not by hand.
+   */
+  studio: {
+    components: { logo: StudioLogo }
+  },
+
   plugins: [
     structureTool({ structure }),
     // A GROQ console for whoever maintains this next. Harmless to editors —

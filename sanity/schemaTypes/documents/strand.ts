@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { MasterDetailIcon } from '../../icons';
 
 /**
  * A coverage area behind the More menu.
@@ -14,6 +15,7 @@ export default defineType({
   name: 'strand',
   title: 'Strand',
   type: 'document',
+  icon: MasterDetailIcon,
   fields: [
     defineField({
       name: 'name',
