@@ -2,6 +2,251 @@
   "_note": "Articles supplied directly by the newsroom rather than pulled from WordPress. They live here, not in articles.json, because `npm run ingest` rewrites that file wholesale and would delete them; lib/content merges the two. Every piece here needs re-entering in the CMS when it goes live. Prose is verbatim from the supplied .docx; headings, picture placement, dates, topics and alt text were set here.",
   "articles": [
     {
+      "id": 10007,
+      "slug": "south-sudan-at-a-critical-moment",
+      "title": "South Sudan at a Critical Moment: Dialogue, Peace, Security and the Political Journey Ahead",
+      "summary": "A Public Appeal for Peaceful Dialogue, Democracy and the Rule of Law",
+      "date": "2026-09-21T14:00:00",
+      "modified": "2026-09-21T14:00:00",
+      "section": "Opinion",
+      "topic": {
+        "name": "Peace",
+        "slug": "peace"
+      },
+      "author": "Dr. Aldo Ajou Deng-Akuey",
+      "authorBio": "Dr. Aldo Ajou Deng-Akuey is a Member of the National Legislature of South Sudan (Council of States).",
+      "dateline": null,
+      "image": {
+        "url": "/articles/south-sudan-at-a-critical-moment/we-need-peace.jpg",
+        "alt": "A boy in a checked shirt sits among a seated crowd and holds up a hand-lettered cardboard sign reading We Need Peace, looking towards the camera.",
+        "width": 1400,
+        "height": 1014,
+        "caption": "A young boy holds up a sign reading “We Need Peace” — the message ordinary citizens want political leaders to hear ahead of South Sudan’s elections."
+      },
+      "source": null,
+      "blocks": [
+        {
+          "type": "para",
+          "text": "South Sudan is approaching another important moment in its political history. On 24 September 2026, political actors and other stakeholders will gather in Juba for dialogue on peace, political stability and the democratic process, as the country prepares for elections scheduled for 22 December 2026. With only about three months separating the country from the polls, the timing of this dialogue is particularly significant."
+        },
+        {
+          "type": "para",
+          "text": "Serious questions must be addressed: peace and security, political participation, election preparedness, the political environment, the future of the Revitalized Agreement on the Resolution of the Conflict in the Republic of South Sudan (R-ARCSS), and the ability of political actors to manage their disagreements peacefully."
+        },
+        {
+          "type": "para",
+          "text": "These are not matters for politicians alone. They concern every South Sudanese citizen: our communities, our young people, our women, our institutions, our security, and, ultimately, the future of the Republic. The country needs a serious national conversation."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Learning to Govern: From War to Peace"
+        },
+        {
+          "type": "para",
+          "text": "South Sudan did not arrive at its present political situation through a short journey. Our people endured decades of armed struggle, displacement, suffering and political uncertainty before independence in 2011. The generations who fought the liberation struggle made enormous sacrifices. But independence brought a different responsibility. The task was no longer to fight for liberation, but to govern a sovereign state. That required a different political culture: constitutional institutions, accountable government, professional administration, democratic political competition, civilian security institutions, independent judicial processes, sound public financial management, and respect for the rule of law. In other words, South Sudan entered a new classroom. And every country must learn."
+        },
+        {
+          "type": "para",
+          "text": "I remember an experience from my own childhood. After completing primary school, my classmates and I entered intermediate school. English was not our first language, and we were still learning it. In our second year, our English teacher, Mr. Mark Atem, gave us a dictation exercise one cool morning. He read: “The dog was so wild and mischievous that its master was obliged to fasten a heavy cloak round its neck in order to prevent it from harming its neighbours.”"
+        },
+        {
+          "type": "para",
+          "text": "For us, the sentence was extremely difficult. The vocabulary was unfamiliar, the construction complicated, and it seemed almost beyond the level of English we thought we knew. But the teacher was not wrong. We were learning. That small classroom experience holds a lesson that applies equally to South Sudan’s political history."
+        },
+        {
+          "type": "para",
+          "text": "Many of the leaders who entered government after the Comprehensive Peace Agreement (CPA) of 2005 had spent much of their lives in a very different environment. For nearly twenty-five years, many had lived through armed struggle, military organisation and political mobilisation. Then the environment changed. The country needed administrators, legislators, diplomats, judges, civil servants, economists, security professionals and political leaders capable of operating within the institutions of a modern state. It was not enough to know how to fight a war. One had to learn how to govern a peace."
+        },
+        {
+          "type": "para",
+          "text": "This remains one of South Sudan’s central challenges. Political disagreement is not itself a problem. It is part of democracy. Different parties will have different ideas; different leaders, different interests. Citizens will criticise government, opposition parties will challenge policy, civil society will demand accountability, and the media will ask difficult questions. All of this is normal in a democratic society."
+        },
+        {
+          "type": "para",
+          "text": "The danger begins when political disagreement becomes personal hostility, when rhetoric turns inflammatory, when political competition becomes a security confrontation, or when disputes leave constitutional institutions and move to the battlefield. South Sudan has already paid an enormous price for such a political culture. We should not pay it again."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Leadership This Moment Requires"
+        },
+        {
+          "type": "para",
+          "text": "At this critical stage, South Sudan needs leaders who can exercise political and administrative emotional intelligence, not the abandonment of principle, but the responsible management of disagreement. This requires at least four qualities:"
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            "Self-awareness. Leaders must understand their own responsibilities, interests and limitations, and be willing to ask: what responsibility do I personally bear for the problem before us?",
+            "Self-regulation. Leaders must control anger and political frustration. Not every criticism requires retaliation; not every disagreement requires an angry public response. Sometimes the most powerful political response is a calm one.",
+            "Empathy. Leaders must understand how their words affect ordinary citizens. A political argument in Juba can create fear in a village far away; a provocative statement by a national leader can be read very differently by communities already living with insecurity.",
+            "Social responsibility. Political leadership is ultimately a responsibility to society. Power should not be used merely to win arguments. The central question should always be: will this action contribute to peace and stability, or will it deepen fear and division?"
+          ]
+        },
+        {
+          "type": "para",
+          "text": "South Sudan’s political parties may disagree about the route, the timing, the policies and the arrangements ahead, but they must agree on one fundamental principle: political disagreement must not destroy the country."
+        },
+        {
+          "type": "para",
+          "text": "South Sudan needs leaders who can lower the temperature of political rhetoric, who can distinguish political competition from national destruction. It needs leaders who can say:"
+        },
+        {
+          "type": "quote",
+          "text": "I disagree with you, but I will not fight you. I oppose your policy, but I respect your right to hold it. I will compete with you politically, but I will not destroy the Republic of South Sudan because I lose an argument."
+        },
+        {
+          "type": "para",
+          "text": "Political power is temporary; the Republic of South Sudan is permanent. No political office is worth another South Sudanese life. No political disagreement is worth another civil war. No election is worth the destruction of the country. That responsibility does not rest with leaders alone. Citizens, too, should question inflammatory rhetoric, demand evidence over rumour, and remember that fellow South Sudanese remain citizens of the same Republic even when they support different parties."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "Elections, Security and the R-ARCSS"
+        },
+        {
+          "type": "figure",
+          "src": "/articles/south-sudan-at-a-critical-moment/kiir-referendum-ballot.jpg",
+          "alt": "Salva Kiir Mayardit, in a dark suit and wide-brimmed hat, posts a ballot paper into a sealed referendum box in front of a television camera, flanked by officials and security men.",
+          "width": 940,
+          "height": 530,
+          "caption": "Then-President Salva Kiir Mayardit casts his vote during South Sudan’s 2011 independence referendum in Juba — the vote that set the country on the path to statehood, and the same democratic promise now being tested ahead of the December 2026 elections."
+        },
+        {
+          "type": "para",
+          "text": "The elections scheduled for 22 December 2026 present both an opportunity and a responsibility. An election is not simply a date on a calendar; it requires preparation, participation, security, civic space, functioning electoral institutions, and mechanisms for resolving disputes."
+        },
+        {
+          "type": "para",
+          "text": "The African Union has emphasised the importance of political consensus, inclusivity, civic space, citizen security and effective dispute-resolution mechanisms in South Sudan. The essential questions go beyond whether elections will take place: Can political parties compete peacefully? Can citizens participate without fear? Can candidates campaign peacefully? Can electoral institutions function effectively? Can security institutions protect citizens and the process? Can disputes go to lawful institutions rather than the streets or the battlefield? Can political actors accept lawful outcomes while using constitutional mechanisms to raise genuine grievances? These questions require honest answers."
+        },
+        {
+          "type": "para",
+          "text": "There can be no meaningful democracy where citizens are afraid. Security arrangements must protect citizens, candidates, political parties, electoral personnel, polling centres and election materials, and security institutions must, in turn, operate according to law. Security should protect the Republic and its citizens, not become an instrument of political competition."
+        },
+        {
+          "type": "para",
+          "text": "Political parties, too, bear responsibilities. They must instruct supporters to reject violence, discourage inflammatory rhetoric, respect the law, and accept that political competition does not make a fellow South Sudanese an enemy."
+        },
+        {
+          "type": "para",
+          "text": "Whatever disagreements exist about the implementation, continuation, modification or eventual transition of the R-ARCSS, its central purpose must remain the preservation of peace. The agreement should not become a permanent source of political confrontation. Its achievements must be protected, its unfinished business addressed, its shortcomings learned from, and its lessons folded into a stronger constitutional and democratic order. The question is not who won the argument about the R-ARCSS, but what political and constitutional arrangements can prevent South Sudan from returning to war. That is the national question."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Past as Teacher, Dialogue as the Way Forward"
+        },
+        {
+          "type": "para",
+          "text": "The past cannot be changed. The wars have happened. The lives lost cannot be recovered. The mistakes of past leaders cannot be erased. But the past can become a teacher. It should teach us, not imprison us. The present is our responsibility; the future belongs to our children."
+        },
+        {
+          "type": "para",
+          "text": "South Sudan’s young people should not inherit the political disputes of previous generations as permanent conflicts. They deserve a country where elections, not armed rebellion, are the means of political competition, where disagreements are settled through parliament, courts, political parties and peaceful dialogue, and where the security of citizens matters more than the ambitions of individuals."
+        },
+        {
+          "type": "para",
+          "text": "Dialogue is sometimes mistaken for surrender. It is not. Dialogue is the peaceful method through which people with different positions seek common ground. A strong leader can listen to an opponent without becoming an enemy. A mature political system allows disagreement without producing violence. That is why the September dialogue should be treated as an opportunity, not another political battlefield."
+        },
+        {
+          "type": "para",
+          "text": "I return to the classroom where Mr. Mark Atem read us that difficult English sentence. At first we did not understand it. But we learned. We improved. Eventually, what once seemed impossible became understandable. South Sudan, too, is learning: the language of constitutional democracy, of peaceful political competition, of accountability, of national security under civilian constitutional authority. And it is learning the most important language of all, the language of peace. Peace does not mean everyone agrees. Peace means that disagreement does not become war."
+        },
+        {
+          "type": "para",
+          "text": "The September dialogue comes at a critical moment, an opportunity for political parties and stakeholders to show that South Sudan can manage its differences peacefully, to strengthen confidence in the democratic process, to address security concerns, and to place the national interest above political anger."
+        },
+        {
+          "type": "para",
+          "text": "We cannot rewrite yesterday, but we can write tomorrow differently. The Republic of South Sudan must come first. Peace must come first. The people must come first. Democracy must become the peaceful bridge from the South Sudan of war to the South Sudan of a stable, constitutional future."
+        }
+      ],
+      "readingTime": 7
+    },
+    {
+      "id": 10006,
+      "slug": "why-the-us-voted-against-correcting-the-map",
+      "title": "Africa Must Ask: Why Did the United States Vote Against Correcting the Map?",
+      "summary": "The General Assembly voted 164 to one to draw the world closer to its true proportions. Only Washington objected — and the question Africa should put is not how the vote went, but why it was opposed at all.",
+      "date": "2026-09-21T10:00:00",
+      "modified": "2026-09-21T10:00:00",
+      "section": "Opinion",
+      "topic": {
+        "name": "Geo-politics",
+        "slug": "geo-politics"
+      },
+      "author": "Dr. Aldo Ajou Deng-Akuey",
+      "dateline": null,
+      "image": {
+        "url": "/articles/why-the-us-voted-against-correcting-the-map/world-map-2026.jpg",
+        "alt": "A satellite-style relief map of the world on a dark blue ocean, drawn to equal area, with Africa large and central among the continents.",
+        "width": 661,
+        "height": 360,
+        "caption": "The Map of Africa, 2026: a corrected, true-scale world projection showing Africa’s actual size relative to other continents."
+      },
+      "source": null,
+      "blocks": [
+        {
+          "type": "para",
+          "text": "On 4 September 2026, the United Nations General Assembly (UNGA) made a historic decision. By 164 votes in favour, one against and six abstentions, the Assembly adopted the resolution entitled “Correct the Map: Rebalancing Global Cartographic Representation and Promoting Equitable Representation of the World’s Regions, Particularly Africa.” The United States was the only country to vote against it."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "This Deserves a Serious Question From Africa: Why?"
+        },
+        {
+          "type": "para",
+          "text": "The resolution does not redraw Africa’s political borders, transfer territory or change the sovereignty of any African state. It concerns the way the world is visually represented. The Equal Earth projection presents the relative size of continents more accurately than the centuries-old Mercator projection, which makes Africa appear substantially smaller than it really is. Africa is approximately fourteen times the size of Greenland, although many familiar world maps visually suggest otherwise."
+        },
+        {
+          "type": "para",
+          "text": "The United States explained its vote by characterising the initiative as an ideological project and questioning its relevance to what Washington considers the United Nations’ more important priorities. Africa should listen carefully to that explanation; but it should also ask a broader historical question."
+        },
+        {
+          "type": "figure",
+          "src": "/articles/why-the-us-voted-against-correcting-the-map/world-map-1905.jpg",
+          "alt": "A political world map on an oval projection, every country inked a different colour, with a dense index of place names down the left edge and the lines of latitude and longitude drawn across it.",
+          "width": 549,
+          "height": 364,
+          "caption": "Old Map of 1905: the Mercator-style world map long used in classrooms and atlases, which visually shrinks Africa relative to its true size."
+        },
+        {
+          "type": "para",
+          "text": "For centuries, maps were not merely geographical instruments. Maps were also instruments through which power, commerce, navigation and empire understood the world. At the Berlin Conference of 1884–1885, fourteen European participating states established rules that facilitated the subsequent European partition and colonial occupation of Africa, without African governments having a seat at the conference table. Africa has therefore lived with the consequences of decisions made about the continent without Africans."
+        },
+        {
+          "type": "para",
+          "text": "The independence of African states changed political sovereignty, but it did not automatically eliminate economic dependency, unequal international structures, neocolonial relationships or external influence. The unfinished African project is therefore not simply about changing a map. It is about changing the conditions under which Africa sees itself and participates in the international system. That is why the United States’ solitary vote is politically significant, even though the resolution itself is non-binding and concerns cartographic representation rather than territorial sovereignty."
+        },
+        {
+          "type": "para",
+          "text": "Africa should not interpret this vote as a declaration of hostility by the American people. Nor should Africa turn the issue into another confrontation between continents. The appropriate response is African self-confidence, historical understanding and peaceful diplomacy."
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "text": "The Message From Africa Should Be Simple"
+        },
+        {
+          "type": "para",
+          "text": "Africa does not seek to make another continent smaller. Africa seeks to be represented at its true size. Africa does not seek revenge for colonial history. Africa seeks equality in the present and dignity in the future."
+        },
+        {
+          "type": "para",
+          "text": "The world is becoming increasingly multipolar. Africa cannot remain merely an object of competition among external powers. With its people, natural resources, land, water, markets and enormous young population, Africa has the potential to become an important centre of the emerging international system."
+        },
+        {
+          "type": "para",
+          "text": "The new map therefore represents more than cartography. It is an opportunity for Africa to ask itself a deeper question: if the world can finally correct the way it sees Africa on the map, when will Africa correct the political, economic and institutional conditions that prevent Africans from fully determining their own future? That is the real conversation Africa must now begin."
+        }
+      ],
+      "readingTime": 2
+    },
+    {
       "id": 10005,
       "slug": "africa-must-unite",
       "title": "Africa Must Unite Before the New World Order Divides It Further",
