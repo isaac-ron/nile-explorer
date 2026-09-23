@@ -416,9 +416,11 @@ must not reuse the last build's content" above.
 - [ ] **8 archive images have no description.** They came from WordPress with
       empty alt attributes. They are live, and the Studio shows a validation
       error on each until someone writes one.
-- [ ] **The festival carousel is empty.** The previous images were licensed
-      stock photographs of other events; they were not carried over rather than
-      re-hosted as if they were the festival's own.
+- [ ] **The festival carousel uses Unsplash stock photographs**, at the
+      client's request, until there are photographs of the festival itself.
+      Each is credited "Unsplash" and its description says only what is in the
+      frame, not that it is the festival. Replace them under The Festival →
+      Carousel photographs.
 - [ ] **The podcast has no RSS feed configured.** The Listen player uses the
       Spotify show embed, which plays the whole show rather than the episode
       being read about. Put the origin feed in Podcast settings and that fixes
