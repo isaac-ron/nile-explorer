@@ -6,7 +6,8 @@ import {
   MasterDetailIcon,
   CalendarIcon,
   InfoOutlineIcon,
-  CogIcon
+  CogIcon,
+  ChartUpwardIcon
 } from './icons';
 
 /**
@@ -31,7 +32,20 @@ export const structure: StructureResolver = (S) =>
             .items([
               S.documentTypeListItem('article').title('Articles'),
               S.documentTypeListItem('author').title('Writers'),
-              S.documentTypeListItem('topic').title('Topics')
+              S.documentTypeListItem('topic').title('Topics'),
+              S.divider(),
+              // What decides Top stories on the front page. Read-only: the
+              // site writes these as articles are read and shared.
+              S.listItem()
+                .title('Readership')
+                .icon(ChartUpwardIcon)
+                .id('readership')
+                .child(
+                  S.documentTypeList('articleStats')
+                    .title('Readership — most read first')
+                    .defaultOrdering([{ field: 'views', direction: 'desc' }])
+                    .canHandleIntent(() => false)
+                )
             ])
         ),
 

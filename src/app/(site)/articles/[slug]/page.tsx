@@ -9,11 +9,13 @@ import {
   getLatestEpisode,
   getSite,
   formatDate,
-  labelFor
+  labelFor,
+  writerHref
 } from '@/lib/content';
 import { RankedItem } from '@/components/Story';
-import { PlatformLink } from '@/components/Icons';
 import Prose from '@/components/Prose';
+import ShareLinks from '@/components/ShareLinks';
+import ReadTracker from '@/components/ReadTracker';
 
 export async function generateStaticParams() {
   return (await getArticleSlugs()).map((slug) => ({ slug }));
@@ -41,24 +43,6 @@ export async function generateMetadata({
   };
 }
 
-const SHARE = (url: string, title: string) => [
-  {
-    icon: 'x' as const,
-    label: 'Share this article on X',
-    href: `https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
-  },
-  {
-    icon: 'whatsapp' as const,
-    label: 'Share this article on WhatsApp',
-    href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`
-  },
-  {
-    icon: 'facebook' as const,
-    label: 'Share this article on Facebook',
-    href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
-  }
-];
-
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = await getArticle(slug);
@@ -70,10 +54,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     getSite()
   ]);
   const relatedItems = related.articles;
-  const url = `${site.url}/articles/${article.slug}`;
 
   return (
     <>
+      <ReadTracker slug={article.slug} />
       <article className="section shell">
         <div className="withrail">
           <div>
@@ -98,14 +82,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <p className="article__deck">{article.summary}</p>
 
               <div className="byline">
-                <span className="byline__author">By {article.author.name}</span>
+                <span className="byline__author">
+                  By <Link href={writerHref(article.author)}>{article.author.name}</Link>
+                </span>
                 <span>{formatDate(article.date)}</span>
                 <span>{article.readingTime} min read</span>
-                <span className="share">
-                  {SHARE(url, article.title).map((s) => (
-                    <PlatformLink name={s.icon} href={s.href} label={s.label} key={s.icon} />
-                  ))}
-                </span>
+                <ShareLinks
+                  slug={article.slug}
+                  path={`/articles/${article.slug}`}
+                  title={article.title}
+                  origin={site.url}
+                />
               </div>
             </div>
 
@@ -156,6 +143,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               Corrections and rights of reply:{' '}
               <a href={`mailto:${site.email}`}>{site.email}</a>
             </div>
+            <Link
+              className="section__more"
+              href={writerHref(article.author)}
+              style={{ marginTop: 'var(--space-3)' }}
+            >
+              More from {article.author.name} →
+            </Link>
           </div>
 
           <aside className="rail" aria-label="Related coverage">

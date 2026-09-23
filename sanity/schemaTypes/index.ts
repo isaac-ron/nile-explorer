@@ -7,6 +7,7 @@ import namedDetail from './objects/namedDetail';
 import navItem from './objects/navItem';
 
 import article from './documents/article';
+import articleStats from './documents/articleStats';
 import author from './documents/author';
 import episode from './documents/episode';
 import film from './documents/film';
@@ -21,6 +22,9 @@ import siteSettings from './singletons/siteSettings';
 /** Documents that must exist exactly once. See sanity/structure.ts. */
 export const SINGLETONS = ['siteSettings', 'aboutPage', 'festival', 'podcastShow'] as const;
 
+/** Written by the site, never by an editor: no "create", no edit, no delete. */
+export const SYSTEM_TYPES = ['articleStats'] as const;
+
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Building blocks, used inside the documents below.
   blockContent,
@@ -31,6 +35,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 
   // Things there are many of.
   article,
+  articleStats,
   author,
   topic,
   episode,

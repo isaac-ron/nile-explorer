@@ -3,11 +3,12 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 
 import { apiVersion, dataset, projectId } from './sanity/env';
-import { schemaTypes, SINGLETONS } from './sanity/schemaTypes';
+import { schemaTypes, SINGLETONS, SYSTEM_TYPES } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
 import StudioLogo from './sanity/components/StudioLogo';
 
 const singletons = new Set<string>(SINGLETONS);
+const systemTypes = new Set<string>(SYSTEM_TYPES);
 
 /**
  * The Studio, served from /studio inside this same Next.js app.
@@ -56,11 +57,15 @@ export default defineConfig({
      * the site reads one of them and no error is ever shown.
      */
     newDocumentOptions: (prev) =>
-      prev.filter((item) => !singletons.has(item.templateId)),
+      prev.filter((item) => !singletons.has(item.templateId) && !systemTypes.has(item.templateId)),
 
     /** And they cannot be deleted, duplicated or unpublished out from under the site. */
     actions: (prev, { schemaType }) =>
-      singletons.has(schemaType)
+      // Readership counts belong to the site. Deleting one would silently
+      // drop an article out of Top stories.
+      systemTypes.has(schemaType)
+        ? []
+        : singletons.has(schemaType)
         ? prev.filter(
             ({ action }) => action && !['delete', 'duplicate', 'unpublish'].includes(action)
           )

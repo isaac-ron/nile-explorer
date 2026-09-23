@@ -24,6 +24,16 @@ export default defineType({
       validation: (rule) => rule.required().error('A writer needs a name.')
     }),
     defineField({
+      name: 'slug',
+      title: 'Web address',
+      type: 'slug',
+      description:
+        'The last part of the address of their writer page, e.g. nileexplorer.com/writers/ruth-wacuka. ' +
+        'Press Generate after writing the name. Changing it later breaks links to their page.',
+      options: { source: 'name', maxLength: 80 },
+      validation: (rule) => rule.required().error('Press Generate to create the web address.')
+    }),
+    defineField({
       name: 'role',
       title: 'Role',
       type: 'string',
@@ -44,15 +54,16 @@ export default defineType({
       name: 'portrait',
       title: 'Portrait',
       type: 'figure',
-      description: 'A head-and-shoulders photograph. Portrait orientation, roughly 4:5.'
+      description:
+        'A head-and-shoulders photograph for their writer page. Portrait orientation, roughly 4:5.'
     }),
     defineField({
       name: 'bio',
       title: 'Biography',
       type: 'blockContent',
       description:
-        'Shown on the About page for the patron. A few paragraphs; a Pull quote block sets a ' +
-        'quotation apart.'
+        'Shown on their writer page, and on the About page for the patron. A few paragraphs; a ' +
+        'Pull quote block sets a quotation apart. Without one, their page shows the note below.'
     }),
     defineField({
       name: 'colophon',

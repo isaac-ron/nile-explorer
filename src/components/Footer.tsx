@@ -70,6 +70,9 @@ export default async function Footer() {
                 <Link href="/articles">Articles</Link>
               </li>
               <li>
+                <Link href="/writers">Writers</Link>
+              </li>
+              <li>
                 <Link href="/podcasts">Podcast</Link>
               </li>
               <li>

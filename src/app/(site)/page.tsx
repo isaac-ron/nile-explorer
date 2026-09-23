@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  getArticles,
   getTopics,
-  getTopStories,
+  getFrontPage,
   getDocumentaries,
   getBannerEpisodes,
   getArchive,
@@ -24,16 +23,14 @@ import Newsletter from '@/components/Newsletter';
 
 export default async function Home() {
   const [
-    articles,
+    // Latest is chosen first, then the five top stories by readership from
+    // what is left; see getFrontPage. No story appears twice above the archive
+    // rail.
+    { top, latest: grid, rest },
     topics,
     documentaries,
     episodes,
     festival,
-    // Five, not three: the trio plus one headline-only story hanging under
-    // each flank to close the short columns. Everything after them fills the
-    // rest of the page in order, so no story appears twice above the archive
-    // rail. The river absorbs the loss, dropping from five rows to three.
-    top,
     archive,
     // Commissioned but unwritten, and marked as such on the page. They carry
     // the river down to the foot of the archive rail.
@@ -41,33 +38,28 @@ export default async function Home() {
     show,
     site
   ] = await Promise.all([
-    getArticles(),
+    getFrontPage({ top: 5, latest: 3 }),
     getTopics(),
     getDocumentaries(),
     getBannerEpisodes(3),
     getFestival(),
-    getTopStories(5),
     getArchive(archiveCapacity),
     getPendingStories(),
     getPodcastShow(),
     getSite()
   ]);
 
-  const led = new Set(top.map((a) => a.slug));
-  const rest = articles.filter((a) => !led.has(a.slug));
-  const grid = rest.slice(0, 3);
   // Capped, not "everything left over": see riverDepth in lib/content for why
   // the front page stops being a full index. What falls off the end is reached
   // through More → and the archive rail.
-  const river = rest.slice(3, 3 + riverDepth);
+  const river = rest.slice(0, riverDepth);
 
   return (
     <>
       {/* ---------- Top stories ----------
-          Three ranked stories carry the whole fold. Order comes from
-          getTopStories: the `weight` an editor sets in the Studio, falling
-          through to recency for everything unweighted, which is the normal
-          case. */}
+          Five stories ranked by what readers are reading and sharing, with
+          anything an editor has pinned in the Studio above them. See
+          getFrontPage. */}
       {top.length > 0 && (
         <section className="hero shell" aria-labelledby="lead-heading">
           <TopStories stories={top} />
@@ -103,7 +95,8 @@ export default async function Home() {
       )}
 
       {/* ---------- Latest ----------
-          Every section on this page collapses when it has nothing in it. A
+          The three newest pieces, always: publishing puts a piece here
+          whatever its readership. Every section on this page collapses when it has nothing in it. A
           heading with an empty well under it reads as a page that failed to
           load, and that is the state a newsroom sees on its first day. */}
       {grid.length > 0 && (
@@ -153,8 +146,6 @@ export default async function Home() {
             </div>
 
             <aside className="rail" aria-label="Archive and comment">
-              {/* Not "most read": there is no analytics source behind this site,
-                so a popularity ranking would be invented. */}
               {/* Sized to reach the foot of the river. The pool is smaller than
                 the rail, so getArchive cycles and headlines repeat until the
                 archive is deep enough to fill it; keys carry the index because

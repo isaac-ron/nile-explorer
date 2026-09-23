@@ -1,8 +1,8 @@
 /**
  * Content access layer.
  *
- * Reads from Sanity. Everything runs at build time and is baked into static
- * HTML; publishing triggers a rebuild. Page components consume the types
+ * Reads from Sanity. Pages are static HTML, regenerated when a publish expires
+ * the cached queries (see lib/sanity/client.ts). Page components consume the types
  * below, not the shape Sanity returns, so a change to a GROQ projection stops
  * here rather than rippling through the app.
  *
@@ -11,6 +11,7 @@
  * call inside the component.
  */
 
+import { cache as reactCache } from 'react';
 import type { PortableTextBlock } from '@portabletext/types';
 import { sanityFetch } from './sanity/client';
 import { toImage, type SanityImage } from './sanity/image';
@@ -31,9 +32,20 @@ export type Image = {
 
 export type Author = {
   name: string;
+  /** Always set after hydration: derived from the name where the Studio has none. */
+  slug: string;
   role?: string;
   colophon?: string;
   isPatron?: boolean;
+};
+
+/** A writer's own page. */
+export type Writer = Author & {
+  id: string;
+  bio: PortableTextBlock[];
+  portrait: Image | null;
+  /** Published pieces under this byline. */
+  count: number;
 };
 
 export type Article = {
@@ -186,21 +198,30 @@ export type PendingStory = {
 /* ---------------------------------------------------------------------------
    Fetching
    ---------------------------------------------------------------------------
-   A build renders every route separately, and most routes ask for the
-   articles. Without this memo that is one network round trip per route per
-   query, which turns a thirty-second build into a slow one for no reason.
+   Most routes ask for the articles several times over — the front page alone
+   asks through five different getters. Two layers stop that becoming five
+   requests:
 
-   The memo is deliberately skipped when previewing a draft: the whole point of
-   preview is to see what was just typed.
+   - Within one render, React's `cache` hands every caller the same promise.
+   - Across renders and routes, Next's Data Cache holds each query's result
+     until the publish webhook expires it (see lib/sanity/client.ts).
+
+   This used to be a module-level Map. That was fine while every query ran once
+   at build time, and wrong the moment pages started regenerating on a running
+   server: a warm instance would have kept serving the first answer it ever
+   got, whatever was published afterwards.
+
+   Preview skips both: the whole point of preview is to see what was just
+   typed.
 --------------------------------------------------------------------------- */
 
-const cache = new Map<string, Promise<unknown>>();
+const fetchOnce = reactCache(
+  (q: string, params: string): Promise<unknown> => sanityFetch(q, JSON.parse(params))
+);
 
 function query<T>(q: string, params: Record<string, unknown> = {}, preview = false): Promise<T> {
   if (preview) return sanityFetch<T>(q, params, true);
-  const key = q + JSON.stringify(params);
-  if (!cache.has(key)) cache.set(key, sanityFetch<T>(q, params));
-  return cache.get(key) as Promise<T>;
+  return fetchOnce(q, JSON.stringify(params)) as Promise<T>;
 }
 
 /* ---------------------------------------------------------------------------
@@ -221,10 +242,40 @@ function wordCount(body: PortableTextBlock[] | undefined): number {
 const readingTime = (body: PortableTextBlock[] | undefined): number =>
   Math.max(1, Math.round(wordCount(body) / 220));
 
-type RawArticle = Omit<Article, 'image' | 'readingTime'> & { image: SanityImage | null };
+/**
+ * A writer's address, from their name.
+ *
+ * Only a fallback, for a writer saved before the Web address field existed or
+ * without pressing Generate. Every writer in the Studio has one set; the
+ * schema now requires it.
+ */
+export const slugifyName = (name: string): string =>
+  name
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[’'".]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+
+type RawAuthor = Omit<Author, 'slug'> & { slug?: string | null };
+
+const hydrateAuthor = (a: RawAuthor | null): Author => {
+  // A byline pointing at a deleted writer resolves to null. Render it as
+  // unattributed rather than failing the whole page.
+  const name = a?.name ?? 'The Nile Explorer';
+  return { ...a, name, slug: a?.slug || slugifyName(name) };
+};
+
+type RawArticle = Omit<Article, 'image' | 'readingTime' | 'author'> & {
+  image: SanityImage | null;
+  author: RawAuthor | null;
+};
 
 const hydrateArticle = (a: RawArticle): Article => ({
   ...a,
+  author: hydrateAuthor(a.author),
   image: toImage(a.image),
   readingTime: readingTime(a.body)
 });
@@ -270,31 +321,164 @@ export const getArticleSlugs = async (): Promise<string[]> =>
   query<string[]>(Q.ARTICLE_SLUGS_QUERY);
 
 /* ---------------------------------------------------------------------------
-   Top stories
-   ---------------------------------------------------------------------------
-   The front page leads on a ranked set rather than a single editor's pick.
-   Ordering comes from the `weight` field an editor can set in the Studio;
-   everything unweighted falls through to recency, which is an arbitrary but
-   honest default and the normal case.
-
-   Setting a weight is the deliberate act of promoting something. Clearing it
-   lets the page go back to leading on whatever is newest, with nothing to
-   remember to undo.
+   Writers
 --------------------------------------------------------------------------- */
 
-const recencyOf = (a: Article): number => +new Date(a.date);
-const scoreOf = (a: Article): number => a.weight ?? 0;
+type RawWriter = Omit<Writer, 'slug' | 'portrait' | 'bio'> & {
+  slug?: string | null;
+  portrait: SanityImage | null;
+  bio: PortableTextBlock[] | null;
+};
+
+/** Writers with at least one published piece. The patron first, then by output. */
+export const getWriters = async (): Promise<Writer[]> =>
+  (await query<RawWriter[]>(Q.AUTHORS_QUERY)).map((w) => ({
+    ...w,
+    ...hydrateAuthor(w),
+    bio: w.bio ?? [],
+    portrait: toImage(w.portrait)
+  }));
+
+export const getWriter = async (slug: string): Promise<Writer | undefined> =>
+  (await getWriters()).find((w) => w.slug === slug);
 
 /**
- * The stories that lead the front page, best first.
+ * A writer's pieces, newest first.
  *
- * `[0]` is the main story: the biggest well in the hero, and the page's `h1`.
- * TopStories expects at least five to fill the flanks and the rows under them.
+ * Matched on the slug both sides derive the same way, not on the display
+ * name, so adding an honorific in the Studio cannot empty someone's page.
  */
-export const getTopStories = async (count = 3): Promise<Article[]> =>
-  [...(await getArticles())]
-    .sort((a, b) => scoreOf(b) - scoreOf(a) || recencyOf(b) - recencyOf(a))
-    .slice(0, count);
+export const getArticlesByWriter = async (slug: string): Promise<Article[]> =>
+  (await getArticles()).filter((a) => a.author.slug === slug);
+
+/** Where a byline links to. */
+export const writerHref = (a: Pick<Author, 'slug'>): string => `/writers/${a.slug}`;
+
+/* ---------------------------------------------------------------------------
+   The front page: Latest and Top stories
+   ---------------------------------------------------------------------------
+   Two different questions, answered separately.
+
+   Latest is what was published most recently. It is chosen first, so a piece
+   is on the front page the moment it is published, whatever its readership.
+   Previously the top stories were chosen first, by recency, which meant every
+   new piece was swallowed by the hero and Latest only ever showed the fourth
+   to sixth newest.
+
+   Top stories are what readers are reading and sharing now, from everything
+   Latest did not take. See popularityOf for the score. Until anything has been
+   read — the state on launch day — every score is zero and the order falls
+   through to recency.
+
+   An editor can still override: "Front page priority" in the Studio pins a
+   piece into Top stories above anything ranked by readership, highest first.
+   It is for the rare story that has to lead regardless, not for routine
+   publishing, and clearing it hands the slot back to the readers.
+--------------------------------------------------------------------------- */
+
+type DayBucket = { views?: number; shares?: number };
+type RawStats = {
+  article: string;
+  views?: number;
+  shares?: number;
+  days?: Record<string, DayBucket>;
+};
+
+/** Readership older than this does not count towards the ranking at all. */
+const POPULARITY_WINDOW_DAYS = 14;
+/** A day's reads count half as much this many days later. */
+const POPULARITY_HALF_LIFE_DAYS = 3;
+/**
+ * A share is worth this many reads. Sharing is a stronger signal than opening —
+ * someone put their own name to it — and much rarer, so unweighted it would
+ * barely register.
+ */
+const SHARE_WEIGHT = 5;
+
+/** `d20260923` → midnight UTC on that day. The tracker writes these keys. */
+const dayOf = (key: string): number | null => {
+  const m = /^d(\d{4})(\d{2})(\d{2})$/.exec(key);
+  return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null;
+};
+
+/**
+ * Recent readership, decayed by age.
+ *
+ * Summed over day buckets rather than lifetime totals, so a piece that was
+ * read heavily a month ago does not hold the front page against one being
+ * read now.
+ */
+function popularityOf(stats: RawStats | undefined, now: number): number {
+  let score = 0;
+  for (const [key, bucket] of Object.entries(stats?.days ?? {})) {
+    const day = dayOf(key);
+    if (day === null) continue;
+    const age = (now - day) / 86_400_000;
+    if (age < 0 || age > POPULARITY_WINDOW_DAYS) continue;
+    const weight = 0.5 ** (age / POPULARITY_HALF_LIFE_DAYS);
+    score += ((bucket.views ?? 0) + SHARE_WEIGHT * (bucket.shares ?? 0)) * weight;
+  }
+  return score;
+}
+
+/**
+ * Readership refreshes on its own clock, not on publishing: nobody presses
+ * Publish when a piece starts being read, so the ranking is re-read every ten
+ * minutes instead. It carries its own tag, so a publish does not also throw
+ * away the counts.
+ */
+const getStats = reactCache(
+  async (): Promise<Map<string, RawStats>> =>
+    new Map(
+      (
+        await sanityFetch<RawStats[]>(Q.STATS_QUERY, {}, false, {
+          revalidate: 600,
+          tags: ['stats']
+        })
+      ).map((s) => [s.article, s])
+    )
+);
+
+const recencyOf = (a: Article): number => +new Date(a.date);
+
+export type FrontPage = {
+  /** Best first. `[0]` is the lead: the biggest well in the hero, and the page's h1. */
+  top: Article[];
+  /** Newest first. */
+  latest: Article[];
+  /** Everything else, newest first. */
+  rest: Article[];
+};
+
+export async function getFrontPage({ top = 5, latest = 3 } = {}): Promise<FrontPage> {
+  const [articles, stats] = await Promise.all([getArticles(), getStats()]);
+  const now = Date.now();
+
+  const pinned = articles
+    .filter((a) => (a.weight ?? 0) > 0)
+    .sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0) || recencyOf(b) - recencyOf(a));
+  const pinnedIds = new Set(pinned.map((a) => a.id));
+
+  // The hero is the page's h1 and cannot be left empty to feed Latest, so on a
+  // site with only a handful of pieces Latest gives way first.
+  const latestCount = Math.min(latest, Math.max(0, articles.length - top));
+  const newest = articles.filter((a) => !pinnedIds.has(a.id)).slice(0, latestCount);
+  const newestIds = new Set(newest.map((a) => a.id));
+
+  const score = new Map(articles.map((a) => [a.id, popularityOf(stats.get(a.id), now)]));
+  const ranked = articles
+    .filter((a) => !pinnedIds.has(a.id) && !newestIds.has(a.id))
+    .sort((a, b) => score.get(b.id)! - score.get(a.id)! || recencyOf(b) - recencyOf(a));
+
+  const topStories = [...pinned, ...ranked].slice(0, top);
+  const used = new Set([...topStories, ...newest].map((a) => a.id));
+
+  return {
+    top: topStories,
+    latest: newest,
+    rest: articles.filter((a) => !used.has(a.id))
+  };
+}
 
 export const getTopics = async (): Promise<Topic[]> => query<Topic[]>(Q.TOPICS_QUERY);
 
@@ -557,7 +741,7 @@ export const getFestival = async (): Promise<Festival> => {
 };
 
 type RawAbout = Omit<AboutPage, 'patron'> & {
-  patron?: (Author & { bio?: PortableTextBlock[]; portrait: SanityImage | null }) | null;
+  patron?: (RawAuthor & { bio?: PortableTextBlock[]; portrait: SanityImage | null }) | null;
 };
 
 export const getAboutPage = async (): Promise<AboutPage> => {
@@ -567,7 +751,9 @@ export const getAboutPage = async (): Promise<AboutPage> => {
     intro: a?.intro ?? [],
     themes: a?.themes ?? [],
     publicationBody: a?.publicationBody ?? [],
-    patron: a?.patron ? { ...a.patron, portrait: toImage(a.patron.portrait) } : undefined
+    patron: a?.patron
+      ? { ...a.patron, ...hydrateAuthor(a.patron), portrait: toImage(a.patron.portrait) }
+      : undefined
   };
 };
 
@@ -585,7 +771,7 @@ export const getSite = async (): Promise<SiteSettings> => {
     name: s?.name ?? 'The Nile Explorer',
     tagline: s?.tagline ?? 'The Mirror of Africa',
     description: s?.description ?? '',
-    url: s?.url ?? 'https://nilexplorer.net',
+    url: s?.url ?? 'https://www.nileexplorer.com',
     email: s?.email ?? '',
     youtube: s?.youtube,
     youtubeHandle: s?.youtubeHandle,

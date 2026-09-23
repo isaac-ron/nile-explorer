@@ -61,7 +61,7 @@ const ARTICLE_FIELDS = groq`
   weight,
   "summary": standfirst,
   topic->{ name, "slug": slug.current },
-  author->{ name, role, colophon, isPatron },
+  author->{ name, role, colophon, isPatron, "slug": slug.current },
   image ${IMAGE}
 `;
 
@@ -100,6 +100,43 @@ export const COMMISSIONED_QUERY = groq`
     "author": author->name,
     "status": "In production"
   }
+`;
+
+/**
+ * Every writer with at least one published piece, for /writers.
+ *
+ * `slug` can be null on a writer created before the field existed; the content
+ * layer derives one from the name so a missing slug never costs a writer their
+ * page.
+ */
+export const AUTHORS_QUERY = groq`
+  *[_type == "author" && !(_id in path("drafts.**"))] {
+    "id": _id,
+    name,
+    "slug": slug.current,
+    role,
+    colophon,
+    isPatron,
+    "bio": bio ${BODY},
+    "portrait": portrait ${IMAGE},
+    "count": count(*[_type == "article" && state == "published" && !placeholder && references(^._id)])
+  }[count > 0] | order(isPatron desc, count desc, name asc)
+`;
+
+/**
+ * Readership counters, one document per article that has been read.
+ *
+ * Written by /api/track, never by an editor, and kept out of the Studio menu.
+ * `days` holds one bucket per day so the ranking can ask what is being read
+ * now rather than what has been read ever; see getTopStories.
+ */
+export const STATS_QUERY = groq`
+  *[_type == "articleStats"] { "article": article._ref, views, shares, days }
+`;
+
+/** Resolves a slug from the tracker to the article it counts against. */
+export const ARTICLE_ID_BY_SLUG_QUERY = groq`
+  *[_type == "article" && slug.current == $slug && state == "published" && !placeholder][0]._id
 `;
 
 /** Topics that actually hold something, most-used first. */
@@ -209,7 +246,7 @@ export const ABOUT_PAGE_QUERY = groq`
     contactBlurb,
     correctionsNote,
     "patron": *[_type == "author" && isPatron == true][0] {
-      name, role, colophon, "bio": bio ${BODY}, "portrait": portrait ${IMAGE}
+      name, "slug": slug.current, role, colophon, "bio": bio ${BODY}, "portrait": portrait ${IMAGE}
     }
   }
 `;

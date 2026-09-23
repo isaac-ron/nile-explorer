@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Article, formatDate, formatShortDate, labelFor } from '@/lib/content';
+import { Article, formatDate, formatShortDate, labelFor, writerHref } from '@/lib/content';
 
 /**
  * The front page trio.
  *
  * Three ranked stories share the fold, with the middle well carrying the lead.
- * The order is elected in getTopStories, not here: `stories[0]` is the main
+ * The order is elected in getFrontPage, not here: `stories[0]` is the main
  * story wherever it ends up on screen, which is why the middle column is
  * rendered from index 0 and the flanks from 1 and 2.
  *
@@ -62,7 +62,8 @@ export default function TopStories({ stories }: { stories: Article[] }) {
         </Link>
         <p className="top__leaddeck">{lead.summary}</p>
         <p className="top__leadmeta">
-          By {lead.author.name} · {formatDate(lead.date)} · {lead.readingTime} min read
+          By <Link href={writerHref(lead.author)}>{lead.author.name}</Link> ·{' '}
+          {formatDate(lead.date)} · {lead.readingTime} min read
         </p>
       </article>
 

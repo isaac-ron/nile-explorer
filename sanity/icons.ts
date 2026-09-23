@@ -29,3 +29,4 @@ export { CalendarIcon } from '@sanity/icons/Calendar';
 export { InfoOutlineIcon } from '@sanity/icons/InfoOutline';
 export { CogIcon } from '@sanity/icons/Cog';
 export { DocumentsIcon } from '@sanity/icons/Documents';
+export { ChartUpwardIcon } from '@sanity/icons/ChartUpward';

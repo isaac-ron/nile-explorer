@@ -16,9 +16,14 @@ npm run build
 
 ## Where the content comes from
 
-Sanity. Every page is built from GROQ queries at build time and served as static
-HTML; publishing in the Studio triggers a rebuild. There is no database, no
-server and no runtime fetch for text — only images, which come from Sanity's CDN.
+Sanity. Every page is built from GROQ queries and served as static HTML. A
+publish in the Studio calls `/api/revalidate`, which expires the cached queries,
+and each page regenerates on its next request (ISR); no rebuild is involved.
+Readers are always served cached HTML and never wait on Sanity.
+
+Two small route handlers run on request: `/api/revalidate` (the publish
+webhook) and `/api/track` (read and share counts, which rank the front page's
+Top stories). Both are described in HANDOVER.md.
 
 ```
 sanity/schemaTypes/     what an editor can fill in
@@ -47,6 +52,12 @@ make, confusing, and produces no error.
 
 `npm run migrate -- --dry` rehearses; without `--dry` it writes. Deterministic
 document ids, so re-running overwrites rather than duplicates.
+
+**Do not re-run it against the live dataset.** It has done its job, and
+"overwrites" means exactly that: every document it knows about is replaced
+with the migration's copy, discarding whatever the newsroom has changed in the
+Studio since — the site address, the About page, any article edited after
+import. It also needs the WordPress API, which no longer answers.
 
 It reads the WordPress REST API directly rather than `content/articles.json`.
 Measured across all eleven pieces, the old regex parser came within 3 leaf blocks

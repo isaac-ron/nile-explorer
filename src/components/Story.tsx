@@ -1,6 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Article, PendingStory, formatDate, formatShortDate, labelFor } from '@/lib/content';
+import {
+  Article,
+  PendingStory,
+  formatDate,
+  formatShortDate,
+  labelFor,
+  writerHref
+} from '@/lib/content';
 
 /**
  * Fallback alt.
@@ -46,7 +53,9 @@ export function StoryRow({ article }: { article: Article }) {
         </h3>
         <p className="story__blurb">{article.summary}</p>
         <div className="story__meta">
-          <span>{article.author.name}</span>
+          <Link className="story__author" href={writerHref(article.author)}>
+            {article.author.name}
+          </Link>
           <span className="dot">{formatDate(article.date)}</span>
           <span className="dot">{article.readingTime} min read</span>
         </div>

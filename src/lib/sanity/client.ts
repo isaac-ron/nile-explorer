@@ -4,14 +4,16 @@ import { apiVersion, dataset, projectId } from '../../../sanity/env';
 /**
  * Reading content out of Sanity.
  *
- * The site is built statically: every query here runs at build time, and the
- * result is baked into the HTML. Publishing triggers a rebuild, so there is no
- * live request from a reader to Sanity for text — only for images, which come
- * straight from Sanity's CDN.
+ * Pages are static HTML, regenerated in the background (ISR): a publish in the
+ * Studio calls /api/revalidate, which expires the cached query results, and the
+ * next visitor's request rebuilds the page from fresh ones. Readers never wait
+ * on Sanity and never trigger a query per page view — results are shared across
+ * every page and every reader until they are expired.
  *
  * That is why `useCdn` is false. The CDN serves content that can be up to a
- * minute stale, which is fine for a running site and exactly wrong for a build
- * that is supposed to capture what was just published.
+ * minute stale, and the webhook fires the moment something is published: a
+ * regeneration that read the CDN would cache the old version for another
+ * fifteen minutes.
  */
 export const client = createClient({
   projectId,
@@ -39,18 +41,41 @@ export const draftClient = client.withConfig({
 });
 
 /**
+ * The tag every published-content query carries. /api/revalidate expires it
+ * when Sanity reports a publish, which is what puts a new article on the front
+ * page within seconds rather than at the next deploy.
+ */
+export const CONTENT_TAG = 'sanity';
+
+/**
+ * How stale published content may get if the publish webhook never arrives.
+ *
+ * The webhook is the normal path. This is the safety net: the front page used
+ * to be frozen at whatever the last build saw, so a publish that failed to
+ * trigger a rebuild was invisible on the home page indefinitely while
+ * /articles, which renders per request, showed it straight away.
+ */
+export const CONTENT_REVALIDATE = 900;
+
+type FetchOptions = { revalidate?: number; tags?: string[] };
+
+/**
  * Run a query, against drafts when previewing and published content otherwise.
  */
 export async function sanityFetch<T>(
   query: string,
   params: Record<string, unknown> = {},
-  preview = false
+  preview = false,
+  { revalidate = CONTENT_REVALIDATE, tags = [CONTENT_TAG] }: FetchOptions = {}
 ): Promise<T> {
-  if (preview && !process.env.SANITY_API_READ_TOKEN) {
-    throw new Error(
-      'Draft preview needs SANITY_API_READ_TOKEN. Add it to .env.local and to the Vercel ' +
-        'project settings.'
-    );
+  if (preview) {
+    if (!process.env.SANITY_API_READ_TOKEN) {
+      throw new Error(
+        'Draft preview needs SANITY_API_READ_TOKEN. Add it to .env.local and to the Vercel ' +
+          'project settings.'
+      );
+    }
+    return draftClient.fetch<T>(query, params, { cache: 'no-store' });
   }
-  return (preview ? draftClient : client).fetch<T>(query, params);
+  return client.fetch<T>(query, params, { next: { revalidate, tags } });
 }

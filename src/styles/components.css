@@ -1892,3 +1892,150 @@ figcaption .credit {
 .stills__grid .frame > img {
   object-position: 50% 32%;
 }
+
+/* ---------- Bylines that link to a writer ----------
+   The name reads as part of the metadata line at rest and only declares
+   itself a link under the pointer, so a row of bylines does not turn into a
+   row of underlines. */
+.story__author,
+.top__leadmeta a,
+.byline__author a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.story__author:hover,
+.top__leadmeta a:hover,
+.byline__author a:hover {
+  color: var(--navy);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Writer page ---------- */
+.writer {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--col-gap);
+  align-items: start;
+  max-width: 1040px;
+}
+
+.writer--noportrait {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: var(--measure);
+}
+
+.writer__portrait {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.writer__portrait .frame > img {
+  object-position: 50% 30%;
+}
+
+.writer__body {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.writer__colophon {
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--ink-deck);
+}
+
+.writer__facts {
+  margin-top: var(--space-3);
+  max-width: 460px;
+}
+
+.writer__river {
+  max-width: 900px;
+}
+
+@media (max-width: 700px) {
+  .writer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .writer__portrait {
+    max-width: 200px;
+  }
+}
+
+/* ---------- Writers index ---------- */
+.writers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-4);
+}
+
+.writercard {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.writercard:hover {
+  border-color: var(--border-strong);
+}
+
+.writercard__face {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--navy);
+  color: var(--gold-light);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+}
+
+.writercard__face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 25%;
+}
+
+.writercard__text {
+  display: grid;
+  gap: 2px;
+}
+
+.writercard__name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--navy);
+}
+
+.writercard:hover .writercard__name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.writercard__role,
+.writercard__count {
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.writercard__role {
+  color: var(--gold-text);
+  font-weight: 700;
+}

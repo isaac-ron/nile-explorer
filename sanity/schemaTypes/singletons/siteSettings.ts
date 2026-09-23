@@ -55,8 +55,9 @@ export default defineType({
       type: 'url',
       group: 'identity',
       description:
-        'The full address of the live site, e.g. https://nilexplorer.net — no slash at the end. ' +
-        'Used to build share links and the sitemap, so an error here breaks sharing.',
+        'The full address of the live site, e.g. https://www.nileexplorer.com — no slash at the end. ' +
+        'Used for search-engine and link-preview addresses. Share buttons use the address the ' +
+        'reader is actually on, so a mistake here no longer breaks sharing.',
       validation: (rule) => rule.required()
     }),
     defineField({

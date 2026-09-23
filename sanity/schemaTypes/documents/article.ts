@@ -94,8 +94,8 @@ export default defineType({
       type: 'datetime',
       group: 'filing',
       description:
-        'When the piece was — or will be — published. Articles are ordered by this date, newest ' +
-        'first, so it decides what leads the front page.',
+        'When the piece was — or will be — published. Articles are listed newest first by this ' +
+        'date, and the three newest make up Latest on the front page.',
       validation: (rule) => rule.required().error('Set a publication date.')
     }),
     defineField({
@@ -167,13 +167,14 @@ export default defineType({
     }),
     defineField({
       name: 'weight',
-      title: 'Front page priority',
+      title: 'Pin to Top stories',
       type: 'number',
       group: 'promotion',
       description:
-        'Leave empty and the front page simply leads on the newest piece, which is the normal ' +
-        'case. Set a number to push a piece up: higher wins, and the highest becomes the lead ' +
-        'story. Clear it again once the piece has had its run.',
+        'Leave empty — this is the normal case. A new piece goes into Latest on the front page ' +
+        'by itself, and Top stories are chosen automatically by how much each piece is being ' +
+        'read and shared. Set a number only to force a piece into Top stories regardless: higher ' +
+        'wins, and the highest becomes the lead. Clear it once the piece has had its run.',
       validation: (rule) => rule.min(0).max(100)
     }),
     placeholderField

@@ -7,7 +7,8 @@ import {
   getTopics,
   getSite,
   formatShortDate,
-  labelFor
+  labelFor,
+  writerHref
 } from '@/lib/content';
 import Prose from '@/components/Prose';
 
@@ -152,6 +153,13 @@ export default async function AboutPage() {
                       </span>
                     </Link>
                   ))}
+                  <Link
+                    className="section__more"
+                    href={writerHref(patron)}
+                    style={{ marginTop: 'var(--space-3)' }}
+                  >
+                    All {byPatron.length} pieces →
+                  </Link>
                 </div>
               )}
 

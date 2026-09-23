@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
 
     if (doc._type === 'article' && doc.slug) destination = `/articles/${doc.slug}`;
     else if (doc._type === 'strand' && doc.slug) destination = `/more/${doc.slug}`;
+    else if (doc._type === 'author' && doc.slug) destination = `/writers/${doc.slug}`;
     else destination = PATHS[doc._type] ?? '/';
   }
 

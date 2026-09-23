@@ -6,8 +6,12 @@
  *   NEXT_PUBLIC_SANITY_PROJECT_ID=... NEXT_PUBLIC_SANITY_DATASET=production \
  *   SANITY_API_WRITE_TOKEN=... node scripts/migrate-to-sanity.mjs
  *
- * Safe to re-run: every document has a deterministic id, so a second run
- * overwrites rather than duplicating. Add --dry to see what it would do.
+ * Every document has a deterministic id, so a second run overwrites rather
+ * than duplicating. Add --dry to see what it would do.
+ *
+ * DO NOT re-run it against the live dataset. "Overwrites" means every
+ * document it knows about is replaced with the migration's copy, discarding
+ * everything the newsroom has changed in the Studio since. See README.md.
  *
  * ---------------------------------------------------------------------------
  * Three decisions worth knowing before you touch this
