@@ -1,72 +1,44 @@
 import { draftMode } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { NextRequest } from 'next/server';
+import { validatePreviewUrl } from '@sanity/preview-url-secret';
 import { draftClient } from '@/lib/sanity/client';
 
 /**
  * Preview an unpublished draft.
  *
- * The Studio's Preview button opens this with a secret and the document being
- * edited. It sets a cookie that makes the site read drafts instead of
- * published content for this browser only, then sends the editor to the page.
+ * The Studio's Preview and "Publish & view" buttons (sanity/actions.tsx) open
+ * this in a new tab. It sets the Draft Mode cookie, which makes every page
+ * read drafts instead of published content for this browser only, then sends
+ * the editor to the page.
  *
- * Two things here are security, not ceremony.
+ * How it knows the request came from an editor: the Studio, signed in as that
+ * editor, writes a one-hour secret into the dataset and puts it in the link.
+ * Only someone who can write to the dataset can make one, and this route
+ * checks it against the dataset with the read token. No shared password sits
+ * in the Studio's JavaScript — which is served publicly at /studio, so any
+ * password in it would be readable by anyone.
  *
- * The secret stops a stranger who guesses the address from reading unpublished
- * work — everything under Draft Mode bypasses the cache and hits Sanity with a
- * read token.
- *
- * The redirect target is the slug looked up in Sanity, never the one in the
- * query string. Redirecting straight to a user-supplied value is an open
- * redirect: a link that looks like it goes to the site and lands somewhere
- * else entirely.
+ * The destination must be a path on this site. validatePreviewUrl only
+ * releases it once the secret checks out, and it is checked again below: a
+ * redirect straight to a value from the query string is an open redirect, a
+ * link that looks like it goes to the site and lands somewhere else.
  */
-
-/** Where a document type is seen on the site. */
-const PATHS: Record<string, string> = {
-  aboutPage: '/about',
-  festival: '/festival',
-  episode: '/podcasts',
-  podcastShow: '/podcasts',
-  film: '/documentaries',
-  siteSettings: '/'
-};
-
 export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
-  const secret = searchParams.get('secret');
-  const type = searchParams.get('type') ?? '';
-  const id = searchParams.get('id');
-
-  if (!process.env.SANITY_DRAFT_SECRET || !process.env.SANITY_API_READ_TOKEN) {
-    return new Response(
-      'Preview is not set up. SANITY_DRAFT_SECRET and SANITY_API_READ_TOKEN are missing.',
-      { status: 500 }
-    );
+  if (!process.env.SANITY_API_READ_TOKEN) {
+    return new Response('Preview is not set up: SANITY_API_READ_TOKEN is missing.', {
+      status: 500
+    });
   }
 
-  if (secret !== process.env.SANITY_DRAFT_SECRET) {
-    return new Response('Invalid preview link.', { status: 401 });
+  const { isValid, redirectTo = '/' } = await validatePreviewUrl(draftClient, request.url);
+  if (!isValid) {
+    return new Response('This preview link has expired. Press Preview in the Studio again.', {
+      status: 401
+    });
   }
 
-  // Types with their own page: fetch the slug rather than trusting the query.
-  let destination = PATHS[type];
-
-  if (!destination && id) {
-    const doc = await draftClient.fetch<{ _type: string; slug?: string } | null>(
-      `*[_id == $id][0]{ _type, "slug": slug.current }`,
-      { id }
-    );
-
-    if (!doc) return new Response('That document could not be found.', { status: 404 });
-
-    if (doc._type === 'article' && doc.slug) destination = `/articles/${doc.slug}`;
-    else if (doc._type === 'strand' && doc.slug) destination = `/more/${doc.slug}`;
-    else if (doc._type === 'author' && doc.slug) destination = `/writers/${doc.slug}`;
-    else destination = PATHS[doc._type] ?? '/';
-  }
-
-  if (!destination) return new Response('Nothing to preview.', { status: 400 });
+  const destination = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
 
   const draft = await draftMode();
   draft.enable();

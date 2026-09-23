@@ -1,4 +1,4 @@
-import { defineConfig } from 'sanity';
+import { defineConfig, type DocumentActionComponent } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 
@@ -6,16 +6,32 @@ import { apiVersion, dataset, projectId } from './sanity/env';
 import { schemaTypes, SINGLETONS, SYSTEM_TYPES } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
 import StudioLogo from './sanity/components/StudioLogo';
+import Dashboard from './sanity/components/Dashboard';
+import { PreviewAction, publishAndView } from './sanity/actions';
+import { studioTheme } from './sanity/theme';
+import { HomeIcon } from './sanity/icons';
 
 const singletons = new Set<string>(SINGLETONS);
 const systemTypes = new Set<string>(SYSTEM_TYPES);
+
+/**
+ * Every document's buttons: Sanity's own, with "Publish & view" added after
+ * Publish and "Preview" after that. Both hide themselves on anything without a
+ * page on the site (see sanity/paths.ts).
+ */
+function withSiteActions(prev: DocumentActionComponent[]): DocumentActionComponent[] {
+  const publish = prev.find((a) => a.action === 'publish');
+  if (!publish) return [...prev, PreviewAction];
+  const at = prev.indexOf(publish) + 1;
+  return [...prev.slice(0, at), publishAndView(publish), PreviewAction, ...prev.slice(at)];
+}
 
 /**
  * The Studio, served from /studio inside this same Next.js app.
  *
  * Keeping it in the app rather than at a separate sanity.studio address means
  * one repository, one deploy and one thing to keep working. Editors reach it
- * at nilexplorer.net/studio.
+ * at www.nileexplorer.com/studio.
  */
 export default defineConfig({
   name: 'nile-explorer',
@@ -28,20 +44,25 @@ export default defineConfig({
   /**
    * Studio branding.
    *
-   * Only the logo is replaced. The navbar, the layout and the tool menu can
-   * all be swapped the same way — see `studio.components` in the Sanity docs —
-   * but every one of them is a component we would then own through Studio
-   * upgrades, and Sanity moves these internals between majors. The logo is the
-   * piece with the most brand value and the least surface area.
-   *
-   * Theming is available too, and was left alone on purpose: `buildLegacyTheme`
-   * is deprecated in this version, and the current token API wants a full
-   * palette across both colour schemes rather than a couple of brand colours.
-   * Worth doing deliberately with Sanity's theme generator, not by hand.
+   * The logo, and the site's navy in place of Sanity's blue (sanity/theme.ts).
+   * The navbar, the layout and the tool menu can also be swapped, through
+   * `studio.components`, but every one of them is a component we would then
+   * own through Studio upgrades, and Sanity moves these internals between
+   * majors. Logo and colour carry the brand with the least to maintain.
    */
+  theme: studioTheme,
   studio: {
     components: { logo: StudioLogo }
   },
+
+  /**
+   * Home comes first, so it is where the Studio opens: what is in progress,
+   * what is being read, what needs fixing. See sanity/components/Dashboard.tsx.
+   */
+  tools: (prev) => [
+    { name: 'home', title: 'Home', icon: HomeIcon, component: Dashboard },
+    ...prev
+  ],
 
   plugins: [
     structureTool({ structure }),
@@ -59,16 +80,21 @@ export default defineConfig({
     newDocumentOptions: (prev) =>
       prev.filter((item) => !singletons.has(item.templateId) && !systemTypes.has(item.templateId)),
 
-    /** And they cannot be deleted, duplicated or unpublished out from under the site. */
+    /**
+     * Readership counts get no buttons at all: they belong to the site, and
+     * deleting one would silently drop an article out of Top stories. The
+     * singletons cannot be deleted, duplicated or unpublished out from under
+     * the site. Everything else gets Preview and Publish & view.
+     */
     actions: (prev, { schemaType }) =>
-      // Readership counts belong to the site. Deleting one would silently
-      // drop an article out of Top stories.
       systemTypes.has(schemaType)
         ? []
-        : singletons.has(schemaType)
-        ? prev.filter(
-            ({ action }) => action && !['delete', 'duplicate', 'unpublish'].includes(action)
+        : withSiteActions(
+            singletons.has(schemaType)
+              ? prev.filter(
+                  ({ action }) => action && !['delete', 'duplicate', 'unpublish'].includes(action)
+                )
+              : prev
           )
-        : prev
   }
 });

@@ -11,6 +11,19 @@ technical knowledge. The second half is for whoever maintains the code.
 
 Everything you publish is edited at **www.nileexplorer.com/studio**.
 
+It opens on **Home**, which shows:
+
+- **In progress** — everything saved but not yet published, newest first.
+  "Never published" means it is not on the site at all; "Unpublished changes"
+  means the site still shows the older version.
+- **Most read** — what readers are opening and sharing this fortnight. This is
+  what decides Top stories on the front page.
+- **Recently published**, and **Commissioned** pieces not yet written.
+- **Needs attention** — small fixes that affect readers, such as a picture
+  with no description or a writer with no biography.
+
+Click any row to open it. **New article** at the top starts one.
+
 Sign in with the email address you were invited on. If you cannot get in, ask
 whoever holds the Sanity account to re-invite you — there is no password to
 reset on our side.
@@ -48,7 +61,11 @@ The menu down the left side is the whole site:
    - **Editor's note.** Set apart from the article in a box, in a different
      typeface, because it is the newsroom speaking rather than the author. Open
      it with "Editor's note:" and that label is emboldened for you.
-7. Press **Publish**.
+7. Press **Preview** (in the menu beside Publish) to see it on the site
+   before anyone else can. A yellow bar across the top says you are
+   previewing; **Leave preview** takes you back to the normal site.
+8. Press **Publish** — or **Publish & view**, which publishes and then opens
+   the live page in a new tab a few seconds later.
 
 The article is live within seconds, and it goes straight into **Latest** on the
 front page — the three newest pieces always sit there.
@@ -178,7 +195,6 @@ production. See `.env.example`.
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | No | Appears in every image URL |
 | `NEXT_PUBLIC_SANITY_DATASET` | No | `production` |
 | `SANITY_API_READ_TOKEN` | **Yes** | Viewer token. Draft preview only |
-| `SANITY_DRAFT_SECRET` | **Yes** | Any random string. Guards the preview link |
 | `SANITY_REVALIDATE_SECRET` | **Yes** | Any random string. Must match the webhook's secret in Sanity |
 | `SANITY_API_WRITE_TOKEN` | **Yes** | **Editor** token. Lets `/api/track` write readership counts |
 
@@ -332,13 +348,46 @@ Anything not on `cdn.sanity.io` passes through untouched.
 
 ### Draft preview
 
-`/api/draft` sets the preview cookie; `/api/draft/disable` clears it. The
-preview bar at the top of the page is the way out — it is a form button, not a
-link, because Next prefetches links and would clear the cookie before anyone
-clicked.
+The Studio's **Preview** button (`sanity/actions.tsx`) writes a one-hour
+secret into the dataset under the editor's own login
+(`@sanity/preview-url-secret`), and opens `/api/draft` with it. The route
+checks the secret with the read token, sets the Draft Mode cookie and
+redirects to the page. `/api/draft/disable` clears the cookie.
 
-The route redirects to the slug it looks up in Sanity, never to one from the
-query string. That is an open-redirect guard; do not "simplify" it.
+There is deliberately no shared preview password. The Studio is served
+publicly at /studio, so any password compiled into it is readable by anyone.
+
+While the cookie is set, `query()` in `src/lib/content.ts` reads drafts for
+that browser only, skipping every cache; everyone else keeps getting the
+cached published page. Pages do not need to do anything to support preview.
+(Before this, the cookie was set and every page ignored it.)
+
+The redirect target is released only once the secret checks out, and must be
+a path on this site; `//elsewhere` is flattened to a local path. That is an
+open-redirect guard; do not "simplify" it.
+
+The preview bar at the top of the page is the way out — it is a form button,
+not a link, because Next prefetches links and would clear the cookie before
+anyone clicked.
+
+### The Studio: Home, buttons and colours
+
+- **Home** (`sanity/components/Dashboard.tsx`) is registered as the first tool
+  in `sanity.config.ts`, which makes it the Studio's landing page. It only
+  reads. Its "Most read" uses the same scoring as the front page
+  (`src/lib/popularity.ts`).
+- **Preview** and **Publish & view** are added to every document with a page
+  on the site; `sanity/paths.ts` says which page. A new document type with its
+  own page needs a line there. Publish & view wraps Sanity's own Publish
+  action, so validation and permissions are unchanged.
+- **Colours** (`sanity/theme.ts`) replace Sanity's blue with the site's navy
+  using `buildTheme`. If a Sanity upgrade breaks it, delete the `theme` line
+  in `sanity.config.ts`; nothing else depends on it.
+- **CORS.** The Studio talks to Sanity from the browser, so every address it
+  is opened from must be listed at sanity.io/manage → API → CORS origins, with
+  credentials allowed: `https://www.nileexplorer.com`, and
+  `http://localhost:3000` for development. Anything else stops at a "Connect
+  this Studio" screen.
 
 ### The one thing the free Sanity plan does not give you
 

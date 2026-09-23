@@ -12,10 +12,12 @@
  */
 
 import { cache as reactCache } from 'react';
+import { draftMode } from 'next/headers';
 import type { PortableTextBlock } from '@portabletext/types';
 import { sanityFetch } from './sanity/client';
 import { toImage, type SanityImage } from './sanity/image';
 import * as Q from './sanity/queries';
+import { popularityOf, type RawStats } from './popularity';
 
 export type { PortableTextBlock };
 
@@ -211,17 +213,38 @@ export type PendingStory = {
    server: a warm instance would have kept serving the first answer it ever
    got, whatever was published afterwards.
 
-   Preview skips both: the whole point of preview is to see what was just
-   typed.
+   Preview skips the Data Cache: the whole point of preview is to see what was
+   just typed.
+
+   Preview is detected here rather than passed down by each page. Draft Mode
+   (set by /api/draft from the Studio's Preview button) is a cookie on the
+   editor's browser; every getter below reads drafts for that browser and
+   published content for everyone else, with no page having to remember to
+   ask. Before this, the cookie was set and every page ignored it.
 --------------------------------------------------------------------------- */
 
+/**
+ * Whether this request is an editor's preview.
+ *
+ * draftMode() only exists inside a request. generateStaticParams and the
+ * build's own prerendering have none, and they are never previews.
+ */
+async function isPreview(): Promise<boolean> {
+  try {
+    return (await draftMode()).isEnabled;
+  } catch {
+    return false;
+  }
+}
+
 const fetchOnce = reactCache(
-  (q: string, params: string): Promise<unknown> => sanityFetch(q, JSON.parse(params))
+  (q: string, params: string, preview: boolean): Promise<unknown> =>
+    sanityFetch(q, JSON.parse(params), preview)
 );
 
-function query<T>(q: string, params: Record<string, unknown> = {}, preview = false): Promise<T> {
-  if (preview) return sanityFetch<T>(q, params, true);
-  return fetchOnce(q, JSON.stringify(params)) as Promise<T>;
+async function query<T>(q: string, params: Record<string, unknown> = {}, preview = false): Promise<T> {
+  const draft = preview || (await isPreview());
+  return fetchOnce(q, JSON.stringify(params), draft) as Promise<T>;
 }
 
 /* ---------------------------------------------------------------------------
@@ -375,51 +398,6 @@ export const writerHref = (a: Pick<Author, 'slug'>): string => `/writers/${a.slu
    It is for the rare story that has to lead regardless, not for routine
    publishing, and clearing it hands the slot back to the readers.
 --------------------------------------------------------------------------- */
-
-type DayBucket = { views?: number; shares?: number };
-type RawStats = {
-  article: string;
-  views?: number;
-  shares?: number;
-  days?: Record<string, DayBucket>;
-};
-
-/** Readership older than this does not count towards the ranking at all. */
-const POPULARITY_WINDOW_DAYS = 14;
-/** A day's reads count half as much this many days later. */
-const POPULARITY_HALF_LIFE_DAYS = 3;
-/**
- * A share is worth this many reads. Sharing is a stronger signal than opening —
- * someone put their own name to it — and much rarer, so unweighted it would
- * barely register.
- */
-const SHARE_WEIGHT = 5;
-
-/** `d20260923` → midnight UTC on that day. The tracker writes these keys. */
-const dayOf = (key: string): number | null => {
-  const m = /^d(\d{4})(\d{2})(\d{2})$/.exec(key);
-  return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null;
-};
-
-/**
- * Recent readership, decayed by age.
- *
- * Summed over day buckets rather than lifetime totals, so a piece that was
- * read heavily a month ago does not hold the front page against one being
- * read now.
- */
-function popularityOf(stats: RawStats | undefined, now: number): number {
-  let score = 0;
-  for (const [key, bucket] of Object.entries(stats?.days ?? {})) {
-    const day = dayOf(key);
-    if (day === null) continue;
-    const age = (now - day) / 86_400_000;
-    if (age < 0 || age > POPULARITY_WINDOW_DAYS) continue;
-    const weight = 0.5 ** (age / POPULARITY_HALF_LIFE_DAYS);
-    score += ((bucket.views ?? 0) + SHARE_WEIGHT * (bucket.shares ?? 0)) * weight;
-  }
-  return score;
-}
 
 /**
  * Readership refreshes on its own clock, not on publishing: nobody presses

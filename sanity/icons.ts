@@ -30,3 +30,7 @@ export { InfoOutlineIcon } from '@sanity/icons/InfoOutline';
 export { CogIcon } from '@sanity/icons/Cog';
 export { DocumentsIcon } from '@sanity/icons/Documents';
 export { ChartUpwardIcon } from '@sanity/icons/ChartUpward';
+export { EyeOpenIcon } from '@sanity/icons/EyeOpen';
+export { LaunchIcon } from '@sanity/icons/Launch';
+export { HomeIcon } from '@sanity/icons/Home';
+export { AddIcon } from '@sanity/icons/Add';
