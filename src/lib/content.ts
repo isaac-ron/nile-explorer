@@ -66,11 +66,13 @@ export type Article = {
    */
   dateline?: string;
   image: Image | null;
-  body: PortableTextBlock[];
   summary: string;
   readingTime: number;
   weight?: number;
 };
+
+/** An article with its text, as the article page gets it. Lists never carry the body. */
+export type FullArticle = Article & { body: PortableTextBlock[] };
 
 export type Topic = { name: string; slug: string; count: number };
 export type Section = { name: string; slug: string; count: number };
@@ -140,7 +142,6 @@ export type SiteSettings = {
   youtubeHandle?: string;
   instagram?: string;
   instagramHandle?: string;
-  newsletterAction?: string;
   patron?: { name: string; role?: string };
   pullQuote?: { text?: string; attribution?: string };
   nav: NavItem[];
@@ -251,19 +252,9 @@ async function query<T>(q: string, params: Record<string, unknown> = {}, preview
    Derived values
 --------------------------------------------------------------------------- */
 
-/** Words in a Portable Text body, for the reading estimate. */
-function wordCount(body: PortableTextBlock[] | undefined): number {
-  if (!Array.isArray(body)) return 0;
-  return body.reduce((n, block) => {
-    const children = (block as { children?: { text?: string }[] }).children;
-    if (!Array.isArray(children)) return n;
-    const text = children.map((c) => c.text ?? '').join(' ');
-    return n + text.split(/\s+/).filter(Boolean).length;
-  }, 0);
-}
-
-const readingTime = (body: PortableTextBlock[] | undefined): number =>
-  Math.max(1, Math.round(wordCount(body) / 220));
+/** Minutes to read, from the word count the article queries compute. */
+const readingTime = (words: number | null | undefined): number =>
+  Math.max(1, Math.round((words ?? 0) / 220));
 
 /**
  * A writer's address, from their name.
@@ -294,13 +285,14 @@ const hydrateAuthor = (a: RawAuthor | null): Author => {
 type RawArticle = Omit<Article, 'image' | 'readingTime' | 'author'> & {
   image: SanityImage | null;
   author: RawAuthor | null;
+  words: number | null;
 };
 
-const hydrateArticle = (a: RawArticle): Article => ({
+const hydrateArticle = <T extends RawArticle>({ words, ...a }: T) => ({
   ...a,
   author: hydrateAuthor(a.author),
   image: toImage(a.image),
-  readingTime: readingTime(a.body)
+  readingTime: readingTime(words)
 });
 
 type RawEpisode = Omit<Episode, 'stills' | 'thumbnail' | 'url' | 'embed'> & {
@@ -335,13 +327,20 @@ export const getArticles = async (preview = false): Promise<Article[]> =>
 export const getArticle = async (
   slug: string,
   preview = false
-): Promise<Article | undefined> => {
-  const a = await query<RawArticle | null>(Q.ARTICLE_BY_SLUG_QUERY, { slug }, preview);
+): Promise<FullArticle | undefined> => {
+  const a = await query<(RawArticle & { body: PortableTextBlock[] }) | null>(
+    Q.ARTICLE_BY_SLUG_QUERY,
+    { slug },
+    preview
+  );
   return a ? hydrateArticle(a) : undefined;
 };
 
 export const getArticleSlugs = async (): Promise<string[]> =>
   query<string[]>(Q.ARTICLE_SLUGS_QUERY);
+
+export const getArticleSitemap = async (): Promise<{ slug: string; updated: string }[]> =>
+  query<{ slug: string; updated: string }[]>(Q.ARTICLE_SITEMAP_QUERY);
 
 /* ---------------------------------------------------------------------------
    Writers
@@ -755,7 +754,6 @@ export const getSite = async (): Promise<SiteSettings> => {
     youtubeHandle: s?.youtubeHandle,
     instagram: s?.instagram,
     instagramHandle: s?.instagramHandle,
-    newsletterAction: s?.newsletterAction,
     patron: s?.patron,
     pullQuote: s?.pullQuote,
     nav: s?.nav ?? []
@@ -766,8 +764,25 @@ export const getSite = async (): Promise<SiteSettings> => {
    Formatting
 --------------------------------------------------------------------------- */
 
+/**
+ * The newsroom's clock. Pages render on Vercel in UTC, three hours behind
+ * Nairobi and Juba, so without this a piece published at 1am carried the
+ * previous day's date. Nairobi and Juba share UTC+3 and neither changes its
+ * clocks.
+ */
+export const NEWSROOM_TIME_ZONE = 'Africa/Nairobi';
+
 export const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: NEWSROOM_TIME_ZONE
+  });
 
 export const formatShortDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    timeZone: NEWSROOM_TIME_ZONE
+  });

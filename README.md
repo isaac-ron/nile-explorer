@@ -111,6 +111,7 @@ straight through.
 | `/more`, `/more/[strand]` | Static |
 | `/studio` | The Sanity Studio |
 | `/api/draft`, `/api/draft/disable` | Draft preview in and out |
+| `/sitemap.xml`, `/robots.txt` | Static, 15m — from `src/app/sitemap.ts` and `robots.ts` |
 
 `/television` redirects to `/documentaries`.
 
@@ -165,5 +166,5 @@ will make `tsc --noEmit` report success without checking anything; use
 
 Tracked as a checklist in [HANDOVER.md](HANDOVER.md) — in short: 8 archive images
 need descriptions, the festival carousel has no photography, the podcast has no
-RSS feed, and no newsletter provider is configured (the section does not render
-until one is).
+RSS feed, and the newsletter's EmailOctopus keys still need adding to Vercel (the
+section does not render until they are).

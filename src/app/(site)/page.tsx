@@ -230,9 +230,9 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Renders nothing until an email provider is configured in Site
-          settings. See the note in Newsletter.tsx. */}
-      <Newsletter action={site.newsletterAction} />
+      {/* Renders nothing until EmailOctopus is configured in the
+          environment. See lib/newsletter.ts. */}
+      <Newsletter />
     </>
   );
 }

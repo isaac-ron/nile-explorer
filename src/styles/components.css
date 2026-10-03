@@ -1401,6 +1401,27 @@ figcaption .credit {
   color: var(--on-navy-muted);
 }
 
+/* The result replaces the form in place. Gold-light carries text on navy at
+   8.99:1, and marks the problem without borrowing an alarm red the palette
+   does not have. */
+.signup__problem {
+  flex: 1 0 100%;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--gold-light);
+}
+
+.signup__done {
+  color: var(--on-navy);
+  font-size: var(--fs-lead);
+  max-width: 40ch;
+}
+
+.signup .btn[disabled] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
 /* ---------- Podcast band ----------
    Supplied banner artwork across the top, three episodes under it.
 

@@ -1,0 +1,118 @@
+# Daily backup of the Sanity dataset: every document, draft and image.
+#
+# The free Sanity plan keeps no backups and only three days of history, and
+# every editor on it is an administrator who can delete the dataset. This is
+# the copy to restore from.
+#
+# Each day's export is unpacked and committed to a separate private
+# repository, nile-explorer-backups. Git keeps every day as a commit for as
+# long as that repository exists, and stores each image once however many
+# days it appears in: images are named by their content hash, so an unchanged
+# picture is never stored twice. A day with no changes makes no commit.
+#
+# Setup, restore and monitoring are in HANDOVER.md ("Backups"). In short:
+#   SANITY_BACKUP_TOKEN  secret: a Sanity Viewer token (reads drafts, changes nothing)
+#   BACKUP_DEPLOY_KEY    secret: private half of a deploy key with write access
+#                        on the backups repository. Deploy keys do not expire,
+#                        which is why this is not a personal access token.
+#   BACKUP_REPOSITORY    variable: owner/name of the backups repository
+#   HEALTHCHECK_URL      variable, optional: a healthchecks.io check. Pinged on
+#                        success and on failure, so a backup that stops running
+#                        at all is noticed too, not only one that fails.
+
+name: Back up Sanity
+
+on:
+  schedule:
+    - cron: '30 23 * * *' # 02:30 in Nairobi and Juba, when nobody is editing
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sanity-backup
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SANITY_AUTH_TOKEN: ${{ secrets.SANITY_BACKUP_TOKEN }}
+      # Public values. The CLI loads sanity.config.ts, which requires them.
+      NEXT_PUBLIC_SANITY_PROJECT_ID: bahk4a2x
+      NEXT_PUBLIC_SANITY_DATASET: production
+      HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
+    steps:
+      - name: Check setup
+        env:
+          HAS_KEY: ${{ secrets.BACKUP_DEPLOY_KEY != '' }}
+          REPO: ${{ vars.BACKUP_REPOSITORY }}
+        run: |
+          missing=""
+          [ -n "$SANITY_AUTH_TOKEN" ] || missing="$missing SANITY_BACKUP_TOKEN"
+          [ "$HAS_KEY" = "true" ] || missing="$missing BACKUP_DEPLOY_KEY"
+          [ -n "$REPO" ] || missing="$missing BACKUP_REPOSITORY"
+          if [ -n "$missing" ]; then
+            echo "::error::Backups are not set up. Missing:$missing. See HANDOVER.md, Backups."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Export
+        run: |
+          npx sanity dataset export production "$RUNNER_TEMP/export.tar.gz" \
+            -p "$NEXT_PUBLIC_SANITY_PROJECT_ID" --overwrite
+          mkdir "$RUNNER_TEMP/export"
+          tar -xzf "$RUNNER_TEMP/export.tar.gz" -C "$RUNNER_TEMP/export" --strip-components=1
+          # An export that lost its documents must never be committed over a
+          # good one: that commit would look like the whole site was deleted.
+          docs=$(wc -l < "$RUNNER_TEMP/export/data.ndjson")
+          echo "Exported $docs documents"
+          [ "$docs" -ge 20 ] || { echo "::error::Only $docs documents exported; refusing to commit."; exit 1; }
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.BACKUP_REPOSITORY }}
+          ssh-key: ${{ secrets.BACKUP_DEPLOY_KEY }}
+          path: backups
+
+      - name: Commit
+        working-directory: backups
+        run: |
+          # Replace the snapshot wholesale, so a deleted document or image
+          # leaves today's tree. It is still in every earlier commit.
+          rm -rf production
+          mv "$RUNNER_TEMP/export" production
+          # One document per line, sorted by id, so each commit's diff shows
+          # what actually changed rather than the export's arbitrary order.
+          LC_ALL=C sort -o production/data.ndjson production/data.ndjson
+          # Byte for byte: a clone on Windows must not rewrite line endings
+          # in the files a restore is built from.
+          [ -f .gitattributes ] || echo '* -text' > .gitattributes
+          git add -A production .gitattributes
+          if git diff --cached --quiet; then
+            echo "No changes since the last backup."
+            exit 0
+          fi
+          git -c user.name="Sanity backup" -c user.email="backup@users.noreply.github.com" \
+            commit -q -m "Backup $(date -u +%Y-%m-%d)" \
+            -m "$(wc -l < production/data.ndjson) documents, $(find production/images production/files -type f | wc -l) assets"
+          git push -q
+
+      - name: Report success
+        if: success() && env.HEALTHCHECK_URL != ''
+        run: curl -fsS -m 10 --retry 3 "$HEALTHCHECK_URL" > /dev/null
+
+      - name: Report failure
+        if: failure() && env.HEALTHCHECK_URL != ''
+        run: curl -fsS -m 10 --retry 3 "$HEALTHCHECK_URL/fail" > /dev/null

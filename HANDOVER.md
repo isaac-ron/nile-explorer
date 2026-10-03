@@ -133,13 +133,18 @@ saved as drafts and **cannot be published** — the Publish button stays disable
 To make one real: replace the invented text and pictures with the real thing,
 then untick **Placeholder — not real content** at the bottom of the document.
 
-What is currently marked:
+**Nothing is marked at the moment.** The pieces that were, were unticked and
+published on 23 September 2026, and the site presents them as what they are:
 
-| | Why |
+| | How the site shows it |
 |---|---|
-| 2 podcast episodes | Not recorded. Their guest names were invented, so they now read "Guest to be confirmed" |
-| 3 documentaries | Not commissioned, and the key art was computer-generated |
-| The Festival | No dates, venues or programme are confirmed |
+| Podcast episodes 2 and 3 | Under **Coming up**, with "Guest to be confirmed". Not recorded yet |
+| 3 documentaries | "In production" or "In development". The key art was computer-generated |
+| The Festival | "Dates to be announced", with an editorial note that nothing is confirmed |
+
+Keep those labels true. An episode whose date has passed still shows under
+**Coming up** with that date until someone changes it, so move the date, or
+publish the episode, when it slips.
 
 ### When the site does not update
 
@@ -170,20 +175,33 @@ Sanity ──(GROQ)──► Next.js Data Cache ──► static HTML on Vercel 
 
 ### Accounts, and who owns them
 
-Fill this in at handover and keep it current. **Every one of these must be
-owned by the organisation, not by an individual.**
+**Every one of these must be owned by the organisation, not by an
+individual.** The identifiers are filled in; the owner and recovery contact
+for each are for the organisation to complete at handover, and to keep
+current after that. An account nobody at the organisation can sign in to is
+an account the organisation does not have.
 
-| Service | What for | Owner | Recovery contact |
-|---|---|---|---|
-| Vercel | Hosting | | |
-| Sanity | Content | | |
-| GitHub | Code | | |
-| Domain registrar | nileexplorer.com | | |
-| YouTube | Channel | | |
-| Spotify for Podcasters | Podcast | | |
-| Instagram | | | |
-| Email provider | Newsletter | | |
-| `newsroom@nilexplorer.net` | Public contact **and likely the recovery address for everything above** | | |
+| Service | What for | Identifier | Owner | Recovery contact |
+|---|---|---|---|---|
+| Vercel | Hosting | Project serving www.nileexplorer.com | | |
+| Sanity | Content | Project `bahk4a2x`, dataset `production` | | |
+| GitHub | Code | `github.com/isaac-ron/nile-explorer` — **a personal account; transfer it** | | |
+| GitHub | Backups | `nile-explorer-backups`, to be created in the organisation (see Backups) | | |
+| healthchecks.io | Tells the newsroom when a backup is missed | To be created | | |
+| Domain registrar | Domain | `nileexplorer.com` | | |
+| Old domain | Old shared links (see "The domain") | `nilexplorer.net` | | |
+| YouTube | Channel | | | |
+| Spotify for Podcasters | Podcast | | | |
+| Instagram | | | | |
+| EmailOctopus | Newsletter: the subscriber list ("Audience") and sending | API key and list ID in Vercel env vars; see design/newsletter/README.md | | |
+| Newsroom mailbox | Public contact **and likely the recovery address for everything above** | Site settings reads `newsroom@nilexplorer.com`, which cannot receive mail; see Things to finish. Use a mailbox on nileexplorer.com | | |
+
+**The code is on the developer's personal GitHub account.** Before
+handover, create a GitHub organisation for The Nile Explorer and transfer the
+repository to it (repository Settings → Danger Zone → Transfer). Old links
+redirect automatically. Then reconnect it in Vercel (Project → Settings →
+Git). Secrets and variables do not travel with a transfer: add the backup
+ones again (see Backups).
 
 ### Environment variables
 
@@ -230,13 +248,18 @@ Create:
 site's cache, and so would every read counted by `/api/track`:
 
 ```groq
-!(_id in path("drafts.**")) && _type in [
-  "article","episode","film","author","topic","strand",
-  "siteSettings","aboutPage","festival","podcastShow"
-]
+!(_id in path("drafts.**")) && _type != "articleStats" && !(_type match "sanity.*")
 ```
 
-`articleStats` must never be added to that list.
+It lists what to **ignore** rather than what to include, so a document type
+added later reaches the site on publish without anyone remembering to come
+back here. An allowlist fails quietly: the new type's pages wait up to fifteen
+minutes and nothing reports an error. The three exclusions are drafts
+(autosaves), `articleStats` (every counted read), and Sanity's own system
+documents (a preview writes one each time an editor presses Preview).
+
+If the webhook in Sanity still has the older filter, a list beginning
+`_type in ["article","episode"`, replace it with the line above.
 
 **If a webhook to a Vercel Deploy Hook exists from before, delete it.** It is
 not harmful, but it rebuilds the whole site on every publish for no benefit
@@ -391,13 +414,87 @@ anyone clicked.
 
 ### The one thing the free Sanity plan does not give you
 
-**Backups.** Set up a recurring `sanity dataset export` — a GitHub Action on a
-cron committing into the repo is enough, and free.
+**Backups.** So there is one of our own. Every night at 02:30 Nairobi time,
+`.github/workflows/sanity-backup.yml` exports the whole dataset (documents,
+drafts and images) and commits it to a separate private repository,
+`nile-explorer-backups`.
+
+- **Every day is kept, with no expiry.** Each night that anything changed is a
+  commit, so the dataset can be brought back as it stood on any day, not just
+  the last one. Sanity's free plan keeps three days of edit history, so the
+  gap between a mistake and a restorable copy is never more than a day.
+- **It stays small.** Images are named by their content, so git stores each
+  picture once however many nights it appears in. Expect it to grow by the
+  size of new photographs, around 1 MB an article, not by a full copy a day.
+- **It is separate from the site's code** so that cloning the site does not
+  mean downloading every photograph ever published, and so that the backups
+  survive anything that happens to the site's repository.
+
+**Setting it up, once.** All four steps are needed; until they are done, the
+job fails with a message naming whatever is missing.
+
+1. Create a **private** repository named `nile-explorer-backups`, in the same
+   organisation as the site's repository, with no files.
+2. On a computer with git, run `ssh-keygen -t ed25519 -f backup-key -N ""`.
+   It makes two files. In the **backups** repository, Settings → Deploy keys →
+   Add: paste the contents of `backup-key.pub` and tick **Allow write
+   access**. In the **site** repository, Settings → Secrets and variables →
+   Actions → Secrets: add `BACKUP_DEPLOY_KEY` with the contents of
+   `backup-key`. Then delete both files. A deploy key opens one repository
+   only and never expires, which is why it is used instead of a personal
+   token: those expire within a year, and the backup would stop with them.
+3. In sanity.io/manage → API → Tokens, create a **Viewer** token named
+   "Backups" and add it to the site repository's secrets as
+   `SANITY_BACKUP_TOKEN`. Viewer can read drafts and cannot change anything.
+4. In the site repository's **Variables** tab, add `BACKUP_REPOSITORY` as
+   `<organisation>/nile-explorer-backups`.
+
+Then Actions → Back up Sanity → **Run workflow**, and check that a commit
+appears in the backups repository.
+
+**Knowing it still runs.** A backup that silently stops is the usual way these
+fail, and GitHub only emails the person who last edited the workflow. So make
+a free check at healthchecks.io that expects a ping daily with a few hours'
+grace, send its alerts to the newsroom address, and add its ping URL as the
+variable `HEALTHCHECK_URL`. The job pings it on success and on failure, so the
+newsroom hears about a failed backup and also about one that never ran.
+
+**Restoring.**
+
+1. Clone the backups repository. To restore an earlier day, check out that
+   day's commit (`git log` lists them by date).
+2. Package it the way Sanity's importer expects:
+   `tar -czf restore.tar.gz production`
+3. Log in as an administrator (`npx sanity login`); the Viewer token cannot
+   write. Then, from the site's repository:
+   `npx sanity dataset import restore.tar.gz production --replace -p bahk4a2x`
+
+`--replace` overwrites each document with the backup's copy, so edits made
+since that day are lost. Where only part of the site needs bringing back,
+import into a scratch dataset first
+(`npx sanity dataset create restore-check -p bahk4a2x`), compare, and copy
+across what is needed.
+
+**Rehearse it once a year** into `restore-check`, then delete that dataset:
+the free plan allows two. An untested backup is a hope, not a backup.
 
 The free plan also has only two roles, Administrator and Viewer, which means
-every editor is an administrator who could delete the dataset. Sanity's Growth
-plan ($15/seat/month) adds Editor and Contributor roles and scheduled
-publishing. That is the trigger to upgrade — not running out of capacity.
+every editor is an administrator who could delete the dataset.
+
+**When to move to Sanity's Growth plan** ($15 a seat a month; a seat is anyone
+who signs in to the Studio):
+
+- **More than one or two editors.** Growth adds Editor and Contributor roles,
+  so not everyone can delete everything.
+- **Before a traffic spike, such as the December 2026 elections.** Every
+  counted read is a Sanity request, and so is every page regeneration. The
+  free plan stops at 250,000 a month and cannot buy more. Growth has the same
+  allowance but charges $1 per 25,000 beyond it, so a busy month becomes a
+  small bill instead of a publishing outage.
+- Growth also keeps 90 days of edit history instead of three.
+
+Growth does **not** include backups; those are Enterprise only. Keep the
+backup job whichever plan the project is on.
 
 ### Costs
 
@@ -460,8 +557,37 @@ If that comes back empty, the build is republishing the previous build's
 content and every publish since the break has been invisible. See "The build
 must not reuse the last build's content" above.
 
+### Search engines
+
+`/sitemap.xml` lists every page a reader can open: the sections, each strand,
+each writer, and each published article with when it was last edited. It
+refreshes with the rest of the site on publish. `/robots.txt` points crawlers
+at it and keeps them out of `/studio` and `/api`. Both take the address from
+**Site settings → Site address**, so they follow a domain change.
+
+Once the domain is live, submit `https://www.nileexplorer.com/sitemap.xml` in
+Google Search Console (proving ownership by a DNS record at the registrar).
+That is also where to see what Google has indexed and any pages it cannot read.
+
 ### Things to finish
 
+- [ ] **Transfer the GitHub repository** to an organisation account and fill in
+      the accounts table. See "Accounts, and who owns them".
+- [ ] **Set up backups** (four steps, plus the healthchecks.io check) and run
+      one by hand. See "The one thing the free Sanity plan does not give you".
+- [ ] **Fix the newsroom address in Site settings.** It reads
+      `newsroom@nilexplorer.com`, a domain with no mail server, so anything
+      sent to it bounces. It is printed under every article as the address
+      for corrections, and it is where the festival's Register interest button
+      sends people. The Zoho mailbox on nileexplorer.com is the likely
+      intended home.
+- [ ] **Set Site settings → Site address to `https://www.nileexplorer.com`.**
+      It reads the bare domain, which redirects to www, so every address in
+      the sitemap and in share previews is a redirect.
+- [ ] **Domain renewals.** nilexplorer.net expires on 16 August 2027 and
+      nileexplorer.com on 9 September 2027. Turn on auto-renew with a card
+      the organisation holds.
+- [ ] **Submit the sitemap** to Google Search Console after the domain is live.
 - [ ] **8 archive images have no description.** They came from WordPress with
       empty alt attributes. They are live, and the Studio shows a validation
       error on each until someone writes one.
@@ -475,8 +601,11 @@ must not reuse the last build's content" above.
       being read about. Put the origin feed in Podcast settings and that fixes
       itself — and submitting the same address to Apple Podcasts is all a
       listing there takes.
-- [ ] **No newsletter provider.** The section does not render until one is set
-      in Site settings. It previously accepted addresses and threw them away.
+- [ ] **Newsletter: add EMAIL_OCTOPUS_API_KEY and EMAIL_OCTOPUS_LIST_ID to
+      Vercel.** Sign-up works locally; the section stays hidden on the live
+      site until both are set. Then fill in the postal address and verify the
+      sending domain in EmailOctopus, and set up the welcome automation (see
+      design/newsletter/README.md).
 - [ ] **Delete `scripts/ingest.mjs` and `content/`** once the site has been
       building from Sanity for long enough to trust it. They are the migration's
       source material, not live inputs.
@@ -496,18 +625,17 @@ must not reuse the last build's content" above.
 ### The domain
 
 The site is served at **www.nileexplorer.com** (the bare domain redirects
-there). The old WordPress domain, nilexplorer.net, no longer answers. Two
-things still point at it:
+there). The old WordPress domain, nilexplorer.net, no longer answers on the
+web. Its mail, if anyone still uses it, runs on the old WordPress host and
+stops when that hosting lapses. Move anything that matters, above all any
+account recovery address, to a mailbox on nileexplorer.com (Zoho) first.
 
-- **The newsroom email**, `newsroom@nilexplorer.net`, in Site settings. It is
-  printed under every article. If that mailbox no longer receives mail, change
-  it in the Studio.
-- **Old shared links.** Anything shared before the move points at
-  nilexplorer.net and will not resolve unless that domain is pointed at Vercel
-  and added to the project as a redirect to www.nileexplorer.com. Slugs were
-  preserved, so a domain-level redirect is enough — except where WordPress used
-  a dated path such as /2025/09/the-headline, which needs its own line in
-  `next.config.ts`.
+**Old shared links.** Anything shared before the move points at
+nilexplorer.net and will not resolve unless that domain is pointed at Vercel
+and added to the project as a redirect to www.nileexplorer.com. Slugs were
+preserved, so a domain-level redirect is enough — except where WordPress used
+a dated path such as /2025/09/the-headline, which needs its own line in
+`next.config.ts`.
 
 Share buttons take the address from the page the reader is on, so they are
 right on any domain without configuration.

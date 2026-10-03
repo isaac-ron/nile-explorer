@@ -139,18 +139,10 @@ export default defineType({
       type: 'string',
       group: 'contact',
       description: 'As displayed, including the @ — e.g. @thenilexplorer_podcast.'
-    }),
-    defineField({
-      name: 'newsletterAction',
-      title: 'Newsletter sign-up address',
-      type: 'url',
-      group: 'contact',
-      description:
-        'The form address from your email provider — in EmailOctopus it is the "form action" on ' +
-        'the embedded form, and looks like https://eocampaign1.com/form/…. While this is empty ' +
-        'the newsletter section does not appear on the site at all, which is deliberate: a form ' +
-        'that goes nowhere collects addresses it then throws away.'
     })
+    // The newsletter is no longer configured here. Sign-up goes through
+    // EmailOctopus's API, set by EMAIL_OCTOPUS_API_KEY and
+    // EMAIL_OCTOPUS_LIST_ID in the environment; see src/lib/newsletter.ts.
   ],
   preview: {
     prepare: () => ({ title: 'Site settings' })

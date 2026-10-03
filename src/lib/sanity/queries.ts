@@ -62,15 +62,24 @@ const ARTICLE_FIELDS = groq`
   "summary": standfirst,
   topic->{ name, "slug": slug.current },
   author->{ name, role, colophon, isPatron, "slug": slug.current },
-  image ${IMAGE}
+  image ${IMAGE},
+  "words": math::sum(body[_type == "block"]{ "n": count(string::split(pt::text(@), " ")[@ != ""]) }.n)
 `;
 
-/** Published articles, newest first. The site's spine. */
+/**
+ * Published articles, newest first. The site's spine.
+ *
+ * No bodies. Every page that lists articles runs this, and only the article
+ * page itself needs the text, which it gets from ARTICLE_BY_SLUG_QUERY. With
+ * bodies this result was 13 KB an article, and Next will not cache a fetch
+ * over 2 MB: at about 150 articles it would have silently stopped caching,
+ * and every /articles view would have pulled the whole archive from Sanity.
+ * Reading time comes from `words`, counted here, so no body is needed for it.
+ */
 export const ARTICLES_QUERY = groq`
   *[_type == "article" && state == "published" && !placeholder]
   | order(publishedAt desc) {
-    ${ARTICLE_FIELDS},
-    "body": body ${BODY}
+    ${ARTICLE_FIELDS}
   }
 `;
 
@@ -84,6 +93,15 @@ export const ARTICLE_BY_SLUG_QUERY = groq`
 /** Slugs to prerender. Commissioned pieces are excluded: they have no page. */
 export const ARTICLE_SLUGS_QUERY = groq`
   *[_type == "article" && state == "published" && defined(slug.current)].slug.current
+`;
+
+/** The same set for the sitemap, with when each was last edited. No bodies. */
+export const ARTICLE_SITEMAP_QUERY = groq`
+  *[_type == "article" && state == "published" && defined(slug.current)]
+  | order(publishedAt desc) {
+    "slug": slug.current,
+    "updated": _updatedAt
+  }
 `;
 
 /**
@@ -226,7 +244,6 @@ export const SITE_SETTINGS_QUERY = groq`
     youtubeHandle,
     instagram,
     instagramHandle,
-    newsletterAction,
     patron->{ name, role },
     pullQuote{ text, attribution },
     nav[]{ label, href, expandStrands }

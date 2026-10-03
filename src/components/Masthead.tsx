@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import SiteNav, { type NavItem } from '@/components/SiteNav';
-import { getStrands, getSite } from '@/lib/content';
+import { getStrands, getSite, NEWSROOM_TIME_ZONE } from '@/lib/content';
+import { newsletterReady } from '@/lib/newsletter';
 
 /**
  * Build the menu from Site settings.
@@ -31,7 +32,8 @@ export async function EditionBar() {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: NEWSROOM_TIME_ZONE
   });
 
   return (
@@ -59,7 +61,7 @@ export async function EditionBar() {
 }
 
 export default async function Masthead() {
-  const [items, site] = await Promise.all([navItems(), getSite()]);
+  const [items, subscribable] = await Promise.all([navItems(), newsletterReady()]);
 
   return (
     <>
@@ -72,7 +74,7 @@ export default async function Masthead() {
               masthead has no edge. Hidden until a newsletter provider is
               configured, since the anchor would otherwise scroll to a section
               that does not render. */}
-          {site.newsletterAction && (
+          {subscribable && (
             <Link className="btn btn--gold" href="/#newsletter">
               Subscribe
             </Link>
