@@ -434,7 +434,9 @@ drafts and images) and commits it to a separate private repository,
 job fails with a message naming whatever is missing.
 
 1. Create a **private** repository named `nile-explorer-backups`, in the same
-   organisation as the site's repository, with no files.
+   organisation as the site's repository, and tick **Add a README file**. It
+   must have at least one commit: the job cannot check out an empty
+   repository.
 2. On a computer with git, run `ssh-keygen -t ed25519 -f backup-key -N ""`.
    It makes two files. In the **backups** repository, Settings → Deploy keys →
    Add: paste the contents of `backup-key.pub` and tick **Allow write
